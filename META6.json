@@ -1,0 +1,26 @@
+{
+    "perl"        : "6.c",
+    "name"        : "DateTime::Math::More",
+    "version"     : "0.1.0",
+    "description" : "Provides some additional DateTime Math functions",
+    "authors"     : [ "github:tbrowder" ],
+    "license"     : "Artistic 2.0",
+    "source-url"  : "https://github.com/tbrowder/DateTime-Math-More-Perl6",
+    "support"     : {
+        "bugtracker" : "https://github.com/tbrowder/DateTime-Math-More-Perl6/issues",
+        "source"     : "https://github.com/tbrowder/DateTime-Math-More-Perl6"
+    },
+    "provides"    : {
+        "DateTime::Math::More" : "lib/DateTime/Math/More.pm6"
+    },
+    "test-depends"     : [
+	"Test::META"
+    ],
+    "depends" : [
+    ],
+    "resources" : [
+    ],
+    "tags" : [
+	"date functions"
+    ]
+}
