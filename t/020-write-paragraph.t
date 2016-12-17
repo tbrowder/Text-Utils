@@ -1,7 +1,7 @@
 use v6;
 use Test;
 
-use Misc::Utils :ALL;
+use Text::More :ALL;
 
 #plan 18;
 
@@ -239,7 +239,7 @@ my (@para, @p1);
 }
 
 # test some corner cases ==================================
-#                         1         2         1    
+#                         1         2         1
 my Str @text2 = '123456789012345678901234567890';   # 30 chars
 my Str @text3 = '12345678901234567890123456789012'; # 32 chars
 # test 17

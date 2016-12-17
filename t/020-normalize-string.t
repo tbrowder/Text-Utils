@@ -1,7 +1,7 @@
 use v6;
 use Test;
 
-use Misc::Utils :ALL;
+use Text::More :ALL;
 
 plan 8;
 
