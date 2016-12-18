@@ -1,17 +1,17 @@
 {
     "perl"        : "6.c",
-    "name"        : "DateTime::Math::More",
+    "name"        : "Text::More",
     "version"     : "0.1.0",
-    "description" : "Provides some additional DateTime Math functions",
+    "description" : "Provides some additional text functions and a binary helper file",
     "authors"     : [ "github:tbrowder" ],
     "license"     : "Artistic 2.0",
-    "source-url"  : "https://github.com/tbrowder/DateTime-Math-More-Perl6",
+    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6",
     "support"     : {
-        "bugtracker" : "https://github.com/tbrowder/DateTime-Math-More-Perl6/issues",
-        "source"     : "https://github.com/tbrowder/DateTime-Math-More-Perl6"
+        "bugtracker" : "https://github.com/tbrowder/Text-More-Perl6/issues",
+        "source"     : "https://github.com/tbrowder/Text-More-Perl6"
     },
     "provides"    : {
-        "DateTime::Math::More" : "lib/DateTime/Math/More.pm6"
+        "Text::More" : "lib/Text/More.pm6"
     },
     "test-depends"     : [
 	"Test::META"
