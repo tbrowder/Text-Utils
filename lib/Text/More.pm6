@@ -19,7 +19,7 @@ BEGIN {
 # Purpose : Count instances of a substring in a string
 # Params  : String, Substring
 # Returns : Number of substrings found
-sub count-substrs(Str:D $ip, Str:D $substr) returns UInt is export(:count-substrs) {
+sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
     my $nsubstrs = 0;
     my $idx = index $ip, $substr;
     while $idx.defined {
@@ -36,7 +36,7 @@ sub count-substrs(Str:D $ip, Str:D $substr) returns UInt is export(:count-substr
 # Purpose : Strip comments from an input text line
 # Params  : String of text, comment char ('#' is default)
 # Returns : String of text with any comment stripped off. Note that the designated char will trigger the strip even though it is escaped or included in quotes.
-sub strip-comment(Str $line is copy, Str $comment-char = '#') returns Str is export(:strip-comment) {
+sub strip-comment(Str $line is copy, Str $comment-char = '#' --> Str) is export(:strip-comment) {
     my $idx = index $line, $comment-char;
     if $idx.defined {
 	return substr $line, 0, $idx;
@@ -75,7 +75,7 @@ multi write-paragraph(@text,
 		      UInt :$max-line-length = 78,
                       UInt :$para-indent = 0,
 		      UInt :$first-line-indent = 0,
-                      Str :$pre-text = '') returns List is export(:write-paragraph) {
+                      Str :$pre-text = '' --> List) is export(:write-paragraph) {
 
     #say "DEBUG: text = '@text'" if $DEBUG;
     # calculate the various effective indents and any pre-text effects
@@ -206,7 +206,7 @@ multi write-paragraph($fh, @text,
 # Purpose : Trim a string and collapse multiple whitespace characters to single ones
 # Params  : The string to be normalized
 # Returns : The normalized string
-sub normalize-string(Str:D $str is copy) returns Str is export(:normalize-string) {
+sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
     $str .= trim;
     $str ~~ s:g/ \s ** 2..*/ /;
     return $str;
@@ -230,7 +230,7 @@ sub normalize-string-rw(Str:D $str is rw) is export(:normalize-string-rw) {
 # Params  : String to be split, the split character, maximum length, a starting position for the search, search direction
 # Returns : The two parts of the split string; the second part will be empty string if the input string is not too long
 sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
-               UInt :$start-pos = 0, Bool :$rindex = False) returns List is export(:split-line) {
+               UInt :$start-pos = 0, Bool :$rindex = False --> List) is export(:split-line) {
     my $line2 = '';
     return ($line, $line2) if $max-line-length && $line.chars <= $max-line-length;
 
@@ -259,7 +259,7 @@ sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
 # Params  : String to be split, the split character, maximum length, a starting position for the search, search direction
 # Returns : The part of the input string past the break character, or an empty string (the input string is modified in-place if it is too long)
 sub split-line-rw(Str:D $line is rw, Str:D $brk, UInt :$max-line-length = 0,
-                  UInt :$start-pos = 0, Bool :$rindex = False) returns Str is export(:split-line-rw) {
+                  UInt :$start-pos = 0, Bool :$rindex = False --> Str) is export(:split-line-rw) {
     my $line2 = '';
     return $line2 if $max-line-length && $line.chars <= $max-line-length;
 
