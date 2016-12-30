@@ -7,7 +7,7 @@
 # Help    : Yes
 
 use Getopt::Std;
-use Misc::Utils :ALL;
+use Text::More :ALL;
 
 my $max-line-length = 78;
 
@@ -36,7 +36,7 @@ sub usage() {
    the result of that command will be added to the output as a code
    block.
 
-   See the lib/Misc and bin directories for a module file and a program with the
+   See the lib/Text and bin directories for a module file and a program with the
    known formats.  The markdown files in the docs directory in this
    repository were created with this program from those files.
 
@@ -277,7 +277,7 @@ sub get-help-lines($prog) {
 sub get-multi-id($name) {
     # return a unique id based on the input name and a single digit suffix (2-9)
     # routine will have to be modified if more than 9 multi sub names are needed
-    static %names = SetHash.new;
+    state %names = SetHash.new;
 
     if !%names{$name} {
         %names{$name} = 1;
@@ -294,7 +294,7 @@ sub get-multi-id($name) {
 
     if !$n.defined {
 	# add a 2;
-	$digit = '2';
+	$n = '2';
 	$name = $basename ~ $n;
 	die "FATAL: unexpected existing name '$name'" if %names{$name};
 	%names{$name} = 1;
@@ -331,14 +331,28 @@ sub create-subs-md($f) {
     for $fp.lines -> $line is copy {
         say $line if $debug;
         next if $line !~~ / \S /; # skip empty lines
+
         # ensure there is a space following any leading '#'
-        $line ~~ s/^ \s* '#' \S /^\# /;
+        if $line ~~ s/^ \s* '#' \S /^\# / {
+            # ensure there is NO space before the first ':'
+            $line ~~ s/ \s* ':' /\:/;
+            # ensure there is a space following the first ':'
+            $line ~~ s/ ':' \S /\: /;
+        }
         my @words = $line.words;
         my $nw = @words;
 
         if $line ~~ /^ \s* '#' / {
             next if $nw < 3;
- 	    my $kw  = @words[1];
+
+            my $kw;
+            if $line ~~ /^ \s* '#' \s+ (\w+) \s* ':' / {
+                $kw = ~$0;
+            }
+            else {
+                next;
+            }
+
  	    my $val = @words[2];
             say "possible keyword '$kw'" if $debug;
             #say "possible keyword '$kw'";
@@ -352,12 +366,12 @@ sub create-subs-md($f) {
                 # start a new file
                 $fname = $val;
             }
-            elsif $kw eq 'title:' {
+            elsif $kw eq 'title' {
                 # update the file's title name
                 $title = $txt;
                 %mdfils{$fname}<title> = $title;
             }
-            elsif $kw eq 'Subroutine' {
+            elsif $kw eq 'Subroutine' || $kw eq 'Method' {
                 die "fix this code block for sub handling";
                 # update the subroutine name (may be a multi name, special handling)
                 my $subname = $val;
@@ -377,7 +391,7 @@ sub create-subs-md($f) {
                 %mdfils{$fname}<subs>{$subid}<lines>.push($txt);
             }
         }
-        elsif $line ~~ /^ sub \s* / {
+        elsif $line ~~ /^ [sub|method|multi] \s* / {
             # start sub signature
             say "found sub sig '$line'" if $debug;
             my @sublines;
@@ -426,7 +440,7 @@ sub create-subs-md($f) {
     }
 } # create-subs-md
 
-sub fold-sub-lines(@sublines, $subid) returns List {
+sub fold-sub-lines(@sublines, $subid --> List) {
     # get one long string to start with
     my $sig = normalize-string(join ' ', @sublines);
 
@@ -514,7 +528,7 @@ sub fold-sub-lines(@sublines, $subid) returns List {
 }
 
 # candidate for a util module
-sub analyze-line-lengths(@lines) returns List {
+sub analyze-line-lengths(@lines --> List) {
     # returns:
     #   max line length in the input array
     #   the index of the longest line
@@ -540,7 +554,7 @@ sub analyze-line-lengths(@lines) returns List {
 } # analyze-line-lengths
 
 
-sub get-kw-line-data(:$val, :$kw, :@words is copy) returns Str {
+sub get-kw-line-data(:$val, :$kw, :@words is copy --> Str) {
     say "TOM FIX THIS TO HANDLE EACH KEYWORD PROPERLY" if $debug;
     say "DEBUG: reduced \@words array" if $debug;
     say @words.perl if $debug;
