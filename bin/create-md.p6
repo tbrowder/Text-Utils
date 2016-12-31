@@ -332,12 +332,13 @@ sub create-subs-md($f) {
         say $line if $debug;
         next if $line !~~ / \S /; # skip empty lines
 
-        # ensure there is a space following any leading '#'
-        if $line ~~ s/^ \s* '#' \S /^\# / {
+        if $line ~~ /^ \s* '#' / {
+            # ensure there is a space following any leading '#'
+            $line ~~ s/^ \s* '#' /^\# /;
             # ensure there is NO space before the first ':'
             $line ~~ s/ \s* ':' /\:/;
             # ensure there is a space following the first ':'
-            $line ~~ s/ ':' \S /\: /;
+            $line ~~ s/ ':' /\: /;
         }
         my @words = $line.words;
         my $nw = @words;
@@ -372,7 +373,6 @@ sub create-subs-md($f) {
                 %mdfils{$fname}<title> = $title;
             }
             elsif $kw eq 'Subroutine' || $kw eq 'Method' {
-                die "fix this code block for sub handling";
                 # update the subroutine name (may be a multi name, special handling)
                 my $subname = $val;
                 $subid = $subname;
