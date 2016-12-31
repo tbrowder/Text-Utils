@@ -154,7 +154,7 @@ if $modfil {
 	for @subids -> $s {
             say "subid: $s" if $debug;
             my $sub = %hs{$s}<name>;
-            $fh.say: $sub;
+            #$fh.say: $sub;
             my @lines = @(%hs{$s}<lines>);
             for @lines -> $line {
 		$fh.say: $line;
@@ -274,51 +274,55 @@ sub get-help-lines($prog) {
     return 'FINISH THE GET HELP SUB';
 } # get-help-lines
 
-sub get-multi-id($name is copy) {
+sub get-multi-id(%mdfils, $fname, $subid is copy, $subname) {
     # return a unique id based on the input name and a single digit suffix (2-9)
     # routine will have to be modified if more than 9 multi sub names are needed
-    state %names; # = SetHash.new;
 
-    if !%names{$name} {
-        %names{$name} = 1;
-        return $name;
+                # if %mdfils{$fname}<subs>{$subid}:exists {
+
+    if $debug {
+        say "DEBUG in 'get-multi-id'";
+        say "  \$subid = '$subid'; \%mdfils:";
+        say %mdfils.gist;
+    }
+
+    if !%mdfils{$fname}<subs>{$subid} {
+        return $subid;
     }
 
     # we have a duplicate, get the next in line
     my $basename;
     my $n;
-    if $name ~~ /^ (\.*) (\d) $/ {
+    if $subid ~~ /^ (\.*) (\d) $/ {
 	$basename = ~$0;
 	$n        = +$1;
     }
     else {
-        $basename = $name;
+        $basename = $subid;
     }
 
     if $debug {
         say "DEBUG in 'get-multi-id'";
-        say "  \$name = '$name'; \$basename = '$basename'";
+        say "  \$subid = '$subid'; \$basename = '$basename'";
     }
 
     if !$n.defined {
 	# add a 2;
 	$n = '2';
-	$name = $basename ~ $n;
-	die "FATAL: unexpected existing name '$name'" if %names{$name};
-	%names{$name} = 1;
-	return $name;
+	$subid = $basename ~ $n;
+	die "FATAL: unexpected existing name '$subid'" if %mdfils{$fname}<subs>{$subid};
+	return $subid;
     }
 
     # more work to do
-    while %names{$basename ~ $n} {
+    while %mdfils{$fname}<subs>{$basename ~ $n} {
         ++$n;
     }
-    die "FATAL: need a fix here: \$n = '$n', \$name = '$name'" if $n > 9;
+    die "FATAL: need a fix here: \$n = '$n', \$subid = '$subid'" if $n > 9;
 
-    $name = $basename ~ $n;
-    die "FATAL: unexpected existing name '$name'" if %names{$name};
-    %names{$name} = 1;
-    return $name;
+    $subid = $basename ~ $n;
+    die "FATAL: unexpected existing subid '$subid'" if %mdfils{$fname}<subs>{$subid};
+    return $subid;
 
 } # get-multi-id
 
@@ -397,7 +401,7 @@ sub create-subs-md($f) {
                 $subid = $subname;
                 if %mdfils{$fname}<subs>{$subid}:exists {
                     say "CREATE NEW SUB ID FOR MULTI";
-                    $subid = get-multi-id($subid);
+                    $subid = get-multi-id(%mdfils, $fname, $subid, $subname);
                 }
 
                 # start a new sub entry with name and lines array
@@ -595,7 +599,7 @@ sub get-kw-line-data(:$kw, :@words is copy --> Str) {
             # pass back all with leading markup
             $txt ~= $md-val if $md-val;
             # for Params need an extra space to prettify the total appearance
-            my $s = $kw eq 'Params' ?? $kw ~ ' :' !! $kw ~ ':';
+            my $s = $kw eq 'Params' ?? $kw ~ ' : ' !! $kw ~ ': ';
             $txt ~= ' ' ~ $s ~ join ' ', @words;
         }
         when 'file' {
