@@ -68,7 +68,7 @@ sub commify($num) is export(:commify) {
 
 #------------------------------------------------------------------------------
 # Subroutine: write-paragraph
-# Purpose : Wrap a list of words into a paragraph with a maximum line width (default: 78) and updates the input list with the results
+# Purpose : Wrap a list of words into a paragraph with a maximum line width (default: 78) and update the input list with the results
 # Params  : List of words, max line length, paragraph indent, first line indent, pre-text
 # Returns : List of formatted paragraph lines
 multi write-paragraph(@text,
