@@ -114,8 +114,8 @@ my %kw = [
     'Params'     => '-',
     'Returns'    => '-',
 
-    'title:'     => '#',
-    'file:'      => '',
+    'title'     => '#',
+    'file'      => '',
 ];
 
 my %kwp = [
@@ -334,11 +334,12 @@ sub create-subs-md($f) {
 
         if $line ~~ /^ \s* '#' / {
             # ensure there is a space following any leading '#'
-            $line ~~ s/^ \s* '#' /^\# /;
+            $line ~~ s/^ \s* '#' /\# /;
             # ensure there is NO space before the first ':'
             $line ~~ s/ \s* ':' /\:/;
             # ensure there is a space following the first ':'
             $line ~~ s/ ':' /\: /;
+            say "DEBUG: possible kw line: '$line'" if $debug && $line ~~ /':'/;
         }
         my @words = $line.words;
         my $nw = @words;
@@ -363,7 +364,7 @@ sub create-subs-md($f) {
             my $txt = get-kw-line-data(:val(%kw{$kw}), :$kw, :words(@words[1..*]));
             say "text value: '$txt'" if $debug;
             # next action depends on keyword
-            if $kw eq 'file:' {
+            if $kw eq 'file' {
                 # start a new file
                 $fname = $val;
             }
@@ -561,7 +562,7 @@ sub get-kw-line-data(:$val, :$kw, :@words is copy --> Str) {
 
     my $txt = '';
     given $kw {
-        when 'Subroutine' {
+        when / [Subroutine|Method] / {
             # pass back just the sub name with leading markup
             $txt ~= $val if $val;
             $txt ~= ' ' ~ @words[1];
