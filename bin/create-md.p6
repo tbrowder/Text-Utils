@@ -2,7 +2,7 @@
 
 # standard for self-documenting a program
 #------------------------------------------------------------------------------
-# Program create-md.p6
+# Program: create-md.p6
 # Purpose : Create markdown documentation for programs in a github repository
 # Help    : Yes
 
@@ -274,10 +274,10 @@ sub get-help-lines($prog) {
     return 'FINISH THE GET HELP SUB';
 } # get-help-lines
 
-sub get-multi-id($name) {
+sub get-multi-id($name is copy) {
     # return a unique id based on the input name and a single digit suffix (2-9)
     # routine will have to be modified if more than 9 multi sub names are needed
-    state %names = SetHash.new;
+    state %names; # = SetHash.new;
 
     if !%names{$name} {
         %names{$name} = 1;
@@ -290,6 +290,14 @@ sub get-multi-id($name) {
     if $name ~~ /^ (\.*) (\d) $/ {
 	$basename = ~$0;
 	$n        = +$1;
+    }
+    else {
+        $basename = $name;
+    }
+
+    if $debug {
+        say "DEBUG in 'get-multi-id'";
+        say "  \$name = '$name'; \$basename = '$basename'";
     }
 
     if !$n.defined {
@@ -320,7 +328,6 @@ sub create-subs-md($f) {
     # %h{$fname}<title> = $title
     #           <subs>{$subid}<name>  = $subname
     #           <subs>{$subid}<lines> = @lines
-    #           <subs>{$subname} = @lines
 
     my $fname;   # current output file name
     my $title;   # current title for the file contents
@@ -332,7 +339,9 @@ sub create-subs-md($f) {
         say $line if $debug;
         next if $line !~~ / \S /; # skip empty lines
 
+        my $maybe-kwline = 0;
         if $line ~~ /^ \s* '#' / {
+            $maybe-kwline = 1;
             # ensure there is a space following any leading '#'
             $line ~~ s/^ \s* '#' /\# /;
             # ensure there is NO space before the first ':'
@@ -344,7 +353,7 @@ sub create-subs-md($f) {
         my @words = $line.words;
         my $nw = @words;
 
-        if $line ~~ /^ \s* '#' / {
+        if $maybe-kwline {
             next if $nw < 3;
 
             my $kw;
@@ -355,18 +364,27 @@ sub create-subs-md($f) {
                 next;
             }
 
- 	    my $val = @words[2];
+            # dump first word which is '#'
+            shift @words;
+            # dump second word which is the keyword
+            shift @words;
+
             say "possible keyword '$kw'" if $debug;
-            #say "possible keyword '$kw'";
             next if not %kw{$kw}:exists;
+
             say "found keyword '$kw'" if $debug;
+
+            # we need the original next word for special uses
+            my $orig-val = @words[0];
+
             # get the actual line to be output
-            my $txt = get-kw-line-data(:val(%kw{$kw}), :$kw, :words(@words[1..*]));
+            my $txt = get-kw-line-data(:$kw, :words(@words));
             say "text value: '$txt'" if $debug;
+
             # next action depends on keyword
             if $kw eq 'file' {
                 # start a new file
-                $fname = $val;
+                $fname = $orig-val;
             }
             elsif $kw eq 'title' {
                 # update the file's title name
@@ -375,7 +393,7 @@ sub create-subs-md($f) {
             }
             elsif $kw eq 'Subroutine' || $kw eq 'Method' {
                 # update the subroutine name (may be a multi name, special handling)
-                my $subname = $val;
+                my $subname = $orig-val;
                 $subid = $subname;
                 if %mdfils{$fname}<subs>{$subid}:exists {
                     say "CREATE NEW SUB ID FOR MULTI";
@@ -555,45 +573,38 @@ sub analyze-line-lengths(@lines --> List) {
 } # analyze-line-lengths
 
 
-sub get-kw-line-data(:$val, :$kw, :@words is copy --> Str) {
+sub get-kw-line-data(:$kw, :@words is copy --> Str) {
     say "TOM FIX THIS TO HANDLE EACH KEYWORD PROPERLY" if $debug;
     say "DEBUG: reduced \@words array" if $debug;
     say @words.perl if $debug;
+  
+    # get the md value of the keyword
+    my $md-val = %kw{$kw};
 
     my $txt = '';
     given $kw {
         when / [Subroutine|Method] / {
             # pass back just the sub name with leading markup
-            $txt ~= $val if $val;
-            $txt ~= ' ' ~ @words[1];
+            $txt ~= $md-val if $md-val;
+            $txt ~= ' ' ~ @words[0];
             # add a leading newline to provide spacing between
             # the preceding subroutine
             $txt = "\n" ~ $txt;
         }
-        when 'Purpose'    {
+        when / [Purpose|Params|Returns] /    {
             # pass back all with leading markup
-            $txt ~= $val if $val;
+            $txt ~= $md-val if $md-val;
+            # for Params need an extra space to prettify the total appearance
+            my $s = $kw eq 'Params' ?? $kw ~ ' :' !! $kw ~ ':';
+            $txt ~= ' ' ~ $s ~ join ' ', @words;
+        }
+        when 'file' {
+            # no handling neededjust the text 
+        }
+        when 'title'     {
+            # pass back all with leading markup
+            $txt ~= $md-val if $md-val;
             $txt ~= ' ' ~ join ' ', @words;
-        }
-        when 'Params'     {
-            # pass back all with leading markup
-            $txt ~= $val if $val;
-            $txt ~= ' ' ~ join ' ', @words;
-            # need an extra space to prettify the total appearance
-            $txt ~~ s/Params/Params /;
-        }
-        when 'Returns'    {
-            # pass back all with leading markup
-            $txt ~= $val if $val;
-            $txt ~= ' ' ~ join ' ', @words;
-        }
-        when 'file:'      {
-            # don't need anything special
-        }
-        when 'title:'     {
-            # pass back all with leading markup
-            $txt ~= $val if $val;
-            $txt ~= ' ' ~ join ' ', @words[1..*];
         }
     }
 
