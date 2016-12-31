@@ -1,15 +1,15 @@
 PROG = ../bin/create-md.p6
-MFIL = ../lib/Misc/Utils.pm6
+MFIL = ../lib/Text/More.pm6
 TDIR = ../docs
 BDIR = ../bin
 
-DEBUG =
-#DEBUG = -D
+#DEBUG =
+DEBUG = -D
 
-#create: subs2
+create: subs2
 #create: subs
 #create: progs
-create: subs progs
+#create: subs progs
 
 subs:
 	$(PROG) -m $(MFIL) -d $(TDIR) $(DEBUG)
