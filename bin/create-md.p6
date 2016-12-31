@@ -153,9 +153,23 @@ if $modfil {
 
 	for @subids -> $s {
             say "subid: $s" if $debug;
-            my $sub = %hs{$s}<name>;
-            #$fh.say: $sub;
+            my $scope = %hs{$s}<scope>;
+            my $sub   = %hs{$s}<name>;
+
             my @lines = @(%hs{$s}<lines>);
+
+            # the first line is special
+            my $first-line = shift @lines;
+            my @w = $first-line.words;
+         
+            # get rid of the sub name
+            pop @w;
+
+            # reassemble the first line
+            @w.push: $scope;
+            $first-line = join ' ', @w;
+            $first-line ~= ' ' ~ $scope ~ ' ' ~ $sub;
+            $fh.say: $first-line;
             for @lines -> $line {
 		$fh.say: $line;
             }
@@ -274,11 +288,9 @@ sub get-help-lines($prog) {
     return 'FINISH THE GET HELP SUB';
 } # get-help-lines
 
-sub get-multi-id(%mdfils, $fname, $subid is copy, $subname) {
+sub get-multi-id(%mdfils, $fname, $subid is copy) {
     # return a unique id based on the input name and a single digit suffix (2-9)
     # routine will have to be modified if more than 9 multi sub names are needed
-
-                # if %mdfils{$fname}<subs>{$subid}:exists {
 
     if $debug {
         say "DEBUG in 'get-multi-id'";
@@ -332,6 +344,7 @@ sub create-subs-md($f) {
     # %h{$fname}<title> = $title
     #           <subs>{$subid}<name>  = $subname
     #           <subs>{$subid}<lines> = @lines
+    #           <subs>{$subid}<scope> = $scope # e.g., 'multi sub'
 
     my $fname;   # current output file name
     my $title;   # current title for the file contents
@@ -401,7 +414,7 @@ sub create-subs-md($f) {
                 $subid = $subname;
                 if %mdfils{$fname}<subs>{$subid}:exists {
                     say "CREATE NEW SUB ID FOR MULTI";
-                    $subid = get-multi-id(%mdfils, $fname, $subid, $subname);
+                    $subid = get-multi-id(%mdfils, $fname, $subid);
                 }
 
                 # start a new sub entry with name and lines array
@@ -417,6 +430,18 @@ sub create-subs-md($f) {
         elsif $line ~~ /^ [sub|method|multi] \s* / {
             # start sub signature
             say "found sub sig '$line'" if $debug;
+
+            # get all words in front of sub name
+            {
+                my $idx = index $line, '(';
+                die "FATAL: no '(' found in line '$line'" if !$idx.defined;
+                my $s = substr $line, 0, $idx;
+                my @w = $s.words;
+                pop @w; # get rid of the name
+                my $scope = join ' ', @w;
+                # add scope to hash
+                %mdfils{$fname}<subs>{$subid}<scope> = $scope;
+            }
             my @sublines;
             # get the whole signature
             while $line !~~ / '{' / {
