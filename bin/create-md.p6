@@ -168,7 +168,7 @@ if $modfil {
             # reassemble the first line
             @w.push: $scope;
             $first-line = join ' ', @w;
-            $first-line ~= ' ' ~ $scope ~ ' ' ~ $sub;
+            $first-line ~= ' ' ~ $sub;
             $fh.say: $first-line;
             for @lines -> $line {
 		$fh.say: $line;
@@ -439,6 +439,9 @@ sub create-subs-md($f) {
                 my @w = $s.words;
                 pop @w; # get rid of the name
                 my $scope = join ' ', @w;
+                if 0 && $debug {
+                    die "DEBUG: scope = '$scope'";
+                }
                 # add scope to hash
                 %mdfils{$fname}<subs>{$subid}<scope> = $scope;
             }
