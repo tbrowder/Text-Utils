@@ -3,7 +3,7 @@ use Test;
 
 use Text::More :ALL;
 
-#plan 18;
+plan 19;
 
 # input: 10 five-letter words in a string
 my @text;
@@ -279,11 +279,6 @@ my Str @text3 = '12345678901234567890123456789012'; # 32 chars
 
     is-deeply [slurp($f).lines], @p1;
 }
-
-=begin pod
-=end pod
-
-done-testing;
 
 #============================================================================================
 unlink $f;
