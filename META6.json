@@ -17,6 +17,7 @@
 	"Test::META"
     ],
     "depends" : [
+        "Getopt::Std"
     ],
     "resources" : [
     ],
