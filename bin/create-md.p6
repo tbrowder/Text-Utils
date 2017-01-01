@@ -352,9 +352,22 @@ sub create-subs-md($f) {
 
     # open the desired module file
     my $fp = open $f;
+    my $in-begin = 0;
     for $fp.lines -> $line is copy {
         say $line if $debug;
         next if $line !~~ / \S /; # skip empty lines
+
+        # skip =begin / =end blocks
+        if $line ~~ /^ \s* '=begin' / {
+            ++$in-begin;
+            next;
+        }
+        if $line ~~ /^ \s* '=end' / {
+            --$in-begin;
+            die "FATAL: unmatched =begin/=end blocks" if $in-begin < 0;
+            next;
+        }
+        next if $in-begin; 
 
         my $maybe-kwline = 0;
         if $line ~~ /^ \s* '#' / {
