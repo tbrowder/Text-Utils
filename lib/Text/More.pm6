@@ -212,21 +212,6 @@ sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
     return $str;
 } # normalize-string
 
-=begin pod
-# NOTE: the following function is not needed since one can write:
-#   $s .= &normalize-string 
-# which will normalize the string in place (thanks, masak!)
-#------------------------------------------------------------------------------
-# Subroutine: normalize-string-rw
-# Purpose : Trim a string and collapse multiple whitespace characters to single ones
-# Params  : The string to be normalized
-# Returns : Nothing, the input string is normalized in-place
-sub normalize-string-rw(Str:D $str is rw) is export(:normalize-string-rw) {
-    $str .= trim;
-    $str ~~ s:g/ \s ** 2..*/ /;
-} # normalize-string-rw
-=end pod
-
 #------------------------------------------------------------------------------
 # Subroutine: split-line
 # Purpose : Split a string into two pieces
