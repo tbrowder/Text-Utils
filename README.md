@@ -99,3 +99,7 @@ Options:
   -v verbose
   -D debug
 ```
+
+## Credits
+
+The ```commify``` subroutine is based on the subroutine of the same name found in the *Perl Cookbook*.
