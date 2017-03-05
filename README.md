@@ -56,4 +56,4 @@ use Text::More :strip-comment;
 
 ## Utility Program
 
-See the *bin* directory for a utility program (```create-md.p6```) to create a README.md file for modules.
+See the **bin** directory for a utility program (```create-md.p6```) to create a **README.md** file for modules.
