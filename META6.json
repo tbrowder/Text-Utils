@@ -6,10 +6,10 @@
     "authors"     : [ "github:tbrowder" ],
     "license"     : "Artistic 2.0",
     "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.1.zip",
-    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.1.zip",
+    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.1.tar.gz",
     "support"     : {
         "bugtracker" : "https://github.com/tbrowder/Text-More-Perl6/issues",
-        "source"     : "https://github.com/tbrowder/Net-IP-Lite-Perl6/tree/0.1.1"
+        "source"     : "https://github.com/tbrowder/Text-More-Perl6/tree/v0.1.1"
     },
     "provides"    : {
         "Text::More" : "lib/Text/More.pm6"
