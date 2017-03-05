@@ -5,10 +5,11 @@
     "description" : "Provides some additional text functions and a binary helper file",
     "authors"     : [ "github:tbrowder" ],
     "license"     : "Artistic 2.0",
-    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/0.1.0.zip",
+    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.1.zip",
+    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.1.zip",
     "support"     : {
         "bugtracker" : "https://github.com/tbrowder/Text-More-Perl6/issues",
-        "source"     : "https://github.com/tbrowder/Net-IP-Lite-Perl6/tree/0.1.0"
+        "source"     : "https://github.com/tbrowder/Net-IP-Lite-Perl6/tree/0.1.1"
     },
     "provides"    : {
         "Text::More" : "lib/Text/More.pm6"
