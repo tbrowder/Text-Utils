@@ -13,8 +13,7 @@ The routines are described in detail in
 which shows a short description of each exported routine along along
 with its complete signature.
 
-This module also includes various utility programs in the bin
-directory.
+This module also includes a utility program in the bin directory.
 
 ## Status
 
@@ -30,7 +29,7 @@ For debugging, use one the following methods:
 - set the module's $DEBUG variable:
 
 ```Perl6
-:$Text-More-Perl6:DEBUG = True;
+:$Text::More::DEBUG = True;
 ```
 
 - set the environment variable:
@@ -55,6 +54,6 @@ use Text::More :ALL;
 use Text::More :strip-comment;
 ```
 
-## Utility Programs
+## Utility Program
 
 See the *bin* directory for a utility program (```create-md.p6```) to create a README.md file for modules.
