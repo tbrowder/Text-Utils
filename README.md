@@ -56,4 +56,46 @@ use Text::More :strip-comment;
 
 ## Utility Program
 
-See the **bin** directory for a utility program (```create-md.p6```) to create a **README.md** file for modules.
+See the **bin** directory for a utility program (```create-md.p6```)
+to create a **README.md** file for modules.
+
+Executing it without any arguments results in the following:
+
+```Perl6
+Usage: ./create-md.p6 -m <file> | -b <bin dir> | -h [-d <odir>, -N, -M <max>, -D]
+
+Reads the input module (or program files in the bin dir) and
+extracts properly formatted comments into markdown files describing
+the subs and other objects contained therein.  Output files are
+created in the output directory (-d <dir>) if entered, or the
+current directory otherwise.
+
+Subroutine signature lines are folded into a nice format for the
+markdown files unless the user uses the -N (no-fold) option.  The
+-M <max> option specifies a user-desired maximum line length for
+folding.  The signature is output as a code block.
+
+In program files, the comments are folded into lines no longer than
+the maximum line length.  If the program has a help option (-h),
+the result of that command will be added to the output as a code
+block.
+
+See the lib/Text and bin directories for a module file and a program with the
+known formats.  The markdown files in the docs directory in this
+repository were created with this program from those files.
+
+Modes (select one only):
+
+  -m <module file>
+  -b <bin directory>
+  -h help
+
+Options:
+
+  -d <output directory>    default: current directory
+  -M <max line length>     default: 78
+
+  -N do NOT format or modify sub signature lines to max length
+  -v verbose
+  -D debug
+```
