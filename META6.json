@@ -1,15 +1,14 @@
 {
     "perl"        : "6.c",
     "name"        : "Text::More",
-    "version"     : "*",
+    "version"     : "0.1.2",
     "description" : "Provides some additional text functions and a binary helper file",
     "authors"     : [ "github:tbrowder" ],
     "license"     : "Artistic 2.0",
-    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.1.zip",
-    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.1.tar.gz",
+    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.2.zip",
     "support"     : {
         "bugtracker" : "https://github.com/tbrowder/Text-More-Perl6/issues",
-        "source"     : "https://github.com/tbrowder/Text-More-Perl6/tree/v0.1.1"
+        "source"     : "https://github.com/tbrowder/Text-More-Perl6/tree/v0.1.2"
     },
     "provides"    : {
         "Text::More" : "lib/Text/More.pm6"
