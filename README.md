@@ -13,7 +13,8 @@ The routines are described in detail in
 which shows a short description of each exported routine along along
 with its complete signature.
 
-This module also includes a utility program in the **bin** directory.
+This module also includes a utility program in the
+[bin](https://github.com/tbrowder/Text-More-Perl6/blob/master/bin) directory.
 
 ## Status
 
