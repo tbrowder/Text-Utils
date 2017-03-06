@@ -15,7 +15,10 @@ my $max-line-length = 78;
 my %opts; # Getopts::Std requires this (name it anything you want)
 # ensure we have a var for each option
 my ($mfil, $bdir, $odir, $nofold, $debug, $verbose);
-my $usage = "Usage: $*PROGRAM -m <file> | -b <bin dir> | -h [-d <odir>, -N, -M <max>, -D]";
+
+my $prog = 'create-md.p6';
+my $usage = "Usage: $prog -m <file> | -b <bin dir> | -h [-d <odir>, -N, -M <max>, -D]";
+
 sub usage() {
    print qq:to/END/;
    $usage
@@ -161,7 +164,7 @@ if $modfil {
             # the first line is special
             my $first-line = shift @lines;
             my @w = $first-line.words;
-         
+
             # get rid of the sub name
             pop @w;
 
@@ -367,7 +370,7 @@ sub create-subs-md($f) {
             die "FATAL: unmatched =begin/=end blocks" if $in-begin < 0;
             next;
         }
-        next if $in-begin; 
+        next if $in-begin;
 
         my $maybe-kwline = 0;
         if $line ~~ /^ \s* '#' / {
@@ -622,7 +625,7 @@ sub get-kw-line-data(:$kw, :@words is copy --> Str) {
     say "TOM FIX THIS TO HANDLE EACH KEYWORD PROPERLY" if $debug;
     say "DEBUG: reduced \@words array" if $debug;
     say @words.perl if $debug;
-  
+
     # get the md value of the keyword
     my $md-val = %kw{$kw};
 
@@ -644,7 +647,7 @@ sub get-kw-line-data(:$kw, :@words is copy --> Str) {
             $txt ~= ' ' ~ $s ~ join ' ', @words;
         }
         when 'file' {
-            # no handling neededjust the text 
+            # no handling needed just the text
         }
         when 'title'     {
             # pass back all with leading markup
