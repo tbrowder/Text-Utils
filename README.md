@@ -14,14 +14,16 @@ which shows a short description of each exported routine along along
 with its complete signature.
 
 This module also includes a utility program in the
-[bin](https://github.com/tbrowder/Text-More-Perl6/blob/master/bin) directory.
+[bin](https://github.com/tbrowder/Text-More-Perl6/blob/master/bin)
+directory.
 
 ## Status
 
-This version is 0.1.3 which is considered usable, but the APIs are
-subject to change in which case the version major number will be
-updated. Note that newly added subroutines or application programs are
-not considered a change in API.
+This version is 0.*.* which is considered usable but may not be ready
+for production.  The APIs are subject to change in which case the
+version major number will be updated. Note that newly added
+subroutines or application programs are not considered a change in
+API.
 
 ## Debugging
 
@@ -57,8 +59,10 @@ use Text::More :strip-comment;
 
 ## Utility Program
 
-See the **bin** directory for a utility program (```create-md.p6```)
-to create a **README.md** file for modules.
+See the
+[bin](https://github.com/tbrowder/Text-More-Perl6/blob/master/bin)
+directory for a utility program (```create-md.p6```) to create a
+**README.md** file for modules.
 
 Executing it without any arguments results in the following:
 
@@ -100,7 +104,13 @@ Options:
   -D debug
 ```
 
-## Credits
+## Contributing
+
+Interested users are encouraged to contribute improvements and
+corrections to this module, and pull requests, bug reports, and
+suggestions are always welcome.
+
+## Acknowledgements
 
 The ```commify``` subroutine is based on the subroutine of the same
 name found in the *Perl Cookbook*.

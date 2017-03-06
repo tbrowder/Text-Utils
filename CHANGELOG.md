@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.1.3] - 2017-03-06
-- added **LICENSE and COPYRIGHT** sections to README.md
+- added **LICENSE and COPYRIGHT** and **Contributing** sections to README.md
+- changed **Credits** section to **Acknowledments**
 - expanded description in the META6.json file
 
 ## [v0.1.2] - 2017-03-05
