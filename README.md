@@ -17,7 +17,7 @@ This module also includes a utility program in the bin directory.
 
 ## Status
 
-This version is 0.1.0 which is considered usable, but the APIs are
+This version is 0.1.3 which is considered usable, but the APIs are
 subject to change in which case the version major number will be
 updated. Note that newly added subroutines or application programs are
 not considered a change in API.
@@ -64,25 +64,24 @@ Executing it without any arguments results in the following:
 ```Perl6
 Usage: ./create-md.p6 -m <file> | -b <bin dir> | -h [-d <odir>, -N, -M <max>, -D]
 
-Reads the input module (or program files in the bin dir) and
-extracts properly formatted comments into markdown files describing
-the subs and other objects contained therein.  Output files are
-created in the output directory (-d <dir>) if entered, or the
-current directory otherwise.
+Reads the input module (or program files in the bin dir) and extracts
+properly formatted comments into markdown files describing the subs
+and other objects contained therein.  Output files are created in the
+output directory (-d <dir>) if entered, or the current directory
+otherwise.
 
 Subroutine signature lines are folded into a nice format for the
-markdown files unless the user uses the -N (no-fold) option.  The
--M <max> option specifies a user-desired maximum line length for
-folding.  The signature is output as a code block.
+markdown files unless the user uses the -N (no-fold) option.  The -M
+<max> option specifies a user-desired maximum line length for folding.
+The signature is output as a code block.
 
 In program files, the comments are folded into lines no longer than
-the maximum line length.  If the program has a help option (-h),
-the result of that command will be added to the output as a code
-block.
+the maximum line length.  If the program has a help option (-h), the
+result of that command will be added to the output as a code block.
 
-See the lib/Text and bin directories for a module file and a program with the
-known formats.  The markdown files in the docs directory in this
-repository were created with this program from those files.
+See the lib/Text and bin directories for a module file and a program
+with the known formats.  The markdown files in the docs directory in
+this repository were created with this program from those files.
 
 Modes (select one only):
 
@@ -102,4 +101,11 @@ Options:
 
 ## Credits
 
-The ```commify``` subroutine is based on the subroutine of the same name found in the *Perl Cookbook*.
+The ```commify``` subroutine is based on the subroutine of the same
+name found in the *Perl Cookbook*.
+
+## LICENSE and COPYRIGHT
+
+Artistic 2.0. See [LICENSE](https://github.com/tbrowder/Text-More-Perl6/blob/master/LICENCE).
+
+Copyright (C) 2017 Thomas M. Browder, Jr. <<tom.browder@gmail.com>>

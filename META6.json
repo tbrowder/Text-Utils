@@ -1,14 +1,14 @@
 {
     "perl"        : "6.c",
     "name"        : "Text::More",
-    "version"     : "0.1.2",
-    "description" : "Provides some additional text functions and a binary helper file",
+    "version"     : "0.1.3",
+    "description" : "Provides some additional text functions and a utility program to create a markdown file of subroutine descriptions",
     "authors"     : [ "github:tbrowder" ],
     "license"     : "Artistic 2.0",
-    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.2.zip",
+    "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.3.zip",
     "support"     : {
         "bugtracker" : "https://github.com/tbrowder/Text-More-Perl6/issues",
-        "source"     : "https://github.com/tbrowder/Text-More-Perl6/tree/v0.1.2"
+        "source"     : "https://github.com/tbrowder/Text-More-Perl6/tree/v0.1.3"
     },
     "provides"    : {
         "Text::More" : "lib/Text/More.pm6"
