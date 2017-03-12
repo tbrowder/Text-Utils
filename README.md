@@ -117,6 +117,6 @@ name found in the *Perl Cookbook*.
 
 ## LICENSE and COPYRIGHT
 
-Artistic 2.0. See [LICENSE](https://github.com/tbrowder/Text-More-Perl6/blob/master/LICENCE).
+Artistic 2.0. See [LICENSE](https://github.com/tbrowder/Text-More-Perl6/blob/master/LICENSE).
 
 Copyright (C) 2017 Thomas M. Browder, Jr. <<tom.browder@gmail.com>>
