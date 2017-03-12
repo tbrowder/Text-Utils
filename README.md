@@ -19,7 +19,7 @@ directory.
 
 ## Status
 
-This version is 0.*.* which is considered usable but may not be ready
+This version is 0.\*.\* which is considered usable but may not be ready
 for production.  The APIs are subject to change in which case the
 version major number will be updated. Note that newly added
 subroutines or application programs are not considered a change in
@@ -27,7 +27,7 @@ API.
 
 ## Debugging
 
-For debugging, use one the following methods:
+For debugging, use one of the following methods:
 
 - set the module's $DEBUG variable:
 
