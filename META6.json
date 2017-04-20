@@ -4,7 +4,7 @@
     "version"     : "0.1.4",
     "description" : "Provides some additional text functions and a utility program to create a markdown file of subroutine descriptions",
     "authors"     : [ "github:tbrowder" ],
-    "license"     : "Artistic 2.0",
+    "license"     : "Artistic-2.0",
     "source-url"  : "https://github.com/tbrowder/Text-More-Perl6/archive/v0.1.4.zip",
     "support"     : {
         "bugtracker" : "https://github.com/tbrowder/Text-More-Perl6/issues",
