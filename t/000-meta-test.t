@@ -3,7 +3,7 @@ use Test;
 
 constant AUTHOR = ?%*ENV<TEST_AUTHOR>; 
 
-if AUTHOR { 
+if 0 && AUTHOR { 
     require Test::META <&meta-ok>;
     meta-ok;
     done-testing;
