@@ -6,7 +6,7 @@
 # Purpose : Create markdown documentation for programs in a github repository
 # Help    : Yes
 
-use Getopt::Std;
+#use Getopt::Std;
 use Text::More :ALL;
 
 my $max-line-length = 78;
@@ -70,12 +70,14 @@ if !@*ARGS.elems {
     exit;
 }
 
+=begin comment
 # collect the options
 getopts(
     'hDvN' ~ 'b:m:d:M:',  # option string (':' following an arg means a value for the arg is required)
     %opts,
     @*ARGS
 );
+=end comment
 
 # help overrides all
 usage() if %opts<h>;
