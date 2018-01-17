@@ -1,6 +1,6 @@
 # Text::More
 
-[![Build Status](https://travis-ci.org/tbrowder/Text-More-Perl6.svg?branch=master)](https://travis-ci.org/tbrowder/Text-More-Perl6)
+[![Build Status](https://travis-ci.org/tbrowder/Text-More-Perl6.svg)](https://travis-ci.org/tbrowder/Text-More-Perl6)
 
 Being a lazy programmer, I refactor chunks of code I find useful into
 a module; whence comes this collection of Perl 6 subroutines I have
@@ -27,6 +27,7 @@ API.
 ## Debugging
 
 For debugging, use one of the following methods:
+
 
 - set the module's $DEBUG variable:
 
