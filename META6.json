@@ -3,7 +3,7 @@
     "name"        : "Text::Utils",
     "version"     : "1.0.0",
     "api"         : "1",
-    "description" : "Provides some additional text functions",
+    "description" : "Provides some additional text functions (replaces module Text::More)",
     "auth"        : "github:tbrowder",
     "author"      : "github:tbrowder",
     "authors"     : [ "Tom Browder <tom.browder@gmail.com>" ],
