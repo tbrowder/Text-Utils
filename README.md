@@ -1,6 +1,6 @@
-# Text::More
-
 [![Build Status](https://travis-ci.org/tbrowder/Text-Utils-Raku.svg?branch=master)](https://travis-ci.org/tbrowder/Text-Utils-Raku)
+
+# Text::Utils
 
 This model provides some miscellaneous text processing routines not
 provided by core Raku. (Note it replaces the now-deprecated `Text::More` module.)
