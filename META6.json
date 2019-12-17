@@ -1,7 +1,7 @@
 {
     "perl"        : "6.*",
     "name"        : "Text::Utils",
-    "version"     : "0.2.0",
+    "version"     : "1.0.0",
     "api"         : "1",
     "description" : "Provides some additional text functions",
     "auth"        : "github:tbrowder",
@@ -23,7 +23,9 @@
     "resources" : [
     ],
     "tags" : [
-	"string functions", 
+	"string functions",
+        "text wrap",
+        "normalize string",
         "CPAN5"
     ]
 }
