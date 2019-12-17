@@ -1,9 +1,9 @@
 use v6;
 use Test;
 
-use Text::More :ALL;
+use Text::Utils :ALL;
 
-plan 8;
+plan 12;
 
 my (@s, @stripped);
 # comment char is default '#'
@@ -46,9 +46,20 @@ for 0..^+@s -> $i {
     is $line, @stripped[$i];
 }
 
-
 # # embedded '#'
 # my $se   = 'test \# more # comment';
 # my $se-s = 'test \# more ';
 # my $line = strip-comment($se);
 # is $line, $se-s;
+
+# test return of the comment
+my $tstr = 'some  text # some  comment';
+my ($text, $comm) = strip-comment $tstr, :save-comment;
+is $text, 'some  text ';
+is $comm, ' some  comment';
+
+($text, $comm) = strip-comment $tstr, :save-comment, :normalize;
+is $text, 'some text';
+is $comm, 'some comment';
+
+

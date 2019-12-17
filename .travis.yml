@@ -1,11 +1,13 @@
-branches:
-    only:
-    - /.*/
+language: minimal
 
-language: perl6
+services: docker
 
-perl6:
-    - latest
-install:
-    - rakudobrew build zef
-    - zef --deps-only install .
+before_install:
+- docker pull tonyodell/rakudo-nightly:latest
+
+script:
+- docker run
+  -v $(pwd):/tmp/test:rw
+  -w /tmp/test
+  tonyodell/rakudo-nightly:latest
+  bash -c 'apt update; apt install -y ca-certificates; zef install -v --deps-only . && zef test .'

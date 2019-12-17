@@ -1,9 +1,6 @@
-unit module Text::More:auth<github:tbrowder>;
+unit module Text::Utils;
 
-# file:  ALL-SUBS.md
-# title: Subroutines Exported by the `:ALL` Tag
-
-# export a debug var for users
+#| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;
 BEGIN {
     if %*ENV<TEXT_MORE_DEBUG> {
@@ -14,11 +11,10 @@ BEGIN {
     }
 }
 
-#------------------------------------------------------------------------------
-# Subroutine: count-substrs
-# Purpose : Count instances of a substring in a string
-# Params  : String, Substring
-# Returns : Number of substrings found
+#-----------------------------------------------------------------------
+#| Purpose : Count instances of a substring in a string
+#| Params  : String, Substring
+#| Returns : Number of substrings found
 sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
     my $nsubstrs = 0;
     my $idx = index $ip, $substr;
@@ -31,24 +27,41 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 
 } # count-substrs
 
-#------------------------------------------------------------------------------
-# Subroutine: strip-comment
-# Purpose : Strip comments from an input text line
-# Params  : String of text, comment char ('#' is default)
-# Returns : String of text with any comment stripped off. Note that the designated char will trigger the strip even though it is escaped or included in quotes.
-sub strip-comment(Str $line is copy, Str $comment-char = '#' --> Str) is export(:strip-comment) {
+#-----------------------------------------------------------------------
+#| Purpose : Strip comments from an input text line, save comment if
+#|             requested, normalize returned text if requested
+#| Params  : String of text, comment char ('#' is default),
+#| Returns : String of text with any comment stripped off. Note that the
+#|             designated char will trigger the strip even though it is
+#|             escaped or included in quotes.
+#|             Also returns the comment if requested.
+#|             All returned text is normalized if requested.
+sub strip-comment($line is copy,       #= string of text with possible comment
+                  $comment-char = '#', #= desired comment char indicator
+                  :$save-comment,      #= if true, return the comment
+                  :$normalize,         #= if true, normalize returned strings
+                 ) is export(:strip-comment) {
+    my $comment = '';
     my $idx = index $line, $comment-char;
     if $idx.defined {
-	return substr $line, 0, $idx;
+        $comment = substr $line, $idx+1; #= don't want the comment char
+	$line = substr $line, 0, $idx;
     }
-    return $line;
+    if $normalize {
+        $line    = normalize-string $line;
+        $comment = normalize-string $comment;
+    }
+    if $save-comment {
+        return $line, $comment;
+    }
+    $line;
 } # strip-comment
 
-#------------------------------------------------------------------------------
-# Subroutine: commify
-# Purpose : Add commas to a mumber to separate multiples of a thousand
-# Params  : An integer or number with a decimal fraction
-# Returns : The input number with commas added, e.g., 1234.56 => 1,234.56
+#-----------------------------------------------------------------------
+#| Purpose : Add commas to a mumber to separate multiples of a thousand
+#| Params  : An integer or number with a decimal fraction
+#| Returns : The input number with commas added, e.g.,
+#|             1234.56 => 1,234.56
 sub commify($num) is export(:commify) {
     # translated from Perl Cookbook, 2e, Recipe 2.16
     say "DEBUG: input '$num'" if $DEBUG;
@@ -66,22 +79,23 @@ sub commify($num) is export(:commify) {
 
 } # commify
 
-#------------------------------------------------------------------------------
-# Subroutine: write-paragraph
-# Purpose : Wrap a list of words into a paragraph with a maximum line width (default: 78) and update the input list with the results
-# Params  : List of words, max line length, paragraph indent, first line indent, pre-text
-# Returns : List of formatted paragraph lines
+#-----------------------------------------------------------------------
+#| Purpose : Wrap a list of words into a paragraph with a maximum line
+#|             width (default: 78) and update the input list with the
+#|           results
+#| Params  : List of words, max line length, paragraph indent, first
+#|             line indent, pre-text
+#| Returns : List of formatted paragraph lines
 multi write-paragraph(@text,
 		      UInt :$max-line-length = 78,
                       UInt :$para-indent = 0,
 		      UInt :$first-line-indent = 0,
                       Str :$pre-text = '' --> List) is export(:write-paragraph) {
 
-    #say "DEBUG: text = '@text'" if $DEBUG;
-    # calculate the various effective indents and any pre-text effects
-    # get the effective first-line indent
+    # Calculate the various effective indents and any pre-text effects
+    # and get the effective first-line indent
     my $findent = $first-line-indent ?? $first-line-indent !! $para-indent;
-    # get the effective paragraph indent
+    # Get the effective paragraph indent
     my $pindent = $pre-text.chars + $para-indent;
 
     my $findent-spaces = ' ' x $findent;
@@ -183,11 +197,12 @@ multi write-paragraph(@text,
 
 } # write-paragraph
 
-#------------------------------------------------------------------------------
-# Subroutine: write-paragraph
-# Purpose : Wrap a list of words into a paragraph with a maximum line width (default: 78) and print it to the input file handle
-# Params  : Output file handle, list of words, max line length, paragraph indent, first line indent, pre-text
-# Returns : Nothing
+#-----------------------------------------------------------------------
+#| Purpose : Wrap a list of words into a paragraph with a maximum line
+#|             width (default: 78) and print it to the input file handle
+#| Params  : Output file handle, list of words, max line length,
+#|             paragraph indent, first line indent, pre-text
+#| Returns : Nothing
 multi write-paragraph($fh, @text,
                       UInt :$max-line-length = 78,
                       UInt :$para-indent = 0,
@@ -201,22 +216,23 @@ multi write-paragraph($fh, @text,
     $fh.say($_) for @para;
 }
 
-#------------------------------------------------------------------------------
-# Subroutine: normalize-string
-# Purpose : Trim a string and collapse multiple whitespace characters to single ones
-# Params  : The string to be normalized
-# Returns : The normalized string
+#-----------------------------------------------------------------------
+#| Purpose : Trim a string and collapse multiple whitespace characters
+#|             to single ones
+#| Params  : The string to be normalized
+#| Returns : The normalized string
 sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
     $str .= trim;
     $str ~~ s:g/ \s ** 2..*/ /;
     return $str;
 } # normalize-string
 
-#------------------------------------------------------------------------------
-# Subroutine: split-line
-# Purpose : Split a string into two pieces
-# Params  : String to be split, the split character, maximum length, a starting position for the search, search direction
-# Returns : The two parts of the split string; the second part will be empty string if the input string is not too long
+#-----------------------------------------------------------------------
+#| Purpose : Split a string into two pieces
+#| Params  : String to be split, the split character, maximum length, a
+#|             starting position for the search, search direction
+#| Returns : The two parts of the split string; the second part will be
+#|             empty string if the input string is not too long
 sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
                UInt :$start-pos = 0, Bool :$rindex = False --> List) is export(:split-line) {
     my $line2 = '';
@@ -241,11 +257,13 @@ sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
 
 } # split-line
 
-#------------------------------------------------------------------------------
-# Subroutine: split-line-rw
-# Purpose : Split a string into two pieces
-# Params  : String to be split, the split character, maximum length, a starting position for the search, search direction
-# Returns : The part of the input string past the break character, or an empty string (the input string is modified in-place if it is too long)
+#-----------------------------------------------------------------------
+#| Purpose : Split a string into two pieces
+#| Params  : String to be split, the split character, maximum length, a
+#|             starting position for the search, search direction
+#| Returns : The part of the input string past the break character, or
+#|             an empty string (the input string is modified in-place if
+#|             it is too long)
 sub split-line-rw(Str:D $line is rw, Str:D $brk, UInt :$max-line-length = 0,
                   UInt :$start-pos = 0, Bool :$rindex = False --> Str) is export(:split-line-rw) {
     my $line2 = '';
