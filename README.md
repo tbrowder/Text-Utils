@@ -23,7 +23,7 @@ use Text::More :strip-comment;
 # the '#' is the default comment character
 my $line = " some  text # a comment";
 $line = strip-comment $line;
-say $line # output: << some  text >>
+say $line # OUTPUT: « some  text ␤»
 ```
 If you want to be fancier:
 
@@ -31,8 +31,8 @@ If you want to be fancier:
 # define your own comment character(s)
 # save the comment and normalize the returned strings
 my ($line, $comm) = strip-comment $line, :mark<%%>, :save-comment, :normalize;
-say $line # output: <<some text>>
-say $comm # output: <<a comment>>
+say $line # OUTPUT: «some text␤»
+say $comm # OUTPUT: «a comment␤»
 ```
 
 The default behavior is to find the first comment character in the input
@@ -42,7 +42,7 @@ input string:
 ```raku
 my $line = "text 1 # text 2 # comment";
 $line = strip-comment $line, :reverse;
-say $line # output: <<text 1 # text 2 >>
+say $line # OUTPUT: «text 1 # text 2 ␤»
 ```
 
 Note that the routine is line oriented, so embedded newlines
@@ -54,7 +54,7 @@ text 1 # comment 1
 text 2 # comment 2
 HERE
 $line = strip-comment $line
-say $line # output: <<text 1 >>
+say $line # OUTPUT: «text 1 ␤»
 ```
 
 ## Installation
