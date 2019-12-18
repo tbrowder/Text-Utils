@@ -2,3 +2,4 @@ lib/.precomp/
 *.log
 release-tool.p6
 release-tool.p6
+.precomp
