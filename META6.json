@@ -1,8 +1,8 @@
 {
     "perl"        : "6.*",
     "name"        : "Text::Utils",
-    "version"     : "1.0.0",
-    "api"         : "1",
+    "version"     : "2.0.0",
+    "api"         : "2",
     "description" : "Provides some additional text functions (replaces module Text::More)",
     "auth"        : "github:tbrowder",
     "author"      : "github:tbrowder",

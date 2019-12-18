@@ -5,17 +5,61 @@
 This model provides some miscellaneous text processing routines not
 provided by core Raku. (Note it replaces the now-deprecated `Text::More` module.)
 
+Note this is version 2.0.0 which introduces a new API 2 for
+the 'strip-comment' routine. See the examples below for its use.
+The old signature is still usable, but it is deprecated
+and will be removed in version 3.0.0.
+
 ## Synopsis
 
-```Raku
+```raku
 use Text::More :ALL;
 ```
 Note that individual subroutines
 may also be exported:
 
-```Raku
+```raku
 use Text::More :strip-comment;
+# the '#' is the default comment character 
+my $line = " some  text # a comment"; 
+$line = strip-comment $line;
+say $line # output: << some  text >>
 ```
+If you want to be fancier:
+
+```raku
+# define your own comment character(s)
+# save the comment and normalize the returned strings
+my ($line, $comm) = strip-comment $line, :mark<%%>, :save-comment, :normalize;
+say $line # output: <<some text>>
+say $comm # output: <<a comment>>
+```
+
+The default behavior is to find the first comment character in the input
+string, but you may choose to start the search from the end of the
+input string:
+
+```raku
+my $line = "text 1 # text 2 # comment";
+$line = strip-comment $line, :reverse;
+say $line # output: <<text 1 # text 2 >>
+```
+
+Note that the routine is line oriented, so embedded newlines
+may give unexpected results:
+
+```raku
+my $line = q:to/HERE/;
+text 1 # comment 1
+text 2 # comment 2
+HERE
+$line = strip-comment $line
+say $line # output: <<text 1 >>
+```
+
+
+
+
 
 ## Installation
 
@@ -38,7 +82,7 @@ p6doc Text::Utils
 - `Text::Emotion`
 - `Text::Levenshtein::Damerau`
 - `Text::MiscUtils`
-- `Text::More (deprecated)`
+- `Text::More` (deprecated)
 - `Text::Table::List`
 - `Text::Table::Simple`
 - `Text::Tabs`

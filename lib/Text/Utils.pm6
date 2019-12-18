@@ -31,20 +31,62 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #| Purpose : Strip comments from an input text line, save comment if
 #|             requested, normalize returned text if requested
 #| Params  : String of text, comment char ('#' is default),
+#|             option to return the comment, option to normalize
+#|             the returned strings, option to use the last comment char
+#|             instead of the first
 #| Returns : String of text with any comment stripped off. Note that the
 #|             designated char will trigger the strip even though it is
 #|             escaped or included in quotes.
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
-sub strip-comment($line is copy,       #= string of text with possible comment
-                  $comment-char = '#', #= desired comment char indicator
-                  :$save-comment,      #= if true, return the comment
-                  :$normalize,         #= if true, normalize returned strings
-                 ) is export(:strip-comment) {
+multi strip-comment($line is copy,       #= string of text with possible comment
+                    :$mark = '#',        #= desired comment char indicator
+                    :$save-comment,      #= if true, return the comment
+                    :$normalize,         #= if true, normalize returned strings
+                    :$last,              #= if true, use the last instead of first comment char
+                   ) is export(:strip-comment) {
+    # failure condition:
+    if $line eq $mark {
+        die "FATAL: The input line is the same as the comment char: '$line'";
+    }
     my $comment = '';
-    my $idx = index $line, $comment-char;
+    my $clen    = $mark.chars;
+    my $idx     = $last ?? rindex $line, $mark
+                        !! index  $line, $mark;
     if $idx.defined {
-        $comment = substr $line, $idx+1; #= don't want the comment char
+        $comment = substr $line, $idx+$clen; #= don't want the comment char
+	$line = substr $line, 0, $idx;
+    }
+    if $normalize {
+        $line    = normalize-string $line;
+        $comment = normalize-string $comment;
+    }
+    if $save-comment {
+        return $line, $comment;
+    }
+    $line;
+}
+
+#| NOTE THE FOLLOWING SIGNATURE IS DEPRECATED
+multi strip-comment($line is copy,       #= string of text with possible comment
+                    $comment-char = '#', #= desired comment char indicator
+                    :$save-comment,      #= if true, return the comment
+                    :$normalize,         #= if true, normalize returned strings
+                    :$last,              #= if true, use the last instead of first comment char
+                   ) is export(:strip-comment) {
+    # failure condition:
+    if $line eq $comment-char {
+        note "FATAL: The input line is the same as the comment char: '$line'";
+        note "       This signature is deprecated.";
+        note "       Use the ':mark<$line>' named param for the comment char.";
+        die  "DEPRECATED SIGNATURE--USE THE MARK NOTATION IN THE FUTURE";
+    }
+    my $comment = '';
+    my $clen    = $comment-char.chars;
+    my $idx     = $last ?? rindex $line, $comment-char
+                        !! index  $line, $comment-char;
+    if $idx.defined {
+        $comment = substr $line, $idx+$clen; #= don't want the comment char
 	$line = substr $line, 0, $idx;
     }
     if $normalize {

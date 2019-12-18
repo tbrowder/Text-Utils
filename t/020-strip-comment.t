@@ -3,7 +3,7 @@ use Test;
 
 use Text::Utils :ALL;
 
-plan 12;
+plan 30;
 
 my (@s, @stripped);
 # comment char is default '#'
@@ -20,7 +20,6 @@ my (@s, @stripped);
 ' ',
 'more text'
 );
-
 
 # return the stripped strings
 for 0..^+@s -> $i {
@@ -62,4 +61,59 @@ is $comm, ' some  comment';
 is $text, 'some text';
 is $comm, 'some comment';
 
+# test empty comment
+$tstr = ' some  text ';
+($text, $comm) = strip-comment $tstr, :save-comment;
+is $text, ' some  text ';
+is $comm, '';
 
+($text, $comm) = strip-comment $tstr, :save-comment, :normalize;
+is $text, 'some text';
+is $comm, '';
+
+# default is to take the first comment char found
+# note multi-char comment char is allowed
+$tstr = ' some  text %%  text %% some  comment ';
+($text, $comm) = strip-comment $tstr, '%%', :save-comment;
+is $text, ' some  text ';
+is $comm, '  text %% some  comment ';
+
+#===== ORIGINAL SIGNATURE IS DEPRECATED =====
+# testing the original signature which is now deprecated
+# and will be removed in version 3.0.0
+($text, $comm) = strip-comment $tstr, '%%', :save-comment, :normalize;
+is $text, 'some text';
+is $comm, 'text %% some comment';
+
+$text = strip-comment $tstr, '%%', :last;
+is $text, ' some  text %%  text ';
+
+($text, $comm) = strip-comment $tstr, '%%', :last, :save-comment;
+is $text, ' some  text %%  text ';
+is $comm, ' some  comment ';
+
+($text, $comm) = strip-comment $tstr, '%%', :last, :save-comment, :normalize;
+is $text, 'some text %% text';
+is $comm, 'some comment';
+
+# bad input by user
+dies-ok { $text = strip-comment '#'; }, 'dies when line is same as comment char';
+
+#===== END OF ORIGINAL SIGNATURE IS DEPRECATED =====
+
+# test the new signature
+
+# bad input by user
+dies-ok { $text = strip-comment '%', :mark<%>; }, 'dies when line is same as comment (:mark) char';
+
+($text, $comm) = strip-comment $tstr, :mark<%%>, :last, :save-comment, :normalize;
+is $text, 'some text %% text';
+is $comm, 'some comment';
+
+# watch out for embedded newlines
+my $s = q:to/HERE/;
+text 1 # comment 1
+text 2 # comment 2
+HERE
+$s = strip-comment $s;
+is $s, 'text 1 ';
