@@ -23,18 +23,19 @@ use Text::More :strip-comment;
 # the '#' is the default comment character
 my $line = " some  text # a comment";
 $line = strip-comment $line;
-say $line # OUTPUT: « some  text ␤»
+say $line; # OUTPUT: « some  text ␤»
 ```
-If you want to be fancier:
+If you want to be fancier, return the stripped line and its comment,
+bit normalized (trimmed of leading and trailing spaces, contiguous
+spaces collapsed to one):
 
 ```raku
 # define your own comment character(s)
 # save the comment and normalize the returned strings
 my ($line, $comm) = strip-comment $line, :mark<%%>, :save-comment, :normalize;
-say $line # OUTPUT: «some text␤»
-say $comm # OUTPUT: «a comment␤»
+say $line; # OUTPUT: «some text␤»
+say $comm; # OUTPUT: «a comment␤»
 ```
-
 The default behavior is to find the first comment character in the input
 string, but you may choose to start the search from the end of the
 input string:
@@ -42,36 +43,28 @@ input string:
 ```raku
 my $line = "text 1 # text 2 # comment";
 $line = strip-comment $line, :reverse;
-say $line # OUTPUT: «text 1 # text 2 ␤»
+say $line; # OUTPUT: «text 1 # text 2 ␤»
 ```
-
 Note that the routine is line oriented, so embedded newlines
 may give unexpected results:
-
 ```raku
 my $line = q:to/HERE/;
 text 1 # comment 1
 text 2 # comment 2
 HERE
 $line = strip-comment $line
-say $line # OUTPUT: «text 1 ␤»
+say $line; # OUTPUT: «text 1 ␤»
 ```
-
 ## Installation
-
 ``` Raku
 zef install Text::Utils
 ```
-
 ## Documentation
-
 ``` Raku
 zef install p6doc
 p6doc Text::Utils
 ```
-
 ## See also
-
 - `Text::Abbrev`
 - `Text::BorderedBlock`
 - `Text::Diff::Sift4`
