@@ -25,9 +25,11 @@ my $line = " some  text # a comment";
 $line = strip-comment $line;
 say $line; # OUTPUT: « some  text ␤»
 ```
+
 If you want to be fancier, return the stripped line and its comment,
-bit normalized (trimmed of leading and trailing spaces, contiguous
-spaces collapsed to one):
+with both strings normalized (trimmed of leading and trailing spaces,
+contiguous spaces collapsed to one):
+
 
 ```raku
 # define your own comment character(s)
