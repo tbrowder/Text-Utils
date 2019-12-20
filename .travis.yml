@@ -10,4 +10,4 @@ script:
   -v $(pwd):/tmp/test:rw
   -w /tmp/test
   tonyodell/rakudo-nightly:latest
-  bash -c 'apt-get update; apt install -y ca-certificates; zef install -v --deps-only . && zef test .'
+  bash -c 'apt-get update; apt-get install -y ca-certificates; zef install -v --deps-only . && zef test .'
