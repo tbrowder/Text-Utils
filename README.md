@@ -2,7 +2,7 @@
 
 # Text::Utils
 
-This model provides some miscellaneous text processing routines not
+This module provides some miscellaneous text processing routines not
 provided by core Raku. (Note it replaces the now-deprecated `Text::More` module.)
 
 Note this is version `2.0.0` which introduces a new API 2 for
