@@ -58,11 +58,11 @@ $line = strip-comment $line
 say $line; # OUTPUT: «text 1 ␤»
 ```
 ## Installation
-``` Raku
+```raku
 zef install Text::Utils
 ```
 ## Documentation
-``` Raku
+```raku
 zef install p6doc
 p6doc Text::Utils
 ```
