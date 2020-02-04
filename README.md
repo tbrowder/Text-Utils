@@ -86,7 +86,7 @@ name found in the *Perl Cookbook*.
 
 ## LICENSE
 
-Artistic 2.0. See [LICENSE](https://github.com/tbrowder/Text-Utils-Raku/blob/master/LICENSE).
+Artistic 2.0. See that license [here](./LICENSE).
 
 ## COPYRIGHT
 

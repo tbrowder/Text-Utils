@@ -100,7 +100,7 @@ multi strip-comment($line is copy,       #= string of text with possible comment
 } # strip-comment
 
 #-----------------------------------------------------------------------
-#| Purpose : Add commas to a mumber to separate multiples of a thousand
+#| Purpose : Add commas to a number to separate multiples of a thousand
 #| Params  : An integer or number with a decimal fraction
 #| Returns : The input number with commas added, e.g.,
 #|             1234.56 => 1,234.56
@@ -109,8 +109,8 @@ sub commify($num) is export(:commify) {
     say "DEBUG: input '$num'" if $DEBUG;
     my $text = $num.flip;
     say "DEBUG: input flipped '$text'" if $DEBUG;
-    #$text =~ s:g/ (\d\d\d)(?=\d)(?!\d*\.)/$0,/; # how to do in Perl 6?
-
+    #$text =~ s:g/ (\d\d\d)(?=\d)(?!\d*\.)/$0,/; # Perl
+    # in Raku:
     $text ~~ s:g/ (\d\d\d) <?before \d> <!before \d*\.> /$0,/;
 
     # don't forget to flip back to the original
