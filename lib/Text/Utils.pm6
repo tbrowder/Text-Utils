@@ -45,10 +45,6 @@ multi strip-comment($line is copy,       #= string of text with possible comment
                     :$normalize,         #= if true, normalize returned strings
                     :$last,              #= if true, use the last instead of first comment char
                    ) is export(:strip-comment) {
-    # failure condition:
-    if $line eq $mark {
-        die "FATAL: The input line is the same as the comment char: '$line'";
-    }
     my $comment = '';
     my $clen    = $mark.chars;
     my $idx     = $last ?? rindex $line, $mark
@@ -74,13 +70,6 @@ multi strip-comment($line is copy,       #= string of text with possible comment
                     :$normalize,         #= if true, normalize returned strings
                     :$last,              #= if true, use the last instead of first comment char
                    ) is export(:strip-comment) {
-    # failure condition:
-    if $line eq $comment-char {
-        note "FATAL: The input line is the same as the comment char: '$line'";
-        note "       This signature is deprecated.";
-        note "       Use the ':mark<$line>' named param for the comment char.";
-        die  "DEPRECATED SIGNATURE--USE THE MARK NOTATION IN THE FUTURE";
-    }
     my $comment = '';
     my $clen    = $comment-char.chars;
     my $idx     = $last ?? rindex $line, $comment-char

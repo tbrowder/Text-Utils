@@ -11,14 +11,16 @@ my (@s, @stripped);
 'some text',
 'text # coment...',
 ' #comment',
-'more text'
+'more text',
+'#',
 );
 
 @stripped = (
 'some text',
 'text ',
 ' ',
-'more text'
+'more text',
+'',
 );
 
 # return the stripped strings
@@ -36,7 +38,8 @@ for 0..^+@s -> $i {
 'some text',
 'text ; coment...',
 ' ;comment',
-'more text'
+'more text',
+';',
 );
 
 # return the stripped strings
@@ -96,15 +99,9 @@ is $comm, ' some  comment ';
 is $text, 'some text %% text';
 is $comm, 'some comment';
 
-# bad input by user
-dies-ok { $text = strip-comment '#'; }, 'dies when line is same as comment char';
-
 #===== END OF ORIGINAL SIGNATURE IS DEPRECATED =====
 
 # test the new signature
-
-# bad input by user
-dies-ok { $text = strip-comment '%', :mark<%>; }, 'dies when line is same as comment (:mark) char';
 
 ($text, $comm) = strip-comment $tstr, :mark<%%>, :last, :save-comment, :normalize;
 is $text, 'some text %% text';
