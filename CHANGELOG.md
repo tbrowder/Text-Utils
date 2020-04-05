@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v2.1.1] - 2020-04-05
+- add test for required failure for trying to trim a non-string
+
 ## [v2.1.0] - 2020-02-12
 - remove the sub strip-comment check and fail lines with only the
   comment char at the beginning of the line and no other content
