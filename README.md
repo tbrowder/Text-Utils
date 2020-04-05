@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tbrowder/Text-Utils-Raku.svg?branch=master)](https://travis-ci.org/tbrowder/Text-Utils-Raku)
+[![Build Status](https://travis-ci.com/tbrowder/Text-Utils-Raku.svg?branch=master)](https://travis-ci.com/tbrowder/Text-Utils-Raku)
 
 # Text::Utils
 

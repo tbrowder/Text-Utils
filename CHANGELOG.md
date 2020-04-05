@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v2.1.1] - 2020-04-05
 - add test for required failure for trying to trim a non-string
+- update for travis.com testing
 
 ## [v2.1.0] - 2020-02-12
 - remove the sub strip-comment check and fail lines with only the
