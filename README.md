@@ -3,12 +3,12 @@
 # Text::Utils
 
 This module provides some miscellaneous text processing routines not
-provided by core Raku. (Note it replaces the now-deprecated `Text::More` module.)
+provided by core Raku. (Note it replaces the now-deprecated
+`Text::More` module.)
 
-Note this is version `2.1.0` which introduces a new API 2 for
-the `strip-comment` routine. See the examples below for its use.
-The old signature is still usable, but it is deprecated
-and will be removed in version `3.0.0`.
+Note this introduces a new API 2 for the `strip-comment` routine. See
+the examples below for its use.  The old signature is still usable,
+but it is deprecated and will be removed in version `3.0.0`.
 
 ## Synopsis
 
