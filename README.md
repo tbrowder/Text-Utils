@@ -1,93 +1,158 @@
-[![Build Status](https://travis-ci.com/tbrowder/Text-Utils-Raku.svg?branch=master)](https://travis-ci.com/tbrowder/Text-Utils-Raku)
+### sub count-substrs
 
-# Text::Utils
-
-This module provides some miscellaneous text processing routines not
-provided by core Raku. (Note it replaces the now-deprecated
-`Text::More` module.)
-
-Note this introduces a new API 2 for the `strip-comment` routine. See
-the examples below for its use.  The old signature is still usable,
-but it is deprecated and will be removed in version `3.0.0`.
-
-## Synopsis
-
-```raku
-use Text::Utils :ALL;
-```
-Note that individual subroutines
-may also be exported:
-
-```raku
-use Text::Utils :strip-comment;
-# the '#' is the default comment character
-my $line = " some  text # a comment";
-$line = strip-comment $line;
-say $line; # OUTPUT: « some  text ␤»
+```perl6
+sub count-substrs(
+    Str:D $ip,
+    Str:D $substr
+) returns UInt
 ```
 
-If you want to be fancier, return the stripped line and its comment,
-with both strings normalized (trimmed of leading and trailing spaces,
-contiguous spaces collapsed to one):
+Purpose : Count instances of a substring in a string Params : String, Substring Returns : Number of substrings found
 
+### multi sub strip-comment
 
-```raku
-# define your own comment character(s)
-# save the comment and normalize the returned strings
-my ($line, $comm) = strip-comment $line, :mark<%%>, :save-comment, :normalize;
-say $line; # OUTPUT: «some text␤»
-say $comm; # OUTPUT: «a comment␤»
+```perl6
+multi sub strip-comment(
+    $line is copy,
+    :$mark = "#",
+    :$save-comment,
+    :$normalize,
+    :$last
+) returns Mu
 ```
-The default behavior is to find the first comment character in the input
-string, but you may choose to start the search from the end of the
-input string:
 
-```raku
-my $line = "text 1 # text 2 # comment";
-$line = strip-comment $line, :reverse;
-say $line; # OUTPUT: «text 1 # text 2 ␤»
+Purpose : Strip comments from an input text line, save comment if requested, normalize returned text if requested Params : String of text, comment char ('#' is default), option to return the comment, option to normalize the returned strings, option to use the last comment char instead of the first Returns : String of text with any comment stripped off. Note that the designated char will trigger the strip even though it is escaped or included in quotes. Also returns the comment if requested. All returned text is normalized if requested.
+string of text with possible comment
+
+class Mu $
+----------
+
+desired comment char indicator
+
+class Mu $
+----------
+
+if true, return the comment
+
+class Mu $
+----------
+
+if true, normalize returned strings
+
+class Mu $
+----------
+
+if true, use the last instead of first comment char
+
+### multi sub strip-comment
+
+```perl6
+multi sub strip-comment(
+    $line is copy,
+    $comment-char = "#",
+    :$save-comment,
+    :$normalize,
+    :$last
+) returns Mu
 ```
-Note that the routine is line oriented, so embedded newlines
-may give unexpected results:
-```raku
-my $line = q:to/HERE/;
-text 1 # comment 1
-text 2 # comment 2
-HERE
-$line = strip-comment $line
-say $line; # OUTPUT: «text 1 ␤»
+
+NOTE THE FOLLOWING SIGNATURE IS DEPRECATED
+string of text with possible comment
+
+class Mu $
+----------
+
+desired comment char indicator
+
+class Mu $
+----------
+
+if true, return the comment
+
+class Mu $
+----------
+
+if true, normalize returned strings
+
+class Mu $
+----------
+
+if true, use the last instead of first comment char
+
+### sub commify
+
+```perl6
+sub commify(
+    $num
+) returns Mu
 ```
-## Installation
-```raku
-zef install Text::Utils
+
+Purpose : Add commas to a number to separate multiples of a thousand Params : An integer or number with a decimal fraction Returns : The input number with commas added, e.g., 1234.56 => 1,234.56
+
+### multi sub write-paragraph
+
+```perl6
+multi sub write-paragraph(
+    @text,
+    Int :$max-line-length where { ... } = 78,
+    Int :$para-indent where { ... } = 0,
+    Int :$first-line-indent where { ... } = 0,
+    Str :$pre-text = ""
+) returns List
 ```
-## Documentation
-```raku
-zef install p6doc
-p6doc Text::Utils
+
+Purpose : Wrap a list of words into a paragraph with a maximum line width (default: 78) and update the input list with the results Params : List of words, max line length, paragraph indent, first line indent, pre-text Returns : List of formatted paragraph lines
+
+### multi sub write-paragraph
+
+```perl6
+multi sub write-paragraph(
+    $fh,
+    @text,
+    Int :$max-line-length where { ... } = 78,
+    Int :$para-indent where { ... } = 0,
+    Int :$first-line-indent where { ... } = 0,
+    Str :$pre-text = ""
+) returns Mu
 ```
-## See also
-- `Text::Abbrev`
-- `Text::BorderedBlock`
-- `Text::Diff::Sift4`
-- `Text::Emotion`
-- `Text::Levenshtein::Damerau`
-- `Text::MiscUtils`
-- `Text::More` (deprecated by `Text::Utils`)
-- `Text::Table::List`
-- `Text::Table::Simple`
-- `Text::Tabs`
-- `Text::Wrap`
 
-## Acknowledgements
+Purpose : Wrap a list of words into a paragraph with a maximum line width (default: 78) and print it to the input file handle Params : Output file handle, list of words, max line length, paragraph indent, first line indent, pre-text Returns : Nothing
 
-The `commify` subroutine is based on the subroutine of the same
-name found in the *Perl Cookbook*.
+### sub normalize-string
 
-## LICENSE
+```perl6
+sub normalize-string(
+    Str:D $str is copy
+) returns Str
+```
 
-Artistic 2.0. See that license [here](./LICENSE).
+Purpose : Trim a string and collapse multiple whitespace characters to single ones Params : The string to be normalized Returns : The normalized string
 
-## COPYRIGHT
+### sub split-line
 
-Copyright (C) 2019 Thomas M. Browder, Jr. <<tom.browder@gmail.com>>
+```perl6
+sub split-line(
+    Str:D $line is copy,
+    Str:D $brk,
+    Int :$max-line-length where { ... } = 0,
+    Int :$start-pos where { ... } = 0,
+    Bool :$rindex = Bool::False
+) returns List
+```
+
+Purpose : Split a string into two pieces Params : String to be split, the split character, maximum length, a starting position for the search, search direction Returns : The two parts of the split string; the second part will be empty string if the input string is not too long
+
+### sub split-line-rw
+
+```perl6
+sub split-line-rw(
+    Str:D $line is rw,
+    Str:D $brk,
+    Int :$max-line-length where { ... } = 0,
+    Int :$start-pos where { ... } = 0,
+    Bool :$rindex = Bool::False
+) returns Str
+```
+
+Purpose : Split a string into two pieces Params : String to be split, the split character, maximum length, a starting position for the search, search direction Returns : The part of the input string past the break character, or an empty string (the input string is modified in-place if it is too long)
+
