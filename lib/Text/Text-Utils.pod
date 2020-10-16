@@ -32,7 +32,7 @@ The module contains several routines to make text handling
 easier for module and program authors. Following is a short
 synopsis and signature for each of the routines.
 
-=head3 list2text
+=head3 sub list2text
 
 Turn a list into a text string for use in a document
 
@@ -96,6 +96,8 @@ This routine is ported from the Perl version in the I<The Perl Cookbook, 3e>.
 sub commify($num) is export(:commify) {
 } # commify
 
+=head3 multi write-paragraph
+
 #| Purpose : Wrap a list of words into a paragraph with a maximum line
 #|             width (default: 78) and update the input list with the
 #|           results
@@ -109,6 +111,8 @@ multi write-paragraph(@text,
                       Str :$pre-text = '' --> List) is export(:write-paragraph) {
 } # write-paragraph
 
+=head3 multi write-paragraph
+
 #| Purpose : Wrap a list of words into a paragraph with a maximum line
 #|             width (default: 78) and print it to the input file handle
 #| Params  : Output file handle, list of words, max line length,
@@ -121,11 +125,15 @@ multi write-paragraph($fh, @text,
                       Str :$pre-text = '') is export(:write-paragraph2) {
 }
 
+=head3 sub normalize-string
+
 #| Purpose : Trim a string and collapse multiple whitespace characters
 #|             to single ones
 #| Returns : The normalized string
 sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
 } # normalize-string
+
+=head3 sub split-line
 
 #| Purpose : Split a string into two pieces
 #| Params  : String to be split, the split character, maximum length, a

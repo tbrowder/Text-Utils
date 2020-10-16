@@ -32,7 +32,7 @@ This module replaces the obsolete module 'Text::More' and it should be an easy d
 
 The module contains several routines to make text handling easier for module and program authors. Following is a short synopsis and signature for each of the routines.
 
-### list2text
+### sub list2text
 
 Turn a list into a text string for use in a document
 
@@ -80,11 +80,19 @@ This routine is ported from the Perl version in the *The Perl Cookbook, 3e*.
 
 #| Purpose : Add commas to a number to separate multiples of a thousand #| Params : An integer or number with a decimal fraction #| Returns : The input number with commas added, e.g., #| 1234.56 => 1,234.56 sub commify($num) is export(:commify) { } # commify
 
+### multi write-paragraph
+
 #| Purpose : Wrap a list of words into a paragraph with a maximum line #| width (default: 78) and update the input list with the #| results #| Params : List of words, max line length, paragraph indent, first #| line indent, pre-text #| Returns : List of formatted paragraph lines multi write-paragraph(@text, UInt :$max-line-length = 78, UInt :$para-indent = 0, UInt :$first-line-indent = 0, Str :$pre-text = '' --> List) is export(:write-paragraph) { } # write-paragraph
+
+### multi write-paragraph
 
 #| Purpose : Wrap a list of words into a paragraph with a maximum line #| width (default: 78) and print it to the input file handle #| Params : Output file handle, list of words, max line length, #| paragraph indent, first line indent, pre-text #| Returns : Nothing multi write-paragraph($fh, @text, UInt :$max-line-length = 78, UInt :$para-indent = 0, UInt :$first-line-indent = 0, Str :$pre-text = '') is export(:write-paragraph2) { }
 
+### sub normalize-string
+
 #| Purpose : Trim a string and collapse multiple whitespace characters #| to single ones #| Returns : The normalized string sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) { } # normalize-string
+
+### sub split-line
 
 #| Purpose : Split a string into two pieces #| Params : String to be split, the split character, maximum length, a #| starting position for the search, search direction #| Returns : The two parts of the split string; the second part will be #| empty string if the input string is not too long sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0, UInt :$start-pos = 0, Bool :$rindex = False --> List) is export(:split-line) { } # split-line
 
