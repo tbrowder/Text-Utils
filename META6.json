@@ -1,33 +1,36 @@
 {
-  "api" : "2",
-  "auth" : "github:tbrowder",
-  "author" : "github:tbrowder",
-  "authors" : [
+  "api": "2",
+  "auth": "github:tbrowder",
+  "author": "github:tbrowder",
+  "authors": [
     "Tom Browder <tom.browder@gmail.com>"
   ],
-  "build-depends" : [ ],
-  "depends" : [ ],
-  "description" : "Provides some additional text functions (replaces module Text::More)",
-  "license" : "Artistic-2.0",
-  "name" : "Text::Utils",
-  "perl" : "6.*",
-  "provides" : {
-    "Text::Utils" : "lib/Text/Utils.rakumod"
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "Provides some additional text functions (replaces module Text::More)",
+  "license": "Artistic-2.0",
+  "name": "Text::Utils",
+  "perl": "6.*",
+  "provides": {
+    "Text::Utils": "lib/Text/Utils.rakumod"
   },
-  "resources" : [ ],
-  "source-url" : "https://github.com/tbrowder/Text-Utils-Raku.git",
-  "support" : {
-    "bugtracker" : "https://github.com/tbrowder/Text-Utils-Raku/issues"
+  "resources": [
+  ],
+  "source-url": "https://github.com/tbrowder/Text-Utils-Raku.git",
+  "support": {
+    "bugtracker": "https://github.com/tbrowder/Text-Utils-Raku/issues"
   },
-  "tags" : [
+  "tags": [
     "string functions",
     "text wrap",
     "normalize string",
     "text",
     "CPAN5"
   ],
-  "test-depends" : [
+  "test-depends": [
     "Test::META"
   ],
-  "version" : "2.1.1"
+  "version": "2.1.1"
 }

@@ -1,4 +1,4 @@
-unit module Text::Utils;
+unit module Text::Utils:ver<2.1.1>;
 
 #| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;
@@ -10,6 +10,20 @@ BEGIN {
 	$DEBUG = False;
     }
 }
+
+#-----------------------------------------------------------------------
+#| Purpose : Turn a list into a text string for use in a document
+#| Params  : List, Bool
+#| Returns : String from a special join operajtion
+sub list2text(@list, :$optional-comma is copy = True) is export(:list2text) {
+    $optional-comma = False if %*ENV<TEXT_UTILS_NO_OPTIONAL_COMMA>:exists;
+    my $s = @list[0..*-2].join(', ');
+    say $s if $DEBUG;
+    $s ~= ',' if $optional-comma;
+    $s ~= ' and ' ~ @list[*-1];
+    say $s if $DEBUG;
+    return $s;
+} # list2test
 
 #-----------------------------------------------------------------------
 #| Purpose : Count instances of a substring in a string
