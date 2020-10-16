@@ -9,7 +9,7 @@
   ],
   "depends": [
   ],
-  "description": "Provides some additional text functions (replaces module Text::More)",
+  "description": "Miscellaneous text utilities",
   "license": "Artistic-2.0",
   "name": "Text::Utils",
   "perl": "6.*",

@@ -1,8 +1,10 @@
 {{$NEXT}}
-    - add new routine 'list2text'
+    - add new routine `list2text`
     - add tests for new routine
     - remove travis file and change to Github workflow CI test
     - add App:Mi6 support
+    - correct and improve README (now in Pod inside the main module,
+      extracted and converted to `Markdown by App::Mi6`)
 
 2.1.1  2020-04-06T11:00-05:00
     - add test for required failure for trying to trim a non-string
