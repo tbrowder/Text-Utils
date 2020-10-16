@@ -60,7 +60,7 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs)
 
 Strip comments from an input text line, save comment if requested, normalize returned text if requested
 
-The routine returns a string of text with any comment stripped off. Note that the designated char will trigger the strip even though it is escaped or included in quotes. Also returns the comment if requested. All returned text is normalized if requested.
+The routine returns a string of text with any comment stripped off. Note the designated char will trigger the strip even though it is escaped or included in quotes. Also returns the comment if requested. All returned text is normalized if requested.
 
 The signature:
 
@@ -78,34 +78,86 @@ multi strip-comment($line is copy,       # string of text with possible comment
 
 This routine is ported from the Perl version in the *The Perl Cookbook, 3e*.
 
-#| Purpose : Add commas to a number to separate multiples of a thousand #| Params : An integer or number with a decimal fraction #| Returns : The input number with commas added, e.g., #| 1234.56 => 1,234.56 sub commify($num) is export(:commify) { } # commify
+This routine adds commas to a number to separate multiples of a thousand. For example, given an input of `1234.56`, the routine returns `1,234.56`.
+
+The signature:
+
+```Raku
+sub commify($num) is export(:commify) 
+{...}
+```
 
 ### multi write-paragraph
 
-#| Purpose : Wrap a list of words into a paragraph with a maximum line #| width (default: 78) and update the input list with the #| results #| Params : List of words, max line length, paragraph indent, first #| line indent, pre-text #| Returns : List of formatted paragraph lines multi write-paragraph(@text, UInt :$max-line-length = 78, UInt :$para-indent = 0, UInt :$first-line-indent = 0, Str :$pre-text = '' --> List) is export(:write-paragraph) { } # write-paragraph
+This routine wraps a list of words into a paragraph with a maximum line width (default: 78) and updates the input list with the results.
+
+The signature:
+
+```Raku
+multi write-paragraph(@text,
+		      UInt :$max-line-length = 78,
+                      UInt :$para-indent = 0,
+		      UInt :$first-line-indent = 0,
+                      Str :$pre-text = '' --> List) is export(:write-paragraph)
+{...}
+```
 
 ### multi write-paragraph
 
-#| Purpose : Wrap a list of words into a paragraph with a maximum line #| width (default: 78) and print it to the input file handle #| Params : Output file handle, list of words, max line length, #| paragraph indent, first line indent, pre-text #| Returns : Nothing multi write-paragraph($fh, @text, UInt :$max-line-length = 78, UInt :$para-indent = 0, UInt :$first-line-indent = 0, Str :$pre-text = '') is export(:write-paragraph2) { }
+This routine wraps a list of words into a paragraph with a maximum line width (default: 78) and writes it to the input file handle.
+
+The signature:
+
+```Raku
+multi write-paragraph($fh, @text,
+                      UInt :$max-line-length = 78,
+                      UInt :$para-indent = 0,
+                      UInt :$first-line-indent = 0,
+                      Str :$pre-text = '') is export(:write-paragraph2)
+{...}
+```
 
 ### sub normalize-string
 
-#| Purpose : Trim a string and collapse multiple whitespace characters #| to single ones #| Returns : The normalized string sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) { } # normalize-string
+This routine trims a string and collapse multiple whitespace characters.
+
+The signature:
+
+```Raku
+sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) 
+{...}
+```
 
 ### sub split-line
 
-#| Purpose : Split a string into two pieces #| Params : String to be split, the split character, maximum length, a #| starting position for the search, search direction #| Returns : The two parts of the split string; the second part will be #| empty string if the input string is not too long sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0, UInt :$start-pos = 0, Bool :$rindex = False --> List) is export(:split-line) { } # split-line
+This routine splits a string into two pieces. #| Params : String to be split, the split character, maximum length, a #| starting position for the search, search direction #| Returns : The two parts of the split string; the second part will be #| empty string if the input string is not too long
+
+The signature:
+
+```Raku
+sub split-line(Str:D $line is copy, 
+               Str:D $brk, 
+               UInt :$max-line-length = 0,
+               UInt :$start-pos = 0, 
+               Bool :$rindex = False 
+               --> List) is export(:split-line) 
+{...}
+```
 
 ### sub split-line-rw
 
 Purpose: Split a string into two pieces #| Params : String to be split, the split character, maximum length, a #| starting position for the search, search direction #| Returns : The part of the input string past the break character, or #| an empty string (the input string is modified in-place if #| it is too long)
 
-    sub split-line-rw(Str:D $line is rw, 
-                      Str:D $brk, 
-                      UInt :$max-line-length = 0,
-                      UInt :$start-pos = 0, 
-                      Bool :$rindex = False --> Str) is export(:split-line-rw) 
-    {...}
+The signature:
+
+```Raku
+sub split-line-rw(Str:D $line is rw, 
+                  Str:D $brk, 
+                  UInt :$max-line-length = 0,
+                  UInt :$start-pos = 0, 
+                  Bool :$rindex = False --> Str) is export(:split-line-rw) 
+{...}
+```
 
 AUTHOR
 ======
