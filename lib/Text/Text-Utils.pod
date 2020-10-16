@@ -51,7 +51,7 @@ sub list2text(@list, :$optional-comma is copy = True) is export(:list2text)
 {...}
 =end code
 
-=item count-substrs
+=head3 sub count-substrs
 
 Count instances of a substring in a string
 
@@ -62,7 +62,7 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs)
 {...}
 =end code
 
-=item strip-comments
+=head3 multi strip-comments
 
 Strip comments from an input text line, save comment if
 requested, normalize returned text if requested
@@ -85,7 +85,7 @@ multi strip-comment($line is copy,       # string of text with possible comment
 {...}
 =end code
 
-=item commify
+=head3 sub commify
 
 This routine is ported from the Perl version in the I<The Perl Cookbook, 3e>.
 
@@ -136,7 +136,7 @@ sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
                UInt :$start-pos = 0, Bool :$rindex = False --> List) is export(:split-line) {
 } # split-line
 
-=item split-line-rw
+=head3 sub split-line-rw
 
 Purpose: Split a string into two pieces
 #| Params  : String to be split, the split character, maximum length, a
