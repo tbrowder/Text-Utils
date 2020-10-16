@@ -32,7 +32,7 @@ This module replaces the obsolete module 'Text::More' and it should be an easy d
 
 The module contains several routines to make text handling easier for module and program authors. Following is a short synopsis and signature for each of the routines.
 
-  * list2text
+### list2text
 
 Turn a list into a text string for use in a document
 
