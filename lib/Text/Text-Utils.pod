@@ -134,7 +134,7 @@ multi write-paragraph($fh, @text,
 
 =head3 sub normalize-string
 
-This routine trims a string and collapse multiple whitespace characters.
+This routine trims a string and collapses multiple whitespace characters.
 
 The signature:
 
