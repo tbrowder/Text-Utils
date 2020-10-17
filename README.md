@@ -119,7 +119,7 @@ multi write-paragraph($fh, @text,
 
 ### sub normalize-string
 
-This routine trims a string and collapse multiple whitespace characters.
+This routine trims a string and collapses multiple whitespace characters.
 
 The signature:
 
@@ -130,7 +130,11 @@ sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string)
 
 ### sub split-line
 
-This routine splits a string into two pieces. #| Params : String to be split, the split character, maximum length, a #| starting position for the search, search direction #| Returns : The two parts of the split string; the second part will be #| empty string if the input string is not too long
+This routine splits a string into two pieces.
+
+Inputs are the string to be split, the split character, maximum length, a starting position for the search, and the search direction.
+
+It returns the two parts of the split string; the second part will be an empty string if the input string is not too long.
 
 The signature:
 
@@ -146,7 +150,11 @@ sub split-line(Str:D $line is copy,
 
 ### sub split-line-rw
 
-Purpose: Split a string into two pieces #| Params : String to be split, the split character, maximum length, a #| starting position for the search, search direction #| Returns : The part of the input string past the break character, or #| an empty string (the input string is modified in-place if #| it is too long)
+Splits a string into two pieces.
+
+Inputs are the string to be split, the split character, maximum length, a starting position for the search, and search direction.
+
+It returns the part of the input string past the break character, or an empty string (the input string is modified in-place if it is too long).
 
 The signature:
 
