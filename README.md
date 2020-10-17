@@ -52,7 +52,7 @@ Count instances of a substring in a string
 The signature:
 
 ```Raku
-sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) 
+sub count-substrs(Str:D $string, Str:D $substr --> UInt) is export(:count-substrs) 
 {...}
 ```
 
@@ -95,10 +95,11 @@ The signature:
 
 ```Raku
 multi write-paragraph(@text,
-		      UInt :$max-line-length = 78,
-                      UInt :$para-indent = 0,
+		      UInt :$max-line-length   = 78,
+                      UInt :$para-indent       = 0,
 		      UInt :$first-line-indent = 0,
-                      Str :$pre-text = '' --> List) is export(:write-paragraph)
+                      Str  :$pre-text          = '' 
+                      --> List) is export(:write-paragraph)
 {...}
 ```
 
@@ -110,10 +111,10 @@ The signature:
 
 ```Raku
 multi write-paragraph($fh, @text,
-                      UInt :$max-line-length = 78,
-                      UInt :$para-indent = 0,
+                      UInt :$max-line-length   = 78,
+                      UInt :$para-indent       = 0,
                       UInt :$first-line-indent = 0,
-                      Str :$pre-text = '') is export(:write-paragraph2)
+                      Str  :$pre-text          = '') is export(:write-paragraph2)
 {...}
 ```
 
@@ -141,9 +142,9 @@ The signature:
 ```Raku
 sub split-line(Str:D $line is copy, 
                Str:D $brk, 
-               UInt :$max-line-length = 0,
-               UInt :$start-pos = 0, 
-               Bool :$rindex = False 
+               UInt  :$max-line-length = 0,
+               UInt  :$start-pos       = 0, 
+               Bool  :$rindex          = False 
                --> List) is export(:split-line) 
 {...}
 ```
@@ -161,9 +162,10 @@ The signature:
 ```Raku
 sub split-line-rw(Str:D $line is rw, 
                   Str:D $brk, 
-                  UInt :$max-line-length = 0,
-                  UInt :$start-pos = 0, 
-                  Bool :$rindex = False --> Str) is export(:split-line-rw) 
+                  UInt  :$max-line-length = 0,
+                  UInt  :$start-pos       = 0, 
+                  Bool  :$rindex          = False 
+                  --> Str) is export(:split-line-rw) 
 {...}
 ```
 
