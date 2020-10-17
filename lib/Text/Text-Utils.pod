@@ -87,7 +87,7 @@ multi strip-comment($line is copy,       # string of text with possible comment
 
 =head3 sub commify
 
-This routine is ported from the Perl version in the I<The Perl Cookbook, 3e>.
+This routine is ported from the Perl version in the I<The Perl Cookbook, 2e>.
 
 This routine adds commas to a number to separate multiples of a thousand.
 For example, given an input of C<1234.56>, the routine returns C<1,234.56>.

@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - correct edition number of Perl Cookbook
 
 2.2.1  2020-10-16T19:22:42-05:00
     - add new routine `list2text`
