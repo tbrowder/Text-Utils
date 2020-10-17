@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+2.2.1  2020-10-16T19:22:42-05:00
     - add new routine `list2text`
     - add tests for new routine
     - remove travis file and change to Github workflow CI test
