@@ -130,7 +130,7 @@ para-indent spaces + line-indent spaces + para-pre-text + line-pre-text + text
 =end comment
 
 sub wrap-paragraph(@text,
-                   UInt :$max-line-length      = 78,
+                   UInt :$max-line-length     = 78,
                    #------------------------------#
                    UInt :$para-indent         = 0,
 		   UInt :$first-line-indent   = 0,
@@ -259,7 +259,7 @@ sub wrap-paragraph(@text,
     if @words.elems {
         die "FATAL: Unexpected non-empty \@words: '{join(SPACE, @words)}'";
     }
-    
+
     my sub line-length-ok(:$line, :$initial-first, :$initial-following) {
         my $mll = $max-line-length;
         my $nc  = $line.chars;

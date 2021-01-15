@@ -1,9 +1,9 @@
 {
   "api": "3",
-  "auth": "github:tbrowder",
-  "author": "github:tbrowder",
+  "auth": "cpan:TBROWDER",
+  "author": "cpan:TBROWDER",
   "authors": [
-    "Tom Browder <tom.browder@gmail.com>"
+    "Tom Browder <tom.browder@cpan.org>"
   ],
   "build-depends": [
   ],
@@ -24,6 +24,7 @@
   },
   "tags": [
     "string functions",
+    "auto-code generation",
     "text wrap",
     "normalize string",
     "text",

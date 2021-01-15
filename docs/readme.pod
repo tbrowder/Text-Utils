@@ -32,43 +32,53 @@ synopsis and signature for each of the routines.
 
 =head3 sub wrap-paragraph
 
-This routine wraps a list of words into a paragraph with a maximum line
-width (default: 78) and returns a list of the new paragraph's lines
-formatted as desired. A new option, C<:$line-pre-text>, is very useful
-for use in autp-generation of code. For example, given this chunk
-of text describing a following method:
+This routine wraps a list of words into a paragraph with a maximum
+line width (default: 78), and returns a list of the new paragraph's
+lines formatted as desired. A new option, C<:$para-pre-text>, used in
+conjunction with C<:$para-indent>, is very useful for use in
+auto-generation of code. For example, given this chunk of text
+describing a following PDF method C<MoveTo(x, y)>:
 
 =begin code
-my $str = qq:to/HERE/;
-The framistan is cooked twice. Once rare for those who like it that
-way, and the second time well-done for those who are not foodies.
+my $str = q:to/HERE/;
+Begin a new sub-path by moving the current point to coordinates (x,
+y), omitting any connecting line segment. If the previous path
+construction operator in the current path was also m, the new m
+overrides it.
 HERE
 =end code
 
 Run that string through the sub to see the results:
 
 =begin code :lang<raku>
-my @para = wrap-paragraph $str.lines, :line-pre-text<#|>, :first-line-indent(4), :para-indent(4);
+my @para = wrap-paragraph $str.lines, :para-pre-text('#| '), :para-indent(4);
 .say for @para;
 =end code
 
 yields:
 
 =begin code
-#| The framistan is cooked twice. Once rare for those who like it that way,
-#| and the second time well-done for those who are not foodies.
+    #| Begin a new sub-path by moving the current point to coordinates (x, y),
+    #| omitting any connecting line segment. If the previous path construction
+    #| operator in the current path was also m, the new m overrides it.
 =end code
 
 The signature:
 
 =begin code :lang<Raku>
 sub wrap-paragraph(@text,
-                   UInt :$max-line-length   = 78,
-                   UInt :$para-indent       = 0,
-                   UInt :$first-line-indent = 0,
-                   Str  :$pre-text          = '',
-                   Str  :$line-pre-text     = '',
-                   --> List) is export(:write-paragraph)
+                   UInt :$max-line-length     = 78,
+                   #------------------------------#
+                   UInt :$para-indent         = 0,
+		   UInt :$first-line-indent   = 0,
+		   UInt :$line-indent         = 0,
+                   #------------------------------#
+                   Str  :$para-pre-text       = '',
+                   Str  :$first-line-pre-text = '',
+                   Str  :$line-pre-text       = '',
+                   #------------------------------#
+                   :$debug,
+                   --> List) is export(:wrap-paragraph) {
 {...}
 =end code
 
@@ -200,7 +210,7 @@ Z<DEPRECATED CODE>
 
 =head3 sub write-paragraph
 
-B<THIS ROUTINE IS DEPRECATED - USE WRAP-PARAGRAPH FOR NEW CODE>
+B<THIS ROUTINE IS DEPRECATED - USE C<wrap-paragraph> FOR NEW AND OLD CODE>
 
 This routine wraps a list of words into a paragraph with a maximum line
 width (default: 78) and updates the input list with the
@@ -220,7 +230,7 @@ sub write-paragraph(@text,
 
 =head1 AUTHOR
 
-Tom Browder <tom.browder@gmail.com>
+Tom Browder <tbrowder@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
