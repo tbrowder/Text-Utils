@@ -1,4 +1,4 @@
-unit module Text::Utils:ver<3.0.0>;
+unit module Text::Utils:ver<3.0.1>;
 
 #| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;

@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+3.0.1  2021-01-15T12:45:02-06:00
+    - update copyright year
+
 3.0.0  2021-01-15T12:41:49-06:00
     - bumped api to 3
     - correct edition number of Perl Cookbook referenced
