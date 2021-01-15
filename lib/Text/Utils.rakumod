@@ -148,6 +148,15 @@ sub wrap-paragraph(@text,
     constant \SPACE = ' ';
     constant \EMPTY = '';
 
+    if $debug {
+        note qq:to/HERE/;
+        DEBUG: sub wrap inputs:
+            $para-pre-text
+            $first-line-pre-text
+            $line-pre-text
+        HERE
+    }
+
     # Calculate the various effective indents and any pre-text effects
     # and get the effective first-line and following lines indent
     # First line
@@ -177,6 +186,7 @@ sub wrap-paragraph(@text,
     my $begin-first-line      = True;
     my $begin-following-line  = False;
     my $checked-following     = False;
+    my $wnum = 0;
     while @words {
         my $word = @words.head;
         my $wc = $word.chars;
@@ -188,6 +198,12 @@ sub wrap-paragraph(@text,
         note "DEBUG: word: '$word'" if $debug;
         note "DEBUG: next: '$next'" if $debug;
 
+        if $debug and $begin-first-line {
+            note "DEBUG begin-first line: '$line'";
+        }
+        if $debug and $begin-following-line {
+            note "DEBUG begin following line: '$line'";
+        }
 
         # do length checks
         my $tmp-line = $line ~ $next;
