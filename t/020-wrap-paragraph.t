@@ -3,7 +3,7 @@ use Test;
 
 use Text::Utils :ALL;
 
-#plan 10;
+plan 13;
 
 my $debug = 0;
 

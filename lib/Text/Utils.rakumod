@@ -131,7 +131,6 @@ para-indent spaces + line-indent spaces + para-pre-text + line-pre-text + text
 
 sub wrap-paragraph(@text,
                    UInt :$max-line-length      = 78,
-                   UInt :$max-line-length-warn = 6,
                    #------------------------------#
                    UInt :$para-indent         = 0,
 		   UInt :$first-line-indent   = 0,
@@ -262,37 +261,15 @@ sub wrap-paragraph(@text,
     }
     
     my sub line-length-ok(:$line, :$initial-first, :$initial-following) {
-        my $mll  = $max-line-length;
-        my $mllw = $max-line-length-warn;
-        my $nc = $line.chars;
-
-        if $initial-following and $nc > $mll {
+        my $mll = $max-line-length;
+        my $nc  = $line.chars;
+        if $initial-first and $nc > $mll {
             die "FATAL: first line pre too long: $nc chars is too long for max length $mll";
         }
-        elsif $initial-first and $nc > $mll {
+        elsif $initial-following and $nc > $mll {
             die "FATAL: following lines pre too long: $nc chars is too long for max length $mll";
         }
-
-        =begin comment
-        my $free-space = $max-line-length - $nc;
-        if $free-space < 0 {
-            die "FATAL: line space available is only $free-space chars.";
-        }
-        if $free-space <= $max-line-length-warn {
-            note "WARNING: line space available is only $free-space chars.";
-        }
-        =end comment
-        
         return $nc <= $mll;
-
-        =begin comment
-        my $nc = $line.chars;
-        if $nc > $max-line-length {
-            say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
-            say "line:   '$line'";
-            die "length: $nc";
-        }
-        =end comment
     }
 
     return @para;
