@@ -53,7 +53,7 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #|             escaped or included in quotes.
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
-multi strip-comment($line is copy,       #= string of text with possible comment
+sub strip-comment($line is copy,       #= string of text with possible comment
                     :$mark = '#',        #= desired comment char indicator
                     :$save-comment,      #= if true, return the comment
                     :$normalize,         #= if true, normalize returned strings
@@ -76,31 +76,6 @@ multi strip-comment($line is copy,       #= string of text with possible comment
     }
     $line;
 }
-
-#| NOTE THE FOLLOWING SIGNATURE IS DEPRECATED
-multi strip-comment($line is copy,       #= string of text with possible comment
-                    $comment-char = '#', #= desired comment char indicator
-                    :$save-comment,      #= if true, return the comment
-                    :$normalize,         #= if true, normalize returned strings
-                    :$last,              #= if true, use the last instead of first comment char
-                   ) is export(:strip-comment) {
-    my $comment = '';
-    my $clen    = $comment-char.chars;
-    my $idx     = $last ?? rindex $line, $comment-char
-                        !! index  $line, $comment-char;
-    if $idx.defined {
-        $comment = substr $line, $idx+$clen; #= don't want the comment char
-	$line = substr $line, 0, $idx;
-    }
-    if $normalize {
-        $line    = normalize-string $line;
-        $comment = normalize-string $comment;
-    }
-    if $save-comment {
-        return $line, $comment;
-    }
-    $line;
-} # strip-comment
 
 #-----------------------------------------------------------------------
 #| Purpose : Add commas to a number to separate multiples of a thousand
@@ -131,135 +106,182 @@ sub commify($num) is export(:commify) {
 #| Params  : List of words, max line length, paragraph indent, first
 #|             line indent, pre-text
 #| Returns : List of formatted paragraph lines
-multi write-paragraph(@text,
-		      UInt :$max-line-length = 78,
-                      UInt :$para-indent = 0,
-		      UInt :$first-line-indent = 0,
-                      Str :$pre-text = '' --> List) is export(:write-paragraph) {
+=begin comment
+
+Rules:
+
++ para-indent          => number of leading spaces applied to ALL lines
++ first-line-indent    => number of leading spaces applied to the first line only
++ line-indent          => number of leading spaces applied to all lines AFTER the first
+
++ para-pre-text        => text added to the beginning of ALL lines
++ first-line-pre-text  => text added to the beginning of the first line only
++ line-pre-text        => text added to the beginning all lines AFTER the first
+
+How are they all applied? Examples follow;
+
+For each line:
+For the first line:
+para-indent spaces + first-line-indent spaces + para-pre-text + first-line-pretext + text
+
+For the following lines:
+para-indent spaces + line-indent spaces + para-pre-text + line-pre-text + text
+
+=end comment
+
+sub wrap-paragraph(@text,
+                   UInt :$max-line-length      = 78,
+                   UInt :$max-line-length-warn = 6,
+                   #------------------------------#
+                   UInt :$para-indent         = 0,
+		   UInt :$first-line-indent   = 0,
+		   UInt :$line-indent         = 0,
+                   #------------------------------#
+                   Str  :$para-pre-text       = '',
+                   Str  :$first-line-pre-text = '',
+                   Str  :$line-pre-text       = '',
+                   #------------------------------#
+                   :$debug,
+                   --> List) is export(:wrap-paragraph) {
+
+    my $mll = $max-line-length;
+    constant \SPACE = ' ';
+    constant \EMPTY = '';
 
     # Calculate the various effective indents and any pre-text effects
-    # and get the effective first-line indent
-    my $findent = $first-line-indent ?? $first-line-indent !! $para-indent;
-    # Get the effective paragraph indent
-    my $pindent = $pre-text.chars + $para-indent;
+    # and get the effective first-line and following lines indent
+    # First line
+    my $findent  = $para-indent + $first-line-indent;
+    # Get the info for the remaining lines
+    my $lindent  = $para-indent + $line-indent;
 
-    my $findent-spaces = ' ' x $findent;
+    my $findent-spaces = SPACE x $findent;
+    my $lindent-spaces = SPACE x $lindent;
+
     # ready to take care of the first line
-    my $first-line = $pre-text ~ $findent-spaces;
-    my $line = $first-line;
+    # we do not add additional spaces between or following these items:
+    my $line = EMPTY;
+    $line ~= $findent-spaces if $findent-spaces;
+    $line ~= $para-pre-text if $para-pre-text;
+    $line ~= $first-line-pre-text if $first-line-pre-text;
+    # do an initial length check on $line length
+    line-length-ok :$line, :initial-first;
 
-    # now do a length check
-    {
+    # get all the words
+    my @words = (join ' ', @text).words;
+    note "DEBUG: starting with {@words.elems} words" if $debug;
+    my @para = ();
+    my $first-word = True;
+
+    # some flags for error checking
+    my $begin-first-line      = True;
+    my $begin-following-line  = False;
+    my $checked-following     = False;
+    while @words {
+        my $word = @words.head;
+        my $wc = $word.chars;
+        if $wc > $max-line-length {
+            die "FATAL: Word '$word' has $wc chars, too long for max line length of $mll chars";
+        }
+
+        my $next = $first-word ?? $word !! SPACE ~ $word;
+        note "DEBUG: word: '$word'" if $debug;
+        note "DEBUG: next: '$next'" if $debug;
+
+
+        # do length checks
+        my $tmp-line = $line ~ $next;
+        my $tc = $tmp-line.chars;
+        note "DEBUG: tmp-line: '$tmp-line'" if $debug;
+        if $begin-first-line {
+            # check mll with first word
+            if $tc > $max-line-length {
+                die "FATAL: First line, first Word '$tmp-line' has $tc chars, too long for max line length of $mll chars";
+            }
+            $begin-first-line = False;
+        }
+        if $begin-following-line {
+            # check mll with first word
+            if $tc > $max-line-length {
+                die "FATAL: First line, first Word '$tmp-line' has $tc chars, too long for max line length of $mll chars";
+            }
+            $begin-following-line = False;
+        }
+
+
+        if line-length-ok(:line($tmp-line))  {
+            # enough space to add this
+            $line ~= $next;
+            note "DEBUG: good line: '$line'" if $debug;
+            @words.shift; # remove the used word
+            $first-word = False;
+            note "DEBUG: good line with {@words.elems} words" if $debug;
+            next;
+        }
+
+        # else we're done with this line
+        @para.push: $line if $line;
+        $line = EMPTY;
+        last if not @words.elems;
+
+        $first-word = True;
+        $begin-following-line = True;
+        $line ~= $lindent-spaces if $lindent-spaces;
+        $line ~= $para-pre-text if $para-pre-text;
+        $line ~= $line-pre-text if $line-pre-text;
+        if not $checked-following {
+            # do an initial length check on $line length
+            line-length-ok :$line, :initial-following;
+            $checked-following = True;
+        }
+    }
+
+    # may have a line left
+    @para.push: $line if $line;
+    $line = EMPTY;
+
+    # should not have any  words left
+    if @words.elems {
+        die "FATAL: Unexpected non-empty \@words: '{join(SPACE, @words)}'";
+    }
+    
+    my sub line-length-ok(:$line, :$initial-first, :$initial-following) {
+        my $mll  = $max-line-length;
+        my $mllw = $max-line-length-warn;
+        my $nc = $line.chars;
+
+        if $initial-following and $nc > $mll {
+            die "FATAL: first line pre too long: $nc chars is too long for max length $mll";
+        }
+        elsif $initial-first and $nc > $mll {
+            die "FATAL: following lines pre too long: $nc chars is too long for max length $mll";
+        }
+
+        =begin comment
+        my $free-space = $max-line-length - $nc;
+        if $free-space < 0 {
+            die "FATAL: line space available is only $free-space chars.";
+        }
+        if $free-space <= $max-line-length-warn {
+            note "WARNING: line space available is only $free-space chars.";
+        }
+        =end comment
+        
+        return $nc <= $mll;
+
+        =begin comment
         my $nc = $line.chars;
         if $nc > $max-line-length {
             say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
             say "line:   '$line'";
             die "length: $nc";
         }
-    }
-
-    # get all the words
-    my @words = (join ' ', @text).words;
-
-    my @para = ();
-    my $first-word = True;
-    loop {
-        if !@words.elems {
-            @para.push: $line if $line;
-            #@para.push: $line;
-            last;
-        }
-
-        my $next = @words[0];
-        $next = ' ' ~ $next if !$first-word;
-        $first-word = False;
-
-        # do a length check
-	{
-            my $nc = $next.chars;
-            if $nc > $max-line-length {
-                say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
-                say "line:   '$next'";
-                die "length: $nc";
-            }
-        }
-
-        if $next.chars + $line.chars <= $max-line-length {
-            $line ~= $next;
-            shift @words;
-            next;
-        }
-
-        # we're done with this line
-        @para.push: $line if $line;
-        #@para.push: $line;
-        last;
-    }
-
-    # and remaining lines
-    my $pindent-spaces = ' ' x $pindent;
-    $line = $pindent-spaces;
-    $first-word = True;
-    loop {
-        if !@words.elems {
-            @para.push: $line if $line;
-            #@para.push: $line;
-            last;
-        }
-
-        my $next = @words[0];
-        $next = ' ' ~ $next if !$first-word;
-        $first-word = False;
-
-        # do a length check
-	{
-            my $nc = $next.chars;
-            if $nc > $max-line-length {
-                say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
-                say "line:   '$next'";
-                die "length: $nc";
-            }
-        }
-
-        if $next.chars + $line.chars <= $max-line-length {
-            $line ~= $next;
-            shift @words;
-            next;
-        }
-
-        # we're done with this line
-        @para.push: $line if $line;
-        #@para.push: $line;
-
-        last if !@words.elems;
-
-        # replenish the line
-        $line = $pindent-spaces;
-        $first-word = True;
+        =end comment
     }
 
     return @para;
 
-} # write-paragraph
-
-#-----------------------------------------------------------------------
-#| Purpose : Wrap a list of words into a paragraph with a maximum line
-#|             width (default: 78) and print it to the input file handle
-#| Params  : Output file handle, list of words, max line length,
-#|             paragraph indent, first line indent, pre-text
-#| Returns : Nothing
-multi write-paragraph($fh, @text,
-                      UInt :$max-line-length = 78,
-                      UInt :$para-indent = 0,
-                      UInt :$first-line-indent = 0,
-                      Str :$pre-text = '') is export(:write-paragraph2) {
-
-    # do the mods for the para text
-    my @para = write-paragraph(@text, :$max-line-length, :$para-indent, :$first-line-indent, :$pre-text);
-
-    # write to the open file handle
-    $fh.say($_) for @para;
-}
+} # wrap-paragraph
 
 #-----------------------------------------------------------------------
 #| Purpose : Trim a string and collapse multiple whitespace characters
@@ -332,3 +354,114 @@ sub split-line-rw(Str:D $line is rw, Str:D $brk, UInt :$max-line-length = 0,
     return $line2;
 
 } # split-line-rw
+
+
+# DEPRECATED SUBROUTINE
+multi sub write-paragraph(@text,
+	                  UInt :$max-line-length = 78,
+                          UInt :$para-indent = 0,
+		          UInt :$first-line-indent = 0,
+                          Str :$pre-text = '',
+                          --> List) is export(:write-paragraph) {
+
+    # Calculate the various effective indents and any pre-text effects
+    # and get the effective first-line indent
+    my $findent = $first-line-indent ?? $first-line-indent !! $para-indent;
+    # Get the effective paragraph indent
+    my $pindent = $pre-text.chars + $para-indent;
+
+    my $findent-spaces = ' ' x $findent;
+    # ready to take care of the first line
+    my $first-line = $pre-text ~ $findent-spaces;
+    my $line = $first-line;
+
+    # now do a length check
+    {
+        my $nc = $line.chars;
+        if $nc > $max-line-length {
+            say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
+            say "line:   '$line'";
+            die "length: $nc";
+        }
+    }
+
+    # get all the words
+    my @words = (join ' ', @text).words;
+
+    my @para = ();
+    my $first-word = True;
+
+    loop {
+        if !@words.elems {
+            @para.push: $line if $line;
+            last;
+        }
+
+        my $next = @words[0];
+        $next = ' ' ~ $next if !$first-word;
+        $first-word = False;
+
+        # do a length check
+	{
+            my $nc = $next.chars;
+            if $nc > $max-line-length {
+                say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
+                say "line:   '$next'";
+                die "length: $nc";
+            }
+        }
+
+        if $next.chars + $line.chars <= $max-line-length {
+            $line ~= $next;
+            shift @words;
+            next;
+        }
+
+        # we're done with this line
+        @para.push: $line if $line;
+        #@para.push: $line;
+        last;
+    }
+
+    # and remaining lines
+    my $pindent-spaces = ' ' x $pindent;
+    $line = $pindent-spaces;
+    $first-word = True;
+    loop {
+        if !@words.elems {
+            @para.push: $line if $line;
+            last;
+        }
+
+        my $next = @words[0];
+        $next = ' ' ~ $next if !$first-word;
+        $first-word = False;
+
+        # do a length check
+	{
+            my $nc = $next.chars;
+            if $nc > $max-line-length {
+                say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
+                say "line:   '$next'";
+                die "length: $nc";
+            }
+        }
+
+        if $next.chars + $line.chars <= $max-line-length {
+            $line ~= $next;
+            shift @words;
+            next;
+        }
+
+        # we're done with this line
+        @para.push: $line if $line;
+
+        last if !@words.elems;
+
+        # replenish the line
+        $line = $pindent-spaces;
+        $first-word = True;
+    }
+
+    return @para;
+} # write-paragraph

@@ -1,5 +1,14 @@
 {{$NEXT}}
-    - correct edition number of Perl Cookbook
+    - bumped api to 3
+    - correct edition number of Perl Cookbook referenced
+    - removed two deprecated routines:
+      + strip-comment with optional second arg as comment char
+        a non-standard char must now be chosen with the :mark arg
+      + write-paragraph with write to file handle
+    - sub write-paragraph is deprecated
+    - added new sub wrap-paragraph to replace
+        deprecated sub write-paragraph
+    - added line-pre-text option to new sub wrap-paragraph
 
 2.2.1  2020-10-16T19:22:42-05:00
     - add new routine `list2text`

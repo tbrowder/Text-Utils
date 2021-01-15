@@ -3,7 +3,7 @@ use Test;
 
 use Text::Utils :ALL;
 
-plan 32;
+plan 25;
 
 my (@s, @stripped);
 # comment char is default '#'
@@ -44,7 +44,7 @@ for 0..^+@s -> $i {
 
 # return the stripped strings
 for 0..^+@s -> $i {
-    my $line = strip-comment(@s[$i], ';');
+    my $line = strip-comment(@s[$i], :mark<;>);
     is $line, @stripped[$i];
 }
 
@@ -77,29 +77,9 @@ is $comm, '';
 # default is to take the first comment char found
 # note multi-char comment char is allowed
 $tstr = ' some  text %%  text %% some  comment ';
-($text, $comm) = strip-comment $tstr, '%%', :save-comment;
+($text, $comm) = strip-comment $tstr, :mark<%%>, :save-comment;
 is $text, ' some  text ';
 is $comm, '  text %% some  comment ';
-
-#===== ORIGINAL SIGNATURE IS DEPRECATED =====
-# testing the original signature which is now deprecated
-# and will be removed in version 3.0.0
-($text, $comm) = strip-comment $tstr, '%%', :save-comment, :normalize;
-is $text, 'some text';
-is $comm, 'text %% some comment';
-
-$text = strip-comment $tstr, '%%', :last;
-is $text, ' some  text %%  text ';
-
-($text, $comm) = strip-comment $tstr, '%%', :last, :save-comment;
-is $text, ' some  text %%  text ';
-is $comm, ' some  comment ';
-
-($text, $comm) = strip-comment $tstr, '%%', :last, :save-comment, :normalize;
-is $text, 'some text %% text';
-is $comm, 'some comment';
-
-#===== END OF ORIGINAL SIGNATURE IS DEPRECATED =====
 
 # test the new signature
 
