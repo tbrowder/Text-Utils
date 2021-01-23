@@ -32,7 +32,7 @@ The module contains several routines to make text handling easier for module and
 
 ### sub wrap-paragraph
 
-This routine wraps a list of words into a paragraph with a maximum line width (default: 78), and returns a list of the new paragraph's lines formatted as desired. A new option, `:$para-pre-text`, used in conjunction with `:$para-indent`, is very useful for use in auto-generation of code. For example, given this chunk of text describing a following PDF method `MoveTo(x, y)`:
+This routine wraps a list of words into a paragraph with a maximum line width in characters (default: 78), and returns a list of the new paragraph's lines formatted as desired. An option, `:$para-pre-text`, used in conjunction with `:$para-indent`, is very useful for use in auto-generation of code. For example, given this chunk of text describing a following PDF method `MoveTo(x, y)`:
 
     my $str = q:to/HERE/;
     Begin a new sub-path by moving the current point to coordinates (x,
@@ -57,7 +57,7 @@ yields:
 The signature:
 
 ```Raku
-sub wrap-paragraph(@text,
+multi sub wrap-paragraph(@text,
                    UInt :$max-line-length     = 78,
                    #------------------------------#
                    UInt :$para-indent         = 0,
@@ -69,7 +69,39 @@ sub wrap-paragraph(@text,
                    Str  :$line-pre-text       = '',
                    #------------------------------#
                    :$debug,
-                   --> List) is export(:wrap-paragraph) {
+                   --> List) is export(:wrap-paragraph) 
+{...}
+multi sub wrap-paragraph($text, # ... same as the other multi
+                   --> List) is export(:wrap-paragraph) 
+{...}
+```
+
+### sub wrap-text
+
+This routine is used a in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it does not have all the options of the **wrap-paragraph** routine, but it will wrap the input text differently for the first line versus the remaining lines if desired.
+
+All arguments except the `:font` are in PostSript points (PS) which are 72 per inch. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
+
+The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
+
+<table class="pod-table">
+<tbody>
+<tr> <td>Courier Courier-Bold Courier-Oblique Courier-BoldOblique</td> </tr> <tr> <td>Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman Times-Bold Times-Italic Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
+</tbody>
+</table>
+
+```Raku
+multi sub wrap-text(@text,
+              Real :$width             = 468, #= PS points for 6.5 inches
+                   :$font              = 'Times-Roman',
+              Real :$font-size         = 12, 
+              UInt :$first-line-indent = 0,
+              UInt :$line-indent       = 0,
+                   :$debug,
+                   --> List) is export(:wrap-text) 
+{...}
+multi sub wrap-text($text, # ... same as the other multi
+                   --> List) is export(:wrap-text)
 {...}
 ```
 

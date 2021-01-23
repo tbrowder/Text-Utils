@@ -3,7 +3,7 @@ use Test;
 
 use Text::Utils :ALL;
 
-plan 13;
+plan 26;
 
 my $debug = 0;
 
@@ -17,10 +17,13 @@ for 1..^10 -> $i {
     @text.push: $s;
 }
 @text.push: SPACE;
+my $text = join ' ', @text;
 # test some corner cases ==================================
 #                         1         2         3
 my Str @text30 = '123456789012345678901234567890';   # 30 chars
 my Str @text32 = '12345678901234567890123456789012'; # 32 chars
+my Str $text30 = '123456789012345678901234567890';   # 30 chars
+my Str $text32 = '12345678901234567890123456789012'; # 32 chars
 
 #          1         2         3        4
 # 123456789012345678901234567890123467890
@@ -39,6 +42,9 @@ my (@para, @p1);
     "words words words words words";
 
     is-deeply @para, @p1, "max line length, plain para";
+
+    @para = wrap-paragraph $text, :max-line-length(30), :$debug;
+    is-deeply @para, @p1, "max line length, plain para";
 }
 
 # test 2
@@ -52,6 +58,9 @@ my (@para, @p1);
 
     is-deeply @para, @p1
         , "shorter max line length, plain para";
+
+    @para = wrap-paragraph $text, :max-line-length(24), :$debug;
+    is-deeply @para, @p1
 }
 
 # test 3
@@ -66,6 +75,10 @@ my (@para, @p1);
 
     is-deeply @para, @p1
         , "even shorter max line length, plain para";
+
+    @para = wrap-paragraph $text, :max-line-length(20), :$debug;
+    is-deeply @para, @p1
+        , "even shorter max line length, plain para";
 }
 
 # test 4
@@ -76,6 +89,10 @@ my (@para, @p1);
     "topic:  words words words words words",
     "words words words words words";
 
+    is-deeply @para, @p1
+        , "first-line-pre-text";
+
+    @para = wrap-paragraph $text, :max-line-length(38), :first-line-pre-text('topic:  '), :$debug;
     is-deeply @para, @p1
         , "first-line-pre-text";
 }
@@ -89,6 +106,10 @@ my (@para, @p1);
     "words words words words words",
     "words";
 
+    is-deeply @para, @p1 
+        , "first-line-indent";
+
+    @para = wrap-paragraph $text, :max-line-length(30), :first-line-indent(3), :$debug;
     is-deeply @para, @p1 
         , "first-line-indent";
 }
@@ -105,6 +126,11 @@ my (@para, @p1);
 
     is-deeply @para, @p1
         , "para-indent and first-line-indent";
+
+    @para = wrap-paragraph $text, :max-line-length(33), :first-line-indent(3),
+		    :para-indent(5), :$debug;
+    is-deeply @para, @p1
+        , "para-indent and first-line-indent";
 }
 
 # test 7
@@ -117,6 +143,11 @@ my (@para, @p1);
     "   words words words words words",
     "   words";
 
+    is-deeply @para, @p1
+        , "para-indent and first-line-indent";
+
+    @para = wrap-paragraph $text, :max-line-length(33), :first-line-indent(5),
+			    :para-indent(3), :$debug;
     is-deeply @para, @p1
         , "para-indent and first-line-indent";
 }
@@ -134,6 +165,11 @@ my (@para, @p1);
 
     is-deeply @para, @p1
         , "para-indent, first-line-indent, first-line-pre-text with one trailing space";
+
+    @para = wrap-paragraph $text, :first-line-pre-text('text: '), :max-line-length(39),
+			    :first-line-indent(5), :para-indent(3), :$debug;
+    is-deeply @para, @p1
+        , "para-indent, first-line-indent, first-line-pre-text with one trailing space";
 }
 
 # test 9
@@ -143,6 +179,9 @@ my (@para, @p1);
     @p1 =
     "123456789012345678901234567890";
 
+    is-deeply @para, @p1, "line at maxlength of 30";
+
+    @para = wrap-paragraph $text30, :max-line-length(30), :$debug;
     is-deeply @para, @p1, "line at maxlength of 30";
 }
 
@@ -156,16 +195,22 @@ my (@para, @p1);
     "#| words words";
 
     is-deeply @para, @p1, "para-pre-text with one trailing space, max line length 30";
+
+    @para = wrap-paragraph $text, :para-pre-text('#| '), :max-line-length(30), :$debug;
+    is-deeply @para, @p1, "para-pre-text with one trailing space, max line length 30";
 }
 
 # test 11
 {
     dies-ok { @para = wrap-paragraph @text32, :max-line-length(30), :$debug; }, "line reported too long";
+    dies-ok { @para = wrap-paragraph $text32, :max-line-length(30), :$debug; }, "line reported too long";
 }
 
 # test 12
 {
     dies-ok { @para = wrap-paragraph @text30, :max-line-length(30), :para-pre-text('def: '), :$debug; }, 
+        "line exactly the max length but too long with pre-text";
+    dies-ok { @para = wrap-paragraph $text30, :max-line-length(30), :para-pre-text('def: '), :$debug; }, 
         "line exactly the max length but too long with pre-text";
 }
 
@@ -184,6 +229,15 @@ my (@para, @p1);
     "  defn: words words words words words",
     "        words words words words words";
 
+    is-deeply @para, @p1
+        , "para-indent, line-indent, first-line-pre-text with one trailing space";
+
+    @para = wrap-paragraph $text, 
+                            :max-line-length(39),
+                            :para-indent(2), 
+			    :line-indent(6), 
+                            :first-line-pre-text('defn: '), 
+                            :$debug;
     is-deeply @para, @p1
         , "para-indent, line-indent, first-line-pre-text with one trailing space";
 }

@@ -1,5 +1,7 @@
 unit module Text::Utils:ver<3.0.1>;
 
+use Font::AFM;
+
 #| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;
 BEGIN {
@@ -129,7 +131,12 @@ para-indent spaces + line-indent spaces + para-pre-text + line-pre-text + text
 
 =end comment
 
-sub wrap-paragraph(@text,
+multi sub wrap-paragraph($text, |c
+                   --> List) is export(:wrap-paragraph) {
+    return wrap-paragraph($text.words, |c);
+}
+
+multi sub wrap-paragraph(@text,
                    UInt :$max-line-length     = 78,
                    #------------------------------#
                    UInt :$para-indent         = 0,
@@ -354,8 +361,8 @@ multi sub write-paragraph(@text,
 	                  UInt :$max-line-length = 78,
                           UInt :$para-indent = 0,
 		          UInt :$first-line-indent = 0,
-                          Str :$pre-text = '',
-                          --> List) is export(:write-paragraph) {
+                          Str  :$pre-text = '',
+                          --> List) is export(:wrap-paragraph-deprecated) {
 
     # Calculate the various effective indents and any pre-text effects
     # and get the effective first-line indent
@@ -458,3 +465,150 @@ multi sub write-paragraph(@text,
 
     return @para;
 } # write-paragraph
+
+multi sub wrap-text($text, |c
+                   --> List) is export(:wrap-text) {
+    return wrap-text($text.words, |c);
+}
+
+multi sub wrap-text(@text,
+                    Real :$width             = 468, #= PS points for 6.5 inches
+                         :$font              = 'Times-Roman',
+                    Real :$font-size         = 12,
+                    UInt :$first-line-indent = 0,
+                    UInt :$line-indent       = 0,
+                         :$debug,
+                    --> List) is export(:wrap-text) {
+
+    my $mll = $max-line-length;
+    constant \SPACE = ' ';
+    constant \EMPTY = '';
+
+    if $debug {
+        note qq:to/HERE/;
+        DEBUG: sub wrap inputs:
+            $para-pre-text
+            $first-line-pre-text
+            $line-pre-text
+        HERE
+    }
+
+    # Calculate the various effective indents and any pre-text effects
+    # and get the effective first-line and following lines indent
+    # First line
+    my $findent  = $para-indent + $first-line-indent;
+    # Get the info for the remaining lines
+    my $lindent  = $para-indent + $line-indent;
+
+    my $findent-spaces = SPACE x $findent;
+    my $lindent-spaces = SPACE x $lindent;
+
+    # ready to take care of the first line
+    # we do not add additional spaces between or following these items:
+    my $line = EMPTY;
+    $line ~= $findent-spaces if $findent-spaces;
+    $line ~= $para-pre-text if $para-pre-text;
+    $line ~= $first-line-pre-text if $first-line-pre-text;
+    # do an initial length check on $line length
+    line-length-ok :$line, :initial-first;
+
+    # get all the words
+    my @words = (join ' ', @text).words;
+    note "DEBUG: starting with {@words.elems} words" if $debug;
+    my @para = ();
+    my $first-word = True;
+
+    # some flags for error checking
+    my $begin-first-line      = True;
+    my $begin-following-line  = False;
+    my $checked-following     = False;
+    my $wnum = 0;
+    while @words {
+        my $word = @words.head;
+        my $wc = $word.chars;
+        if $wc > $max-line-length {
+            die "FATAL: Word '$word' has $wc chars, too long for max line length of $mll chars";
+        }
+
+        my $next = $first-word ?? $word !! SPACE ~ $word;
+        note "DEBUG: word: '$word'" if $debug;
+        note "DEBUG: next: '$next'" if $debug;
+
+        if $debug and $begin-first-line {
+            note "DEBUG begin-first line: '$line'";
+        }
+        if $debug and $begin-following-line {
+            note "DEBUG begin following line: '$line'";
+        }
+
+        # do length checks
+        my $tmp-line = $line ~ $next;
+        my $tc = $tmp-line.chars;
+        note "DEBUG: tmp-line: '$tmp-line'" if $debug;
+        if $begin-first-line {
+            # check mll with first word
+            if $tc > $max-line-length {
+                die "FATAL: First line, first Word '$tmp-line' has $tc chars, too long for max line length of $mll chars";
+            }
+            $begin-first-line = False;
+        }
+        if $begin-following-line {
+            # check mll with first word
+            if $tc > $max-line-length {
+                die "FATAL: First line, first Word '$tmp-line' has $tc chars, too long for max line length of $mll chars";
+            }
+            $begin-following-line = False;
+        }
+
+
+        if line-length-ok(:line($tmp-line))  {
+            # enough space to add this
+            $line ~= $next;
+            note "DEBUG: good line: '$line'" if $debug;
+            @words.shift; # remove the used word
+            $first-word = False;
+            note "DEBUG: good line with {@words.elems} words" if $debug;
+            next;
+        }
+
+        # else we're done with this line
+        @para.push: $line if $line;
+        $line = EMPTY;
+        last if not @words.elems;
+
+        $first-word = True;
+        $begin-following-line = True;
+        $line ~= $lindent-spaces if $lindent-spaces;
+        $line ~= $para-pre-text if $para-pre-text;
+        $line ~= $line-pre-text if $line-pre-text;
+        if not $checked-following {
+            # do an initial length check on $line length
+            line-length-ok :$line, :initial-following;
+            $checked-following = True;
+        }
+    }
+
+    # may have a line left
+    @para.push: $line if $line;
+    $line = EMPTY;
+
+    # should not have any  words left
+    if @words.elems {
+        die "FATAL: Unexpected non-empty \@words: '{join(SPACE, @words)}'";
+    }
+
+    my sub line-length-ok(:$line, :$initial-first, :$initial-following) {
+        my $mll = $max-line-length;
+        my $nc  = $line.chars;
+        if $initial-first and $nc > $mll {
+            die "FATAL: first line pre too long: $nc chars is too long for max length $mll";
+        }
+        elsif $initial-following and $nc > $mll {
+            die "FATAL: following lines pre too long: $nc chars is too long for max length $mll";
+        }
+        return $nc <= $mll;
+    }
+
+    return @para;
+
+}
