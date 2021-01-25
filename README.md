@@ -57,30 +57,31 @@ yields:
 The signature:
 
 ```Raku
-multi sub wrap-paragraph(@text,
-                   UInt :$max-line-length     = 78,
-                   #------------------------------#
-                   UInt :$para-indent         = 0,
-		   UInt :$first-line-indent   = 0,
-		   UInt :$line-indent         = 0,
-                   #------------------------------#
-                   Str  :$para-pre-text       = '',
-                   Str  :$first-line-pre-text = '',
-                   Str  :$line-pre-text       = '',
-                   #------------------------------#
-                   :$debug,
-                   --> List) is export(:wrap-paragraph) 
+multi sub wrap-paragraph(
+    @text,
+    UInt :$max-line-length     = 78,
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-paragraph) 
 {...}
-multi sub wrap-paragraph($text, # ... same as the other multi
-                   --> List) is export(:wrap-paragraph) 
+multi sub wrap-paragraph(
+    $text, 
+    # ... other args same as the other multi
+    --> List) is export(:wrap-paragraph) 
 {...}
 ```
 
 ### sub wrap-text
 
-This routine is used a in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it does not have all the options of the **wrap-paragraph** routine, but it will wrap the input text differently for the first line versus the remaining lines if desired.
-
-All arguments except the `:font` are in PostSript points (PS) which are 72 per inch. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
+This routine is used a in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it has all the options of the **wrap-paragraph** routine except the `:width` is expressed in PostScript points (72 per inch) as is the `:font-size`. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
 
 The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
 
@@ -91,17 +92,27 @@ The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
 </table>
 
 ```Raku
-multi sub wrap-text(@text,
-              Real :$width             = 468, #= PS points for 6.5 inches
-                   :$font              = 'Times-Roman',
-              Real :$font-size         = 12, 
-              UInt :$first-line-indent = 0,
-              UInt :$line-indent       = 0,
-                   :$debug,
-                   --> List) is export(:wrap-text) 
+multi sub wrap-text(
+    @text,
+    Real :$width               = 468, #= PS points for 6.5 inches
+         :$font-name           = 'Times-Roman',
+    Real :$font-size           = 12, 
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-text) 
 {...}
-multi sub wrap-text($text, # ... same as the other multi
-                   --> List) is export(:wrap-text)
+multi sub wrap-text(
+    $text, 
+    # ... other args same as the other multi
+    --> List) is export(:wrap-text)
 {...}
 ```
 
@@ -114,7 +125,10 @@ For example, this list `1 2 3` becomes either this `"1, 2, and 3"` (the default 
 The signature:
 
 ```Raku
-sub list2text(@list, :$optional-comma is copy = True) is export(:list2text)
+sub list2text(
+    @list, 
+    :$optional-comma is copy = True
+    ) is export(:list2text)
 {...}
 ```
 
@@ -125,7 +139,11 @@ Count instances of a substring in a string
 The signature:
 
 ```Raku
-sub count-substrs(Str:D $string, Str:D $substr --> UInt) is export(:count-substrs)
+sub count-substrs(
+    Str:D $string, 
+    Str:D $substr 
+    --> UInt
+    ) is export(:count-substrs)
 {...}
 ```
 
@@ -138,12 +156,13 @@ The routine returns a string of text with any comment stripped off. Note the des
 The signature:
 
 ```Raku
-sub strip-comment($line is copy,       # string of text with possible comment
-                  :$mark = '#',        # desired comment char indicator
-                  :$save-comment,      # if true, return the comment
-                  :$normalize,         # if true, normalize returned strings
-                  :$last,              # if true, use the last instead of first comment char
-                 ) is export(:strip-comment)
+sub strip-comment(
+    $line is copy,       # string of text with possible comment
+    :$mark = '#',        # desired comment char indicator
+    :$save-comment,      # if true, return the comment
+    :$normalize,         # if true, normalize returned strings
+    :$last,              # if true, use the last instead of first comment char
+    ) is export(:strip-comment)
 {...}
 ```
 
@@ -167,7 +186,9 @@ This routine trims a string and collapses multiple whitespace characters.
 The signature:
 
 ```Raku
-sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string)
+sub normalize-string(
+    Str:D $str is copy 
+    --> Str) is export(:normalize-string)
 {...}
 ```
 
@@ -182,12 +203,13 @@ It returns the two parts of the split string; the second part will be an empty s
 The signature:
 
 ```Raku
-sub split-line(Str:D $line is copy,
-               Str:D $brk,
-               UInt  :$max-line-length = 0,
-               UInt  :$start-pos       = 0,
-               Bool  :$rindex          = False
-               --> List) is export(:split-line)
+sub split-line(
+    Str:D $line is copy,
+    Str:D $brk,
+    UInt  :$max-line-length = 0,
+    UInt  :$start-pos       = 0,
+    Bool  :$rindex          = False
+    --> List) is export(:split-line)
 {...}
 ```
 
@@ -202,12 +224,13 @@ It returns the part of the input string past the break character, or an empty st
 The signature:
 
 ```Raku
-sub split-line-rw(Str:D $line is rw,
-                  Str:D $brk,
-                  UInt  :$max-line-length = 0,
-                  UInt  :$start-pos       = 0,
-                  Bool  :$rindex          = False
-                  --> Str) is export(:split-line-rw)
+sub split-line-rw(
+    Str:D $line is rw,
+    Str:D $brk,
+    UInt  :$max-line-length = 0,
+    UInt  :$start-pos       = 0,
+    Bool  :$rindex          = False
+    --> Str) is export(:split-line-rw)
 {...}
 ```
 
@@ -220,12 +243,13 @@ This routine wraps a list of words into a paragraph with a maximum line width (d
 The signature:
 
 ```Raku
-sub write-paragraph(@text,
-                    UInt :$max-line-length   = 78,
-                    UInt :$para-indent       = 0,
-	            UInt :$first-line-indent = 0,
-                    Str  :$pre-text          = ''
-                     --> List) is export(:write-paragraph)
+sub write-paragraph(
+    @text,
+    UInt :$max-line-length   = 78,
+    UInt :$para-indent       = 0,
+    UInt :$first-line-indent = 0,
+    Str  :$pre-text          = ''
+    --> List) is export(:write-paragraph)
 {...}
 ```
 

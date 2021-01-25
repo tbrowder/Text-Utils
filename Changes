@@ -1,4 +1,19 @@
 {{$NEXT}}
+    - add new multi sub 'wrap-text'
+      + provides text wrapping for max line width
+        for a PostScript or PDF font at
+        a desired font size
+      + input is a text string or a list of
+        words
+      + added an 'AFM-font' class to wrap a font and
+        font size along with convenience 
+        methods and attributes
+      + added tests for the AFM-font class
+      + added a rudimentary test for the two subs
+    - add a multi sub 'wrap-paragraph' that
+      takes a text string in addition to a
+      list of words
+    - miscellanous doc and formatting updates
 
 3.0.1  2021-01-15T12:45:02-06:00
     - update copyright year
