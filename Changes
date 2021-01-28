@@ -13,6 +13,10 @@
     - add a multi sub 'wrap-paragraph' that
       takes a text string in addition to a
       list of words
+    - added new classes for future use:
+      + class BBox
+      +class Line
+      +class Para
     - miscellanous doc and formatting updates
 
 3.0.1  2021-01-15T12:45:02-06:00

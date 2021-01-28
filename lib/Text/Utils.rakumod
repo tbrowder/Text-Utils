@@ -515,11 +515,54 @@ multi sub wrap-text($text, |c
     return wrap-text($text.words, |c);
 }
 
+class BBox is export {
+    has Real $.llx;
+    has Real $.lly;
+    has Real $.urx;
+    has Real $.ury;
+    method width  { $!urx - $!llx }
+    method height { $!ury - $!lly }
+}
+
+class Line is export {
+    # The line's origin is the origin of its first character.
+    has BBox $.bbox; #= PS points
+    has Str  $.text;
+}
+class Para is export {
+    # The para's origin is the origin of its first line.
+    # Each additional line adds one leading distance to the vertical space.
+    has Real $.width               = 468; #= PS points for 6.5 inches
+    has      $.font-name           = 'Times-Roman';
+    has Real $.font-size           = 12;
+    has      $.kern                = True;
+    has Real $.leading-ratio       = 1.3; #= PS points for 6.5 inches
+    #------------------------------#
+    has UInt $.para-indent         = 0;
+    has UInt $.first-line-indent   = 0;
+    has UInt $.line-indent         = 0;
+    #-----.------------------------#
+    has Str  $.para-pre-text       = '';
+    has Str  $.first-line-pre-text = '';
+    has Str  $.line-pre-text       = '';
+    #------------------------------#
+    has Line @.lines;
+    has BBox $.bbox;
+    method add-line(Line $line) {
+        @!lines.push: $line;
+        # adjust new bbox
+    }
+    method width  { $!bbox.urx - $!bbox.llx }
+    method height { $!bbox.ury - $!bbox.lly }
+
+}
+
 multi sub wrap-text(@text,
-    Real :$width             = 468, #= PS points for 6.5 inches
-         :$font-name         = 'Times-Roman',
-    Real :$font-size         = 12,
-         :$kern              = True,
+    Real :$width               = 468, #= PS points for 6.5 inches
+         :$font-name           = 'Times-Roman',
+    Real :$font-size           = 12,
+         :$kern                = True,
+    Real :$leading-ratio       = 1.3;
     #------------------------------#
     UInt :$para-indent         = 0,
     UInt :$first-line-indent   = 0,
@@ -529,8 +572,8 @@ multi sub wrap-text(@text,
     Str  :$first-line-pre-text = '',
     Str  :$line-pre-text       = '',
     #------------------------------#
-          :$debug,
-          --> List) is export(:wrap-text) {
+         :$debug,
+         --> List) is export(:wrap-text) {
 
     my $afm = Font::AFM.new: :name($font-name);
     my $sf = $font-size/1000;
@@ -560,6 +603,7 @@ multi sub wrap-text(@text,
     my @words = (join ' ', @text).words;
     note "DEBUG: starting with {@words.elems} words" if $debug;
     my @para = ();
+    my $p = Para.new;
     my $first-word = True;
 
     # some flags for error checking
@@ -655,5 +699,6 @@ multi sub wrap-text(@text,
         return $nl <= $mll;
     }
 
+    # turn the para into a para object with line objects as children
     return @para;
 }
