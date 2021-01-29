@@ -9,7 +9,7 @@
   ],
   "depends": [
     "Pod::To::Markdown",
-    "Font::AFM"
+    "Font::AFM:ver<1.24.2>"
   ],
   "description": "Miscellaneous text utilities",
   "license": "Artistic-2.0",
