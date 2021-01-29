@@ -1,5 +1,52 @@
 unit module Text::Utils:ver<3.0.1>;
 
+use Font::AFM;
+
+class AFM-font is export {
+    has $.name is required;
+    has Real $.size is required;
+    has Real $.sf; # font size scale factor
+    has Font::AFM $.afm;
+    has Bool $.kern = True;
+    has Real $.UnderlinePosition; # one source says this is the TOP of the stroke
+    has Real $.UnderlineThickness;
+    # convenience
+    has Real $.upos; # underline position (PS points)
+    has Real $.uwid; # underline thickness (PS points)
+    has Real $.llx;
+    has Real $.lly;
+    has Real $.urx;
+    has Real $.ury;
+
+    submethod TWEAK {
+        $!afm = Font::AFM.new: :name($!name);
+        $!sf = $!size/1000;
+        $!upos = $!afm.UnderlinePosition * $!sf;
+        $!uwid = $!afm.UnderlineThickness * $!sf;
+
+        $!UnderlinePosition  = $!upos;
+        $!UnderlineThickness = $!uwid;
+
+        ($!llx, $!lly, $!urx, $!ury) = $!afm.FontBBox;
+        $!llx *= $!sf;
+        $!lly *= $!sf;
+        $!urx *= $!sf;
+        $!ury *= $!sf;
+    }
+    method stringwidth($string) {
+        $!afm.stringwidth: $string, $!size, :kern($!kern);
+    }
+    method kern-on {
+        $!kern = True;
+    }
+    method kern-off {
+        $!kern = False;
+    }
+}
+
+constant \SPACE is export = ' ';
+constant \EMPTY is export = '';
+
 #| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;
 BEGIN {
@@ -129,23 +176,27 @@ para-indent spaces + line-indent spaces + para-pre-text + line-pre-text + text
 
 =end comment
 
-sub wrap-paragraph(@text,
-                   UInt :$max-line-length     = 78,
-                   #------------------------------#
-                   UInt :$para-indent         = 0,
-		   UInt :$first-line-indent   = 0,
-		   UInt :$line-indent         = 0,
-                   #------------------------------#
-                   Str  :$para-pre-text       = '',
-                   Str  :$first-line-pre-text = '',
-                   Str  :$line-pre-text       = '',
-                   #------------------------------#
-                   :$debug,
+multi sub wrap-paragraph($text, |c
                    --> List) is export(:wrap-paragraph) {
+    return wrap-paragraph($text.words, |c);
+}
+
+multi sub wrap-paragraph(
+    @text,
+    UInt :$max-line-length     = 78,
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-paragraph) {
 
     my $mll = $max-line-length;
-    constant \SPACE = ' ';
-    constant \EMPTY = '';
 
     if $debug {
         note qq:to/HERE/;
@@ -186,6 +237,7 @@ sub wrap-paragraph(@text,
     my $begin-following-line  = False;
     my $checked-following     = False;
     my $wnum = 0;
+
     while @words {
         my $word = @words.head;
         my $wc = $word.chars;
@@ -222,7 +274,6 @@ sub wrap-paragraph(@text,
             }
             $begin-following-line = False;
         }
-
 
         if line-length-ok(:line($tmp-line))  {
             # enough space to add this
@@ -354,8 +405,8 @@ multi sub write-paragraph(@text,
 	                  UInt :$max-line-length = 78,
                           UInt :$para-indent = 0,
 		          UInt :$first-line-indent = 0,
-                          Str :$pre-text = '',
-                          --> List) is export(:write-paragraph) {
+                          Str  :$pre-text = '',
+                          --> List) is export(:wrap-paragraph-deprecated) {
 
     # Calculate the various effective indents and any pre-text effects
     # and get the effective first-line indent
@@ -458,3 +509,196 @@ multi sub write-paragraph(@text,
 
     return @para;
 } # write-paragraph
+
+multi sub wrap-text($text, |c
+                   --> List) is export(:wrap-text) {
+    return wrap-text($text.words, |c);
+}
+
+class BBox is export {
+    has Real $.llx;
+    has Real $.lly;
+    has Real $.urx;
+    has Real $.ury;
+    method width  { $!urx - $!llx }
+    method height { $!ury - $!lly }
+}
+
+class Line is export {
+    # The line's origin is the origin of its first character.
+    has BBox $.bbox; #= PS points
+    has Str  $.text;
+}
+class Para is export {
+    # The para's origin is the origin of its first line.
+    # Each additional line adds one leading distance to the vertical space.
+    has Real $.width               = 468; #= PS points for 6.5 inches
+    has      $.font-name           = 'Times-Roman';
+    has Real $.font-size           = 12;
+    has      $.kern                = True;
+    has Real $.leading-ratio       = 1.3; #= PS points for 6.5 inches
+    #------------------------------#
+    has UInt $.para-indent         = 0;
+    has UInt $.first-line-indent   = 0;
+    has UInt $.line-indent         = 0;
+    #-----.------------------------#
+    has Str  $.para-pre-text       = '';
+    has Str  $.first-line-pre-text = '';
+    has Str  $.line-pre-text       = '';
+    #------------------------------#
+    has Line @.lines;
+    has BBox $.bbox;
+    method add-line(Line $line) {
+        @!lines.push: $line;
+        # adjust new bbox
+    }
+    method width  { $!bbox.urx - $!bbox.llx }
+    method height { $!bbox.ury - $!bbox.lly }
+
+}
+
+multi sub wrap-text(@text,
+    Real :$width               = 468, #= PS points for 6.5 inches
+         :$font-name           = 'Times-Roman',
+    Real :$font-size           = 12,
+         :$kern                = True,
+    Real :$leading-ratio       = 1.3;
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+         :$debug,
+         --> List) is export(:wrap-text) {
+
+    my $afm = Font::AFM.new: :name($font-name);
+    my $sf = $font-size/1000;
+
+    my $mll = $width; # the maximum line width (in PS points) of any line
+
+    # Calculate the various effective indent effects
+    # and get the effective first-line and following lines indent
+    # First line
+    my $findent  = $first-line-indent;
+    # Get the info for the remaining lines
+    my $lindent  = $line-indent;
+
+    my $findent-spaces = SPACE x $findent;
+    my $lindent-spaces = SPACE x $lindent;
+
+    # ready to take care of the first line
+    # we do not add additional spaces between or following these items:
+    my $line = EMPTY;
+    $line ~= $findent-spaces if $findent-spaces;
+    $line ~= $para-pre-text if $para-pre-text;
+    $line ~= $first-line-pre-text if $first-line-pre-text;
+    # do an initial length check on $line length
+    line-length-ok :$line, :initial-first;
+
+    # get all the words
+    my @words = (join ' ', @text).words;
+    note "DEBUG: starting with {@words.elems} words" if $debug;
+    my @para = ();
+    my $p = Para.new;
+    my $first-word = True;
+
+    # some flags for error checking
+    my $begin-first-line      = True;
+    my $begin-following-line  = False;
+    my $checked-following     = False;
+    my $wnum = 0;
+
+    while @words {
+        my $word = @words.head;
+        my $len = $afm.stringwidth: $word, $font-size, :$kern;
+
+        if $len > $width {
+            die "FATAL: Word '$word' has length $len, too long for max line length of $mll points";
+        }
+
+        my $next = $first-word ?? $word !! SPACE ~ $word;
+        note "DEBUG: word: '$word'" if $debug;
+        note "DEBUG: next: '$next'" if $debug;
+
+        if $debug and $begin-first-line {
+            note "DEBUG begin-first line: '$line'";
+        }
+        if $debug and $begin-following-line {
+            note "DEBUG begin following line: '$line'";
+        }
+
+        # do length checks
+        my $tmp-line = $line ~ $next;
+        my $tl = $afm.stringwidth: $tmp-line, $font-size, :$kern;
+
+        note "DEBUG: tmp-line: '$tmp-line'" if $debug;
+        if $begin-first-line {
+            # check mll with first word
+            if $tl > $mll {
+                die "FATAL: First line, first word '$tmp-line' is $tl points wide, too wide for max line length of $mll points";
+            }
+            $begin-first-line = False;
+        }
+        if $begin-following-line {
+            # check mll with first word
+            if $tl > $mll {
+                die "FATAL: First line, first word '$tmp-line' is $tl points wide, too wide for max line length of $mll points";
+            }
+            $begin-following-line = False;
+        }
+
+        if line-length-ok(:line($tmp-line))  {
+            # enough space to add this
+            $line ~= $next;
+            note "DEBUG: good line: '$line'" if $debug;
+            @words.shift; # remove the used word
+            $first-word = False;
+            note "DEBUG: good line with {@words.elems} words" if $debug;
+            next;
+        }
+
+        # else we're done with this line
+        @para.push: $line if $line;
+        $line = EMPTY;
+        last if not @words.elems;
+
+        $first-word = True;
+        $begin-following-line = True;
+        $line ~= $lindent-spaces if $lindent-spaces;
+        $line ~= $para-pre-text if $para-pre-text;
+        $line ~= $line-pre-text if $line-pre-text;
+        if not $checked-following {
+            # do an initial length check on $line length
+            line-length-ok :$line, :initial-following;
+            $checked-following = True;
+        }
+    }
+
+    # may have a line left
+    @para.push: $line if $line;
+    $line = EMPTY;
+
+    # should not have any  words left
+    if @words.elems {
+        die "FATAL: Unexpected non-empty \@words: '{join(SPACE, @words)}'";
+    }
+
+    my sub line-length-ok(:$line, :$initial-first, :$initial-following) {
+        my $mll = $width;
+        my $nl  = $afm.stringwidth: $line, $font-size, :$kern;
+        if $initial-first and $nl > $mll {
+            die "FATAL: first line pre too long: $nl points is too long for max length $mll";
+        }
+        elsif $initial-following and $nl > $mll {
+            die "FATAL: following lines pre too long: $nl points is too long for max length $mll";
+        }
+        return $nl <= $mll;
+    }
+
+    # turn the para into a para object with line objects as children
+    return @para;
+}

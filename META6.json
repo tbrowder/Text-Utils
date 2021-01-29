@@ -8,6 +8,7 @@
   "build-depends": [
   ],
   "depends": [
+    "Font::AFM"
   ],
   "description": "Miscellaneous text utilities",
   "license": "Artistic-2.0",

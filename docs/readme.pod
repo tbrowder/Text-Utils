@@ -29,12 +29,11 @@ The module contains several routines to make text handling
 easier for module and program authors. Following is a short
 synopsis and signature for each of the routines.
 
-
 =head3 sub wrap-paragraph
 
 This routine wraps a list of words into a paragraph with a maximum
-line width (default: 78), and returns a list of the new paragraph's
-lines formatted as desired. A new option, C<:$para-pre-text>, used in
+line width in characters (default: 78), and returns a list of the new paragraph's
+lines formatted as desired. An option, C<:$para-pre-text>, used in
 conjunction with C<:$para-indent>, is very useful for use in
 auto-generation of code. For example, given this chunk of text
 describing a following PDF method C<MoveTo(x, y)>:
@@ -66,19 +65,74 @@ yields:
 The signature:
 
 =begin code :lang<Raku>
-sub wrap-paragraph(@text,
-                   UInt :$max-line-length     = 78,
-                   #------------------------------#
-                   UInt :$para-indent         = 0,
-		   UInt :$first-line-indent   = 0,
-		   UInt :$line-indent         = 0,
-                   #------------------------------#
-                   Str  :$para-pre-text       = '',
-                   Str  :$first-line-pre-text = '',
-                   Str  :$line-pre-text       = '',
-                   #------------------------------#
-                   :$debug,
-                   --> List) is export(:wrap-paragraph) {
+multi sub wrap-paragraph(
+    @text,
+    UInt :$max-line-length     = 78,
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-paragraph) 
+{...}
+multi sub wrap-paragraph(
+    $text, 
+    # ... other args same as the other multi
+    --> List) is export(:wrap-paragraph) 
+{...}
+=end code
+
+=head3 sub wrap-text
+
+This routine is used 
+a in creating PostScript PDF or other output formats where blocks (e.g., paragraphs)
+need to be wrapped to a specific maximum width based on the font
+face and font size to be used.
+Note it has all the options of
+the B<wrap-paragraph> routine except the C<:width> is expressed
+in PostScript points (72 per inch) as is the C<:font-size>.
+The default C<:width> is 468 points,
+the length of a line on a Letter paper, portrait orientation,
+with one-inch margins on all sides.
+
+The fonts currently handled are the the 14 PostScript and PDF I<Core Fonts>:
+
+=begin table
+Courier Courier-Bold Courier-Oblique Courier-BoldOblique
+Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique
+Times-Roman Times-Bold Times-Italic Times-BoldItalic
+Symbol
+Zaphdingbats
+
+=end table
+
+=begin code :lang<Raku>
+multi sub wrap-text(
+    @text,
+    Real :$width               = 468, #= PS points for 6.5 inches
+         :$font-name           = 'Times-Roman',
+    Real :$font-size           = 12, 
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-text) 
+{...}
+multi sub wrap-text(
+    $text, 
+    # ... other args same as the other multi
+    --> List) is export(:wrap-text)
 {...}
 =end code
 
@@ -97,7 +151,10 @@ the environment variable C<TEXT_UTILS_NO_OPTIONAL_COMMA>.
 The signature:
 
 =begin code :lang<Raku>
-sub list2text(@list, :$optional-comma is copy = True) is export(:list2text)
+sub list2text(
+    @list, 
+    :$optional-comma is copy = True
+    ) is export(:list2text)
 {...}
 =end code
 
@@ -108,7 +165,11 @@ Count instances of a substring in a string
 The signature:
 
 =begin code :lang<Raku>
-sub count-substrs(Str:D $string, Str:D $substr --> UInt) is export(:count-substrs)
+sub count-substrs(
+    Str:D $string, 
+    Str:D $substr 
+    --> UInt
+    ) is export(:count-substrs)
 {...}
 =end code
 
@@ -126,12 +187,13 @@ All returned text is normalized if requested.
 The signature:
 
 =begin code :lang<Raku>
-sub strip-comment($line is copy,       # string of text with possible comment
-                  :$mark = '#',        # desired comment char indicator
-                  :$save-comment,      # if true, return the comment
-                  :$normalize,         # if true, normalize returned strings
-                  :$last,              # if true, use the last instead of first comment char
-                 ) is export(:strip-comment)
+sub strip-comment(
+    $line is copy,       # string of text with possible comment
+    :$mark = '#',        # desired comment char indicator
+    :$save-comment,      # if true, return the comment
+    :$normalize,         # if true, normalize returned strings
+    :$last,              # if true, use the last instead of first comment char
+    ) is export(:strip-comment)
 {...}
 =end code
 
@@ -157,7 +219,9 @@ This routine trims a string and collapses multiple whitespace characters.
 The signature:
 
 =begin code :lang<Raku>
-sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string)
+sub normalize-string(
+    Str:D $str is copy 
+    --> Str) is export(:normalize-string)
 {...}
 =end code
 
@@ -174,12 +238,13 @@ an empty string if the input string is not too long.
 The signature:
 
 =begin code :lang<Raku>
-sub split-line(Str:D $line is copy,
-               Str:D $brk,
-               UInt  :$max-line-length = 0,
-               UInt  :$start-pos       = 0,
-               Bool  :$rindex          = False
-               --> List) is export(:split-line)
+sub split-line(
+    Str:D $line is copy,
+    Str:D $brk,
+    UInt  :$max-line-length = 0,
+    UInt  :$start-pos       = 0,
+    Bool  :$rindex          = False
+    --> List) is export(:split-line)
 {...}
 =end code
 
@@ -197,12 +262,13 @@ it is too long).
 The signature:
 
 =begin code :lang<Raku>
-sub split-line-rw(Str:D $line is rw,
-                  Str:D $brk,
-                  UInt  :$max-line-length = 0,
-                  UInt  :$start-pos       = 0,
-                  Bool  :$rindex          = False
-                  --> Str) is export(:split-line-rw)
+sub split-line-rw(
+    Str:D $line is rw,
+    Str:D $brk,
+    UInt  :$max-line-length = 0,
+    UInt  :$start-pos       = 0,
+    Bool  :$rindex          = False
+    --> Str) is export(:split-line-rw)
 {...}
 =end code
 
@@ -219,12 +285,13 @@ results.
 The signature:
 
 =begin code :lang<Raku>
-sub write-paragraph(@text,
-                    UInt :$max-line-length   = 78,
-                    UInt :$para-indent       = 0,
-	            UInt :$first-line-indent = 0,
-                    Str  :$pre-text          = ''
-                     --> List) is export(:write-paragraph)
+sub write-paragraph(
+    @text,
+    UInt :$max-line-length   = 78,
+    UInt :$para-indent       = 0,
+    UInt :$first-line-indent = 0,
+    Str  :$pre-text          = ''
+    --> List) is export(:write-paragraph)
 {...}
 =end code
 
