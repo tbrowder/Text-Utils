@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+3.0.2  2021-01-28T18:15:26-06:00
     - add new multi sub 'wrap-text'
       + provides text wrapping for max line width
         for a PostScript or PDF font at

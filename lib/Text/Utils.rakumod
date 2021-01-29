@@ -1,4 +1,4 @@
-unit module Text::Utils:ver<3.0.1>;
+unit module Text::Utils:ver<3.0.2>;
 
 use Font::AFM;
 
