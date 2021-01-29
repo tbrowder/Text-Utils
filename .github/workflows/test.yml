@@ -1,4 +1,5 @@
-name: test
+name: test-inline-perl5
+
 on:
   push:
     branches:
@@ -6,13 +7,14 @@ on:
     tags-ignore:
       - '*'
   pull_request:
+
 jobs:
   raku:
     strategy:
       matrix:
         os:
           - ubuntu-latest
-          - macOS-latest
+          #- macOS-latest
           #- windows-latest
         raku-version:
           - 'latest'
@@ -23,8 +25,14 @@ jobs:
         with:
           raku-version: ${{ matrix.raku-version }}
       - name: Install Dependencies
-        run: zef install --/test --test-depends --deps-only .
-      - name: Install App::Prove6
-        run: zef install --/test App::Prove6
+        run: |
+          # install and test if need be (includes [test-depends])
+          sudo apt-get install -y libperl-dev libexcel-writer-xlsx-perl libspreadsheet-read-perl cpanminus
+          sudo cpanm Spreadsheet::Reader::ExcelXML Spreadsheet::ParseXLSX
+          sudo apt-get install -y libcsv-dev
+          sudo apt-get install -y libcairo2-dev freetype6-dev
+          zef install .
+          #zef install --/test --test-depends --deps-only .
+          zef install --/test App::Prove6
       - name: Run Tests
         run: prove6 -l t
