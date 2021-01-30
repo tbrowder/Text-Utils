@@ -6,9 +6,9 @@
     "Tom Browder <tom.browder@cpan.org>"
   ],
   "build-depends": [
-    "Pod::To::Markdown"
   ],
   "depends": [
+    "Pod::To::Markdown",
     "Font::AFM:ver<1.24.2>"
   ],
   "description": "Miscellaneous text utilities",
