@@ -38,12 +38,12 @@ jobs:
               echo "DEBUG: METRICS was unset"
               export METRICS="/usr/lib/afm"
               echo "DEBUG: METRICS is now set to '$METRICS'"
-          else 
+          else
               echo "DEBUG: METRICS was set to '$METRICS'"
               export METRICS="/usr/lib/afm:$METRICS"
               echo "DEBUG: METRICS is now set to '$METRICS'"
           fi
           zef install .
-          zef install --/test App::Prove6
+          #zef install --/test App::Prove6
       - name: Run Tests
         run: prove6 -l t
