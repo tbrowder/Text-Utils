@@ -1,4 +1,4 @@
-name: test-inline-perl5
+name: test
 
 on:
   push:
