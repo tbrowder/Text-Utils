@@ -34,7 +34,15 @@ jobs:
           # need some font afm files
           sudo mkdir -p /usr/share/afm
           sudo cp ./afm/*.afm /usr/share/afm
-          export METRICS="/usr/share/afm"
+          if [ -z $METRICS ] ; then
+              echo "DEBUG: METRICS was unset"
+              export METRICS="/usr/share/afm"
+              echo "DEBUG: METRICS is now set to '$METRICS'"
+          else 
+              echo "DEBUG: METRICS was set to '$METRICS'"
+              export METRICS="/usr/share/afm:$METRICS"
+              echo "DEBUG: METRICS is now set to '$METRICS'"
+          fi
           zef install .
           zef install --/test App::Prove6
       - name: Run Tests
