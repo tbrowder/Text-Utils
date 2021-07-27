@@ -90,7 +90,7 @@ multi sub wrap-paragraph(
 =head3 sub wrap-text
 
 This routine is used 
-a in creating PostScript PDF or other output formats where blocks (e.g., paragraphs)
+in creating PostScript PDF or other output formats where blocks (e.g., paragraphs)
 need to be wrapped to a specific maximum width based on the font
 face and font size to be used.
 Note it has all the options of

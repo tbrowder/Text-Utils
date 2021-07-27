@@ -1,4 +1,16 @@
 {{$NEXT}}
+    - add alias 'normalize-text' for 'normalize-string'
+      + add test for the alias
+    - add sub 'typeset-text' for the equivalent signature but 
+      deprecated multi subs 'wrap-text' and 'wrap-para'
+      + the new sub has more named params
+      + add test for 'typeset-text'
+    - add alias 'typeset-string' for 'typeset-text'
+      + add test for the alias
+    - add alias 'typeset-line' for 'typeset-text'
+      + add test for the alias
+    - improve documentation
+    - correct typos in docs
 
 3.0.2  2021-01-28T18:15:26-06:00
     - add new multi sub 'wrap-text'

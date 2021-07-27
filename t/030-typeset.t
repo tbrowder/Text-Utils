@@ -4,7 +4,7 @@ use Test;
 use Text::Utils :ALL;
 use Font::AFM;
 
-plan 1;
+plan 5;
 
 my $debug = 0;
 
@@ -40,11 +40,23 @@ my (@para, @p1);
 # the string output version
 
 {
+    my (@p1, @p2, @p3);
     my $width = 30 * $cwidth;
     my $text = @text.join: " ";
     lives-ok {
-        @para = typeset-text $text, :$width, :$debug;
+        @p1 = typeset-text $text, :$width, :$debug;
     }, "test 'typeset-text'";
+
+    lives-ok {
+        @p2 = typeset-string $text, :$width, :$debug;
+    }, "test 'typeset-string'";
+
+    lives-ok {
+        @p3 = typeset-line $text, :$width, :$debug;
+    }, "test 'typeset-line'";
+
+    is-deeply @p1, @p2, "p1 vs p2";
+    is-deeply @p1, @p3, "p1 vs p3";
 }
 
 
