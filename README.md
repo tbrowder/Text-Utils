@@ -118,7 +118,7 @@ multi sub wrap-text(
 
 ### sub list2text
 
-Turn a list into a text string for use in a document
+Turn a list into a text string for use in a document.
 
 For example, this list `1 2 3` becomes either this `"1, 2, and 3"` (the default result) or this `"1, 2 and 3"` (if the `$optional-comma` named variable is set to false). The default result uses the so-called *Oxford Comma* which is not popular among some writers, but those authors may change the default behavior by permanently by defining the environment variable `TEXT_UTILS_NO_OPTIONAL_COMMA`.
 
@@ -134,7 +134,7 @@ sub list2text(
 
 ### sub count-substrs
 
-Count instances of a substring in a string
+Count instances of a substring in a string.
 
 The signature:
 
@@ -147,18 +147,18 @@ sub count-substrs(
 {...}
 ```
 
-### sub strip-comments
+### sub strip-comment
 
-Strip comments from an input text line, save comment if requested, normalize returned text if requested
+Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
 
-The routine returns a string of text with any comment stripped off. Note the designated char will trigger the strip even though it is escaped or included in quotes. Also returns the comment if requested. All returned text is normalized if requested.
+The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment if requested. All returned text is normalized if requested.
 
 The signature:
 
 ```Raku
 sub strip-comment(
     $line is copy,       # string of text with possible comment
-    :$mark = '#',        # desired comment char indicator
+    :$mark = '#',        # desired comment character indicator
     :$save-comment,      # if true, return the comment
     :$normalize,         # if true, normalize returned strings
     :$last,              # if true, use the last instead of first comment char
