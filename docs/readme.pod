@@ -138,7 +138,7 @@ multi sub wrap-text(
 
 =head3 sub list2text
 
-Turn a list into a text string for use in a document
+Turn a list into a text string for use in a document.
 
 For example, this list C<<1 2 3>> becomes either
 this C<"1, 2, and 3"> (the default result) or this
@@ -160,7 +160,7 @@ sub list2text(
 
 =head3 sub count-substrs
 
-Count instances of a substring in a string
+Count instances of a substring in a string.
 
 The signature:
 
@@ -173,13 +173,13 @@ sub count-substrs(
 {...}
 =end code
 
-=head3 sub strip-comments
+=head3 sub strip-comment
 
-Strip comments from an input text line, save comment if
-requested, normalize returned text if requested
+Strip the comment from an input text line, save comment if
+requested, normalize returned text if requested.
 
 The routine returns a string of text with any comment stripped off. Note the
-designated char will trigger the strip even though it is
+designated character will trigger the strip even though it is
 escaped or included in quotes.
 Also returns the comment if requested.
 All returned text is normalized if requested.
@@ -189,7 +189,7 @@ The signature:
 =begin code :lang<Raku>
 sub strip-comment(
     $line is copy,       # string of text with possible comment
-    :$mark = '#',        # desired comment char indicator
+    :$mark = '#',        # desired comment character indicator
     :$save-comment,      # if true, return the comment
     :$normalize,         # if true, normalize returned strings
     :$last,              # if true, use the last instead of first comment char
