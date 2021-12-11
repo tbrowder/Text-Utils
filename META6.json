@@ -1,9 +1,8 @@
 {
   "api": "3",
-  "auth": "cpan:TBROWDER",
-  "author": "cpan:TBROWDER",
+  "auth": "zef:tbrowder",
   "authors": [
-    "Tom Browder <tom.browder@cpan.org>"
+    "Tom Browder <tbrowder@acm.org>"
   ],
   "build-depends": [
   ],

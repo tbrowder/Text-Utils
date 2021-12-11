@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Publish to Zef repository
     - add alias 'normalize-text' for 'normalize-string'
       + add test for the alias
     - add sub 'typeset-text' for the equivalent signature but 
