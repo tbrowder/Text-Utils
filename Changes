@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+3.0.3  2021-12-10T18:36:51-06:00
     - Publish to Zef repository
     - add alias 'normalize-text' for 'normalize-string'
       + add test for the alias
