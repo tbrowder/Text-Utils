@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+3.0.4  2022-01-12T21:19:25-06:00
+    - Update minimum version required of Font::AFM
+
 3.0.3  2021-12-10T18:36:51-06:00
     - Publish to Zef repository
     - add alias 'normalize-text' for 'normalize-string'
