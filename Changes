@@ -1,4 +1,6 @@
 {{$NEXT}}
+    - Update dependency on Font::AFM updated version
+    - REALLY remove dependency on Test::META    
 
 3.0.5  2022-06-04T10:16:53-05:00
     - Remove dependency on Test::META
