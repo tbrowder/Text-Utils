@@ -32,8 +32,7 @@
     "CPAN5"
   ],
   "test-depends": [
-    "App::Prove6",
-    "Test::META"
+    "App::Prove6"
   ],
   "version": "3.0.4"
 }
