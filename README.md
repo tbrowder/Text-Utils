@@ -28,7 +28,7 @@ my $s = 'foo';
 DESCRIPTION
 ===========
 
-The module contains several routines to make text handling easier for module and program authors. Following is a short synopsis and signature for each of the routines.
+The module contains several routines to make text handling easier for module and program authors. Following is a short synopsis and signature for each of the routines. It also exports, by `DEFAULT`, `ask` as an alias for routine `prompt`.
 
 ### sub wrap-paragraph
 

@@ -8,7 +8,7 @@
   ],
   "depends": [
     "Pod::To::Markdown",
-    "Font::AFM:ver<1.24.6+>"
+    "Font::AFM:ver<1.24.6>"
   ],
   "description": "Miscellaneous text utilities",
   "license": "Artistic-2.0",
@@ -32,6 +32,7 @@
     "CPAN5"
   ],
   "test-depends": [
+    "Temp::Path",
     "App::Prove6"
   ],
   "version": "3.0.6"
