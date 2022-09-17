@@ -33,7 +33,7 @@ jobs:
           #sudo apt-get install -y libcairo2-dev libfreetype6-dev
           # need some font afm files
           sudo mkdir -p /usr/lib/afm
-          sudo cp ./afm/*.afm /usr/lib/afm
+          sudo cp -f ./afm/*.afm /usr/lib/afm
           if [ -z $METRICS ] ; then
               echo "DEBUG: METRICS was unset"
               export METRICS="/usr/lib/afm"
@@ -43,7 +43,7 @@ jobs:
               export METRICS="/usr/lib/afm:$METRICS"
               echo "DEBUG: METRICS is now set to '$METRICS'"
           fi
-          zef install --/test --test-depend --deps-only .
+          zef install --/test --test-depends --deps-only .
           zef install --/test App::Prove6
       - name: Run Tests
         run: prove6 -I. t
