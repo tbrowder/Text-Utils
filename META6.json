@@ -7,7 +7,6 @@
   "build-depends": [
   ],
   "depends": [
-    "Pod::To::Markdown",
     "Font::AFM:ver<1.24.6>"
   ],
   "description": "Miscellaneous text utilities",
@@ -19,21 +18,18 @@
   },
   "resources": [
   ],
-  "source-url": "https://github.com/tbrowder/Text-Utils-Raku.git",
+  "source-url": "https://github.com/tbrowder/Text-Utils.git",
   "support": {
-    "bugtracker": "https://github.com/tbrowder/Text-Utils-Raku/issues"
+    "bugtracker": "https://github.com/tbrowder/Text-Utils/issues"
   },
   "tags": [
     "string functions",
     "auto-code generation",
     "text wrap",
     "normalize string",
-    "text",
-    "CPAN5"
+    "text"
   ],
   "test-depends": [
-    "Temp::Path",
-    "App::Prove6"
   ],
   "version": "3.1.0"
 }
