@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Correct workflow/test.yml
     - Correct Github support paths in META6.json file
     - Remove 'ask' which is now in its owm module
     - Remove dependencies in 'test-depends' since it's now in workflows/test.yml
