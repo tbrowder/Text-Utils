@@ -168,14 +168,16 @@ sub strip-comment(
 
 ### sub commify
 
-This routine is ported from the Perl version in the *The Perl Cookbook, 2e*.
+This routine was origimally ported from the Perl version in the *The Perl Cookbook, 2e*.
 
 This routine adds commas to a number to separate multiples of a thousand. For example, given an input of `1234.56`, the routine returns `1,234.56`.
+
+As an improvement, if real numbers are input, the routine returns the number stringified with two decimal places. The user may specify the desired number with the new `:$decimals` named argument.
 
 The signature:
 
 ```Raku
-sub commify($num) is export(:commify)
+sub commify($num, :$decimals --> Str) is export(:commify)
 {...}
 ```
 

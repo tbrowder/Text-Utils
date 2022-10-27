@@ -131,8 +131,19 @@ sub strip-comment($line is copy,       #= string of text with possible comment
 #| Params  : An integer or number with a decimal fraction
 #| Returns : The input number with commas added, e.g.,
 #|             1234.56 => 1,234.56
-sub commify($num) is export(:commify) {
+#|             1234.60 => 1,234.60
+sub commify($Num, UInt :$decimals --> Str) is export(:commify) {
     # translated from Perl Cookbook, 2e, Recipe 2.16
+    # with improvement by this author
+    my $num = $Num;
+    if $Num ~~ Int {
+        $num = $Num.Str;
+    }
+    elsif $Num ~~ Real {
+        my $nd = $decimals.defined ?? $decimals !! 2;
+        $num = sprintf "%0.*f", $nd, $Num;
+    }
+
     say "DEBUG: input '$num'" if $DEBUG;
     my $text = $num.flip;
     say "DEBUG: input flipped '$text'" if $DEBUG;

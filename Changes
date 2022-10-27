@@ -1,4 +1,7 @@
 {{$NEXT}}
+    - Correctly handle real numbers to preserve two decimal places
+      since 'commify' as a default
+    - Add option to specify number of decimal places to be shown
 
 3.1.0  2022-08-22T18:02:43-05:00
     - Export 'ask' as an alias for routine 'prompt
