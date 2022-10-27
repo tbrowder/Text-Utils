@@ -7,7 +7,7 @@
     - Correct workflow/test.yml
     - Eliminate non-Linux testing for now
     - Correct Github support paths in META6.json file
-    - Remove 'ask' which is now in its owm module
+    - Remove 'ask' which is now in its own module
     - Remove dependencies in 'test-depends' since it's now in workflows/test.yml
 
 3.1.0  2022-08-22T18:02:43-05:00
