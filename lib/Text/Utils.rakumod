@@ -47,7 +47,6 @@ class AFM-font is export {
 
 constant \SPACE is export = ' ';
 constant \EMPTY is export = '';
-constant &ask is export(:DEFAULT)   = &prompt;
 
 #| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;

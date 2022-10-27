@@ -3,6 +3,13 @@
       since 'commify' as a default
     - Add option to specify number of decimal places to be shown
 
+3.2.0  2022-09-17T18:27:09-05:00
+    - Correct workflow/test.yml
+    - Eliminate non-Linux testing for now
+    - Correct Github support paths in META6.json file
+    - Remove 'ask' which is now in its owm module
+    - Remove dependencies in 'test-depends' since it's now in workflows/test.yml
+
 3.1.0  2022-08-22T18:02:43-05:00
     - Export 'ask' as an alias for routine 'prompt
 
