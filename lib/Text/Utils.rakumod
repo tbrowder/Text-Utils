@@ -344,9 +344,13 @@ multi sub wrap-paragraph(
 #|             to single ones
 #| Params  : The string to be normalized
 #| Returns : The normalized string
-# define  "aliases" for convenience
-our &normalize-text is export(:normalize-text, :normalize-string) = &normalize-string;
-sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string, :normalize-text) {
+sub normalize-text(Str:D $str is copy --> Str) is export(:normalize-text) {
+    $str .= trim;
+    $str ~~ s:g/ \s ** 2..*/ /;
+    return $str;
+} # normalize-text
+
+sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
     $str .= trim;
     $str ~~ s:g/ \s ** 2..*/ /;
     return $str;
