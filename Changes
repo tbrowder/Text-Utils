@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Use KMP-Matcher from module module AlgorithmsIT in sub 'count-substrings'
     - Rearrange order of sub descriptions in the README
     - Add sub sort-list (from module Abbreviations)
       + add tests

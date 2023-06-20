@@ -7,7 +7,8 @@
   "build-depends": [
   ],
   "depends": [
-    "Font::AFM:ver<1.24.6>"
+    "Font::AFM:ver<1.24.6>",
+    "AlgorithmsIT"
   ],
   "description": "Miscellaneous text utilities",
   "license": "Artistic-2.0",
@@ -26,7 +27,7 @@
     "string functions",
     "auto-code generation",
     "normalize string",
-    "text "
+    "text scan pattern match substr"
   ],
   "test-depends": [
   ],

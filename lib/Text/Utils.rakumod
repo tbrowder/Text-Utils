@@ -78,14 +78,22 @@ sub list2text(@list, :$optional-comma is copy = True) is export(:list2text) {
 #| Params  : String, Substring
 #| Returns : Number of substrings found
 sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
+    use AlgorithmsIT :ALL;
+    use Classes;
+    my $T = ArrayOneBased.new: $ip;
+    my $P = ArrayOneBased.new: $substr;
+    my @shifts = KMP-Matcher $T, $P;
+    @shifts.elems;
+
+    =begin comment
     my $nsubstrs = 0;
     my $idx = index $ip, $substr;
     while $idx.defined {
 	++$nsubstrs;
 	$idx = index $ip, $substr, $idx+1;
     }
-
     return $nsubstrs;
+    =end comment
 
 } # count-substrs
 
