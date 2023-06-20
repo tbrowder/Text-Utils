@@ -25,9 +25,8 @@
   "tags": [
     "string functions",
     "auto-code generation",
-    "text wrap",
     "normalize string",
-    "text"
+    "text "
   ],
   "test-depends": [
   ],

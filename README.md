@@ -30,55 +30,6 @@ DESCRIPTION
 
 The module contains several routines to make text handling easier for module and program authors. Following is a short synopsis and signature for each of the routines.
 
-### sub wrap-paragraph
-
-This routine wraps a list of words into a paragraph with a maximum line width in characters (default: 78), and returns a list of the new paragraph's lines formatted as desired. An option, `:$para-pre-text`, used in conjunction with `:$para-indent`, is very useful for use in auto-generation of code. For example, given this chunk of text describing a following PDF method `MoveTo(x, y)`:
-
-    my $str = q:to/HERE/;
-    Begin a new sub-path by moving the current point to coordinates (x,
-    y), omitting any connecting line segment. If the previous path
-    construction operator in the current path was also m, the new m
-    overrides it.
-    HERE
-
-Run that string through the sub to see the results:
-
-```raku
-my @para = wrap-paragraph $str.lines, :para-pre-text('#| '), :para-indent(4);
-.say for @para;
-```
-
-yields:
-
-        #| Begin a new sub-path by moving the current point to coordinates (x, y),
-        #| omitting any connecting line segment. If the previous path construction
-        #| operator in the current path was also m, the new m overrides it.
-
-The signature:
-
-```Raku
-multi sub wrap-paragraph(
-    @text,
-    UInt :$max-line-length     = 78,
-    #------------------------------#
-    UInt :$para-indent         = 0,
-    UInt :$first-line-indent   = 0,
-    UInt :$line-indent         = 0,
-    #------------------------------#
-    Str  :$para-pre-text       = '',
-    Str  :$first-line-pre-text = '',
-    Str  :$line-pre-text       = '',
-    #------------------------------#
-    :$debug,
-    --> List) is export(:wrap-paragraph) 
-{...}
-multi sub wrap-paragraph(
-    $text, 
-    # ... other args same as the other multi
-    --> List) is export(:wrap-paragraph) 
-{...}
-```
-
 ### sub wrap-text
 
 This routine is used in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it has all the options of the **wrap-paragraph** routine except the `:width` is expressed in PostScript points (72 per inch) as is the `:font-size`. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
@@ -96,7 +47,7 @@ multi sub wrap-text(
     @text,
     Real :$width               = 468, #= PS points for 6.5 inches
          :$font-name           = 'Times-Roman',
-    Real :$font-size           = 12, 
+    Real :$font-size           = 12,
     #------------------------------#
     UInt :$para-indent         = 0,
     UInt :$first-line-indent   = 0,
@@ -107,10 +58,10 @@ multi sub wrap-text(
     Str  :$line-pre-text       = '',
     #------------------------------#
     :$debug,
-    --> List) is export(:wrap-text) 
+    --> List) is export(:wrap-text)
 {...}
 multi sub wrap-text(
-    $text, 
+    $text,
     # ... other args same as the other multi
     --> List) is export(:wrap-text)
 {...}
@@ -126,7 +77,7 @@ The signature:
 
 ```Raku
 sub list2text(
-    @list, 
+    @list,
     :$optional-comma is copy = True
     ) is export(:list2text)
 {...}
@@ -140,8 +91,8 @@ The signature:
 
 ```Raku
 sub count-substrs(
-    Str:D $string, 
-    Str:D $substr 
+    Str:D $string,
+    Str:D $substr
     --> UInt
     ) is export(:count-substrs)
 {...}
@@ -181,7 +132,7 @@ sub commify($num, :$decimals --> Str) is export(:commify)
 {...}
 ```
 
-### sub normalize-string
+### sub normalize-string (or its alias 'normalize-text')
 
 This routine trims a string and collapses multiple whitespace characters.
 
@@ -189,7 +140,7 @@ The signature:
 
 ```Raku
 sub normalize-string(
-    Str:D $str is copy 
+    Str:D $str is copy
     --> Str) is export(:normalize-string)
 {...}
 ```
@@ -233,6 +184,55 @@ sub split-line-rw(
     UInt  :$start-pos       = 0,
     Bool  :$rindex          = False
     --> Str) is export(:split-line-rw)
+{...}
+```
+
+### sub wrap-paragraph
+
+This routine wraps a list of words into a paragraph with a maximum line width in characters (default: 78), and returns a list of the new paragraph's lines formatted as desired. An option, `:$para-pre-text`, used in conjunction with `:$para-indent`, is very useful for use in auto-generation of code. For example, given this chunk of text describing a following PDF method `MoveTo(x, y)`:
+
+    my $str = q:to/HERE/;
+    Begin a new sub-path by moving the current point to coordinates (x,
+    y), omitting any connecting line segment. If the previous path
+    construction operator in the current path was also m, the new m
+    overrides it.
+    HERE
+
+Run that string through the sub to see the results:
+
+```raku
+my @para = wrap-paragraph $str.lines, :para-pre-text('#| '), :para-indent(4);
+.say for @para;
+```
+
+yields:
+
+        #| Begin a new sub-path by moving the current point to coordinates (x, y),
+        #| omitting any connecting line segment. If the previous path construction
+        #| operator in the current path was also m, the new m overrides it.
+
+The signature:
+
+```Raku
+multi sub wrap-paragraph(
+    @text,
+    UInt :$max-line-length     = 78,
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-paragraph)
+{...}
+multi sub wrap-paragraph(
+    $text,
+    # ... other args same as the other multi
+    --> List) is export(:wrap-paragraph)
 {...}
 ```
 

@@ -1,4 +1,9 @@
 {{$NEXT}}
+    - Rearrange order of sub descriptions in the README
+    - Add sub sort-list (from module Abbreviations)
+      + add tests
+    - Improve sub 'wrap-text' to use FontFactory
+    - Use better returns at sub end (eliminate explicit 'return')
 
 3.3.1  2023-01-04T11:25:21-06:00
     - Make 'normalize-string' and 'normalize-text' separate routines
@@ -20,7 +25,7 @@
 
 3.0.6  2022-06-04T16:48:15-05:00
     - Update dependency on Font::AFM updated version
-    - REALLY remove dependency on Test::META    
+    - REALLY remove dependency on Test::META
 
 3.0.5  2022-06-04T10:16:53-05:00
     - Remove dependency on Test::META
@@ -32,7 +37,7 @@
     - Publish to Zef repository
     - add alias 'normalize-text' for 'normalize-string'
       + add test for the alias
-    - add sub 'typeset-text' for the equivalent signature but 
+    - add sub 'typeset-text' for the equivalent signature but
       deprecated multi subs 'wrap-text' and 'wrap-para'
       + the new sub has more named params
       + add test for 'typeset-text'
@@ -51,7 +56,7 @@
       + input is a text string or a list of
         words
       + added an 'AFM-font' class to wrap a font and
-        font size along with convenience 
+        font size along with convenience
         methods and attributes
       + added tests for the AFM-font class
       + added a rudimentary test for the two subs

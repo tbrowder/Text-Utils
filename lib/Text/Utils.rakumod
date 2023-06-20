@@ -190,7 +190,7 @@ para-indent spaces + line-indent spaces + para-pre-text + line-pre-text + text
 
 multi sub wrap-paragraph($text, |c
                    --> List) is export(:wrap-paragraph) {
-    return wrap-paragraph($text.words, |c);
+    wrap-paragraph($text.words, |c);
 }
 
 multi sub wrap-paragraph(
@@ -335,7 +335,7 @@ multi sub wrap-paragraph(
         return $nc <= $mll;
     }
 
-    return @para;
+    @para;
 
 } # wrap-paragraph
 
@@ -345,15 +345,13 @@ multi sub wrap-paragraph(
 #| Params  : The string to be normalized
 #| Returns : The normalized string
 sub normalize-text(Str:D $str is copy --> Str) is export(:normalize-text) {
-    $str .= trim;
-    $str ~~ s:g/ \s ** 2..*/ /;
-    return $str;
+    normalize-string $str;
 } # normalize-text
 
 sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
     $str .= trim;
     $str ~~ s:g/ \s ** 2..*/ /;
-    return $str;
+    $str;
 } # normalize-string
 
 #-----------------------------------------------------------------------
@@ -382,7 +380,7 @@ sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
         #$line  .= trim-trailing;
         #$line2 .= trim;
     }
-    return ($line, $line2);
+    $line, $line2;
 
 } # split-line
 
@@ -413,7 +411,7 @@ sub split-line-rw(Str:D $line is rw, Str:D $brk, UInt :$max-line-length = 0,
         #$line  .= trim-trailing;
         #$line2 .= trim;
     }
-    return $line2;
+    $line2;
 
 } # split-line-rw
 
@@ -525,12 +523,12 @@ multi sub write-paragraph(@text,
         $first-word = True;
     }
 
-    return @para;
+    @para;
 } # write-paragraph
 
 multi sub wrap-text($text, |c
                    --> List) is export(:wrap-text) {
-    return wrap-text($text.words, |c);
+    wrap-text($text.words, |c);
 }
 
 class BBox is export {
@@ -718,7 +716,7 @@ multi sub wrap-text(@text,
     }
 
     # TODO turn the para into a para object with line objects as children
-    return @para;
+    @para;
 }
 
 # define  "aliases" for convenience
@@ -871,5 +869,5 @@ multi sub typeset-text(Str:D $text,
     }
 
     # TODO turn the para into a para object with line objects as children
-    return @para;
+    @para;
 } # sub typeset-text
