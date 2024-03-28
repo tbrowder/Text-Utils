@@ -6,6 +6,9 @@
       + add tests
     - Improve sub 'wrap-text' to use FontFactory
     - Use better returns at sub end (eliminate explicit 'return')
+    - Use latest Font::AFM (ver 1.24.10)
+    - Add quote handling to sub 'strip-comment'
+    - Add quote handling to sub 'normalize-text' (and 'normalize-string')
 
 3.3.1  2023-01-04T11:25:21-06:00
     - Make 'normalize-string' and 'normalize-text' separate routines

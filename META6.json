@@ -7,7 +7,7 @@
   "build-depends": [
   ],
   "depends": [
-    "Font::AFM:ver<1.24.6>",
+    "Font::AFM:ver<1.24.10>",
     "AlgorithmsIT"
   ],
   "description": "Miscellaneous text utilities",

@@ -349,6 +349,9 @@ sub normalize-text(Str:D $str is copy --> Str) is export(:normalize-text) {
 sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
     $str .= trim;
     $str ~~ s:g/ \s ** 2..*/ /;
+    # trim properly quoted chunks
+    $str = normalize-quotes $str;
+
     $str;
 } # normalize-string
 
