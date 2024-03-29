@@ -356,7 +356,7 @@ sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
     $str;
 } # normalize-string
 
-sub normalize-quotes() is export(:normalize-quotes) is export {
+sub normalize-quotes($s) is export(:normalize-quotes) {
     # First we assume a string has had any line ending removed,
     # so any embedded newline must be handled as part of
     # the processing.
@@ -366,6 +366,43 @@ sub normalize-quotes() is export(:normalize-quotes) is export {
     # newline to continue quote analysis.
 
     # valid quote pairs:
+    my %left-quotes = %(
+        # left => right
+        '0022' => '0022',
+        '0027' => '0027',
+        '2018' => '2019',
+        '201C' => '201D',
+    );
+    my %right-quotes = %(
+        # right => left
+        '0022' => '0022',
+        '0027' => '0027',
+        '2019' => '2018',
+        '201D' => '201C',
+    );
+
+    my @q;
+    for %left-quotes.kv -> $leftHex, $rightHex {
+        # get the quote chars from the 4-char hex strings
+        my $Lc = parse-base($leftHex, 16).Int.chr;
+        my $Rc = parse-base($rightHex, 16).Int.chr;
+        # get the indices for each
+        my @left  = $s.indices $Lc, :overlap;
+        @q.push: |@left;
+        my @right = $s.indices $Rc, :overlap;
+        @q.push: |@right;
+    }
+    # any duplicate index is an error
+    unless @q.set.unique {
+        die "FATAL: Overlapping indices for quote chars in string $s";
+    }
+
+    # chop the string into chunks from the quote char indices array
+    my @chunks;
+    my $t = "";
+    for $s.comb -> {
+    }
+
 
 } # normalize-quotes
 
