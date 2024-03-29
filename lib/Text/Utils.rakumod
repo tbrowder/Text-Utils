@@ -99,11 +99,12 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #|             escaped or included in quotes.
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
-sub strip-comment($line is copy,       #= string of text with possible comment
-                    :$mark = '#',        #= desired comment char indicator
-                    :$save-comment,      #= if true, return the comment
-                    :$normalize,         #= if true, normalize returned strings
-                    :$last,              #= if true, use the last instead of first comment char
+sub strip-comment($line is copy,    #= string of text with possible comment
+                    :$mark = '#',   #= desired comment char indicator
+                    :$save-comment, #= if true, return the comment
+                    :$normalize,    #= if true, normalize returned strings
+                    :$last,         #= if true, use the last instead of first 
+                                    #=   comment char
                    ) is export(:strip-comment) {
     my $comment = '';
     my $clen    = $mark.chars;
@@ -354,6 +355,19 @@ sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
 
     $str;
 } # normalize-string
+
+sub normalize-quotes() is export(:normalize-quotes) is export {
+    # First we assume a string has had any line ending removed,
+    # so any embedded newline must be handled as part of
+    # the processing.
+    #
+    # Secondly, any hyphen before a newline which is part of text
+    # will ensure the text will have to be joined with the text after the 
+    # newline to continue quote analysis.
+
+    # valid quote pairs:
+
+} # normalize-quotes
 
 #-----------------------------------------------------------------------
 #| Purpose : Split a string into two pieces
