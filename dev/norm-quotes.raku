@@ -7,13 +7,19 @@ my $xfil = "quoted.txt";
 my $ifil;
 
 # hashes containing quote char hex codes
-my %quote-left = %(
-    # left => right
+my %left-quotes = %(
+'0022' => '0022',
+'0027' => '0027',
+'2018' => '2019',
+'201C' => '201D',
 );
-my %quote-right = %(
-    # right => left
+my %right-quotes = %(
+'0022' => '0022',
+'0027' => '0027',
+'2019' => '2018',
+'201D' => '201C',
 );
-;
+
 if not @*ARGS {
     print qq:to/HERE/;
     Usage: {$*PROGRAM.basename} <text file>
@@ -43,6 +49,17 @@ for @*ARGS {
 }
 
 say "Inspecting file: $ifil";
+my $s = $ifil.IO.slurp;
+
+for %left-quotes.kv -> $leftH, $rightH {
+    # get the chars represented by the hex codes
+    my $Lc = parse-base($leftH, 16).Int.chr;
+    my $Rc = parse-base($rightH, 16).Int.chr;
+    say "left ($Lc) ... right ($Rc)";
+}
+
+=finish
+
 for $ifil.IO.lines.kv -> $i, $line is copy {
     $line = strip-comment $line;
     next if $line !~~ /\S/;

@@ -11,13 +11,13 @@ U+201C | LEFT DOUBLE QUOTATION MARK
 U+201D | RIGHT DOUBLE QUOTATION MARK  
 =end table
 
-my %left-quote = %(
+my %left-quotes = %(
 '0022' => '0022',
 '0027' => '0027',
 '2018' => '2019',
 '201C' => '201D',
 );
-my %right-quote = %(
+my %right-quotes = %(
 '0022' => '0022',
 '0027' => '0027',
 '2019' => '2018',
