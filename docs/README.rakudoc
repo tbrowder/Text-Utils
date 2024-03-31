@@ -43,7 +43,7 @@ order. The order by length is by the shortest abbreviation first unless
 the C<:$reverse> option is used. 
 
 The routine's output can be modified for other uses by entering the
-C<:$type> parameter to choose another of the <enum Sort-type>s.
+C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
 =head3 sub strip-comment
 

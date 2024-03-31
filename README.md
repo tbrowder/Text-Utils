@@ -39,7 +39,7 @@ The module contains several routines to make text handling easier for module and
 
 By default, this routine sorts all lists by word length, then by Str order. The order by length is by the shortest abbreviation first unless the `:$reverse` option is used. 
 
-The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the <enum Sort-type>s.
+The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the `enum Sort-type`s.
 
 ### sub strip-comment
 
