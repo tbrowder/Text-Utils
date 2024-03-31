@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+3.3.2  2024-03-31T07:22:30-05:00
     - Change Github workflows to three-OS tests
     - Use KMP-Matcher from module module AlgorithmsIT in sub 'count-substrings'
     - Rearrange order of sub descriptions in the README
