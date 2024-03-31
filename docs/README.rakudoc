@@ -18,7 +18,7 @@ for $text.lines -> $line is copy {
     $line = strip-comment $line;
     say $line;
 }
-# OUTPUT:
+# OUTPUT with comments removed:
 any kind of text, including code;
 my $s = 'foo';
 =end code
@@ -40,9 +40,7 @@ sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort)
 
 By default, this routine sorts all lists by word length, then by Str
 order. The order by length is by the shortest abbreviation first unless
-the C<:$reverse> option is used. This is the routine used for all the
-output types produced by this module I<except> the
-I<AbbrevList> (C<AL>) which keeps the original word set order.
+the C<:$reverse> option is used. 
 
 The routine's output can be modified for other uses by entering the
 C<:$type> parameter to choose another of the <enum Sort-type>s.
