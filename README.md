@@ -30,6 +30,49 @@ DESCRIPTION
 
 The module contains several routines to make text handling easier for module and program authors. Following is a short synopsis and signature for each of the routines.
 
+### `sub sort-list`
+
+    #  StrLength, LengthStr, Str, Length, Number
+    enum Sort-type is export(:sort) < SL LS SS LL N >;
+    sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort)
+    {...}
+
+By default, this routine sorts all lists by word length, then by Str order. The order by length is by the shortest abbreviation first unless the `:$reverse` option is used. This is the routine used for all the output types produced by this module *except* the *AbbrevList* (`AL`) which keeps the original word set order.
+
+The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the <enum Sort-type>s.
+
+### sub strip-comment
+
+Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
+
+The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment if requested. All returned text is normalized if requested.
+
+The signature:
+
+```Raku
+sub strip-comment(
+    $line is copy,       # string of text with possible comment
+    :$mark = '#',        # desired comment character indicator
+    :$save-comment,      # if true, return the comment
+    :$normalize,         # if true, normalize returned strings
+    :$last,              # if true, use the last instead of first comment char
+    ) is export(:strip-comment)
+{...}
+```
+
+### sub normalize-string (or its alias 'normalize-text')
+
+This routine trims a string and collapses multiple whitespace characters (including tabs and newlines) into one.
+
+The signature:
+
+```Raku
+sub normalize-string(
+    Str:D $str is copy
+    --> Str) is export(:normalize-string)
+{...}
+```
+
 ### sub wrap-text
 
 This routine is used in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it has all the options of the **wrap-paragraph** routine except the `:width` is expressed in PostScript points (72 per inch) as is the `:font-size`. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
@@ -98,25 +141,6 @@ sub count-substrs(
 {...}
 ```
 
-### sub strip-comment
-
-Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
-
-The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment if requested. All returned text is normalized if requested.
-
-The signature:
-
-```Raku
-sub strip-comment(
-    $line is copy,       # string of text with possible comment
-    :$mark = '#',        # desired comment character indicator
-    :$save-comment,      # if true, return the comment
-    :$normalize,         # if true, normalize returned strings
-    :$last,              # if true, use the last instead of first comment char
-    ) is export(:strip-comment)
-{...}
-```
-
 ### sub commify
 
 This routine was originally ported from the Perl version in the *The Perl Cookbook, 2e*.
@@ -129,19 +153,6 @@ The signature:
 
 ```Raku
 sub commify($num, :$decimals --> Str) is export(:commify)
-{...}
-```
-
-### sub normalize-string (or its alias 'normalize-text')
-
-This routine trims a string and collapses multiple whitespace characters.
-
-The signature:
-
-```Raku
-sub normalize-string(
-    Str:D $str is copy
-    --> Str) is export(:normalize-string)
 {...}
 ```
 
@@ -236,25 +247,6 @@ multi sub wrap-paragraph(
 {...}
 ```
 
-### sub write-paragraph
-
-**THIS ROUTINE IS DEPRECATED - USE `wrap-paragraph` FOR NEW AND OLD CODE**
-
-This routine wraps a list of words into a paragraph with a maximum line width (default: 78) and updates the input list with the results.
-
-The signature:
-
-```Raku
-sub write-paragraph(
-    @text,
-    UInt :$max-line-length   = 78,
-    UInt :$para-indent       = 0,
-    UInt :$first-line-indent = 0,
-    Str  :$pre-text          = ''
-    --> List) is export(:write-paragraph)
-{...}
-```
-
 AUTHOR
 ======
 
@@ -263,7 +255,7 @@ Tom Browder <tbrowder@cpan.org>
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright &#x00A9; 2019-2021 Tom Browder
+Copyright &#x00A9; 2019-2024 Tom Browder
 
-This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
+This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 

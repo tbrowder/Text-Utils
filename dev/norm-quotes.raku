@@ -1,7 +1,8 @@
 #!/usr/bin/env raku
 
+use Number::More :dec2hex, :hex2dec;
+use lib "../lib";
 use Text::Utils :ALL;
-use Number::More :dec2hex;
 
 my $xfil = "quoted.txt";
 my $ifil;
@@ -57,6 +58,8 @@ for %left-quotes.kv -> $leftH, $rightH {
     my $Rc = parse-base($rightH, 16).Int.chr;
     say "left ($Lc) ... right ($Rc)";
 }
+
+$s = normalize-quotes $s, :debug;
 
 =finish
 

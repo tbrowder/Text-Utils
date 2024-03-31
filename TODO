@@ -1,5 +1,4 @@
 - need to handle signature constraints better
-- ensure tabs are handled when normalizing strings
 - add a feature to consider the font and print width
   for wrapping paragraphs
 
