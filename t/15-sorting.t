@@ -1,6 +1,6 @@
 use Test;
 
-use Abbreviations :ALL;
+use Text::Utils :sort-list;
 
 my $debug = 0;
 

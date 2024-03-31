@@ -33,8 +33,8 @@ signature for each of the routines.
 
 =begin code
 #  StrLength, LengthStr, Str, Length, Number
-enum Sort-type is export(:sort) < SL LS SS LL N >;
-sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort)
+enum Sort-type is export(:sort-list) < SL LS SS LL N >;
+sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort-list)
 {...}
 =end code
 

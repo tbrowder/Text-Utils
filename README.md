@@ -33,8 +33,8 @@ The module contains several routines to make text handling easier for module and
 ### `sub sort-list`
 
     #  StrLength, LengthStr, Str, Length, Number
-    enum Sort-type is export(:sort) < SL LS SS LL N >;
-    sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort)
+    enum Sort-type is export(:sort-list) < SL LS SS LL N >;
+    sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort-list)
     {...}
 
 By default, this routine sorts all lists by word length, then by Str order. The order by length is by the shortest abbreviation first unless the `:$reverse` option is used. 
