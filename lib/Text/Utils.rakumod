@@ -59,6 +59,39 @@ BEGIN {
     }
 }
 
+#  StrLength, LengthStr, Str, Length, Number
+enum Sort-type is export(:sort-list) < SL LS SS LL N >;
+sub sort-list(@List, :$type = LS, :$reverse) is export(:sort-list) {
+    my @list = @List;
+    if $type ~~ SL {
+        @list .= sort({.Str, .chars});
+    }
+    elsif $type ~~ LS {
+        @list .= sort({.chars, .Str});
+    }
+    elsif $type ~~ LL {
+        @list .= sort({.chars});
+    }
+    elsif $type ~~ SS {
+        @list .= sort({.Str});
+    }
+    elsif $type ~~ N  {
+        my $is-numeric = True;
+        for @list {
+            $is-numeric = False unless $_.Numeric;
+        }
+        if $is-numeric {
+            @list .= sort({ $^a <=> $^b });
+        }
+        else {
+            @list .= sort({.Str});
+        }
+    }
+
+    @list .= reverse if $reverse;
+    @list
+} # end sub sort-list
+
 #-----------------------------------------------------------------------
 #| Purpose : Turn a list into a text string for use in a document
 #| Params  : List, Bool
@@ -78,14 +111,12 @@ sub list2text(@list, :$optional-comma is copy = True) is export(:list2text) {
 #| Params  : String, Substring
 #| Returns : Number of substrings found
 sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
-    my $nsubstrs = 0;
-    my $idx = index $ip, $substr;
-    while $idx.defined {
-	++$nsubstrs;
-	$idx = index $ip, $substr, $idx+1;
-    }
-
-    return $nsubstrs;
+    use AlgorithmsIT :ALL;
+    use AlgorithmsIT::Classes;
+    my $T = ArrayOneBased.new: $ip;
+    my $P = ArrayOneBased.new: $substr;
+    my @shifts = KMP-Matcher $T, $P;
+    @shifts.elems;
 
 } # count-substrs
 
@@ -101,11 +132,12 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #|             escaped or included in quotes.
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
-sub strip-comment($line is copy,       #= string of text with possible comment
-                    :$mark = '#',        #= desired comment char indicator
-                    :$save-comment,      #= if true, return the comment
-                    :$normalize,         #= if true, normalize returned strings
-                    :$last,              #= if true, use the last instead of first comment char
+sub strip-comment($line is copy,    #= string of text with possible comment
+                    :$mark = '#',   #= desired comment char indicator
+                    :$save-comment, #= if true, return the comment
+                    :$normalize,    #= if true, normalize returned strings
+                    :$last,         #= if true, use the last instead of first
+                                    #=   comment char
                    ) is export(:strip-comment) {
     my $comment = '';
     my $clen    = $mark.chars;
@@ -190,7 +222,7 @@ para-indent spaces + line-indent spaces + para-pre-text + line-pre-text + text
 
 multi sub wrap-paragraph($text, |c
                    --> List) is export(:wrap-paragraph) {
-    return wrap-paragraph($text.words, |c);
+    wrap-paragraph($text.words, |c);
 }
 
 multi sub wrap-paragraph(
@@ -335,7 +367,7 @@ multi sub wrap-paragraph(
         return $nc <= $mll;
     }
 
-    return @para;
+    @para;
 
 } # wrap-paragraph
 
@@ -345,16 +377,80 @@ multi sub wrap-paragraph(
 #| Params  : The string to be normalized
 #| Returns : The normalized string
 sub normalize-text(Str:D $str is copy --> Str) is export(:normalize-text) {
-    $str .= trim;
-    $str ~~ s:g/ \s ** 2..*/ /;
-    return $str;
+    normalize-string $str;
 } # normalize-text
 
 sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
     $str .= trim;
+    # this also takes care of tabs
     $str ~~ s:g/ \s ** 2..*/ /;
-    return $str;
+
+    $str;
 } # normalize-string
+
+=begin comment
+# put tonbed for now
+sub normalize-quotes($s, :$debug --> Str) is export(:normalize-quotes) {
+    # First we assume a string has had any line ending removed,
+    # so any embedded newline must be handled as part of
+    # the processing.
+    #
+    # Secondly, any hyphen before a newline which is part of text
+    # will ensure the text will have to be joined with the text after the
+    # newline to continue quote analysis.
+
+    # valid quote pairs:
+    my %left-quotes = %(
+        # left => right
+        '0022' => '0022',
+        '0027' => '0027',
+        '2018' => '2019',
+        '201C' => '201D',
+    );
+    my %right-quotes = %(
+        # right => left
+        '0022' => '0022',
+        '0027' => '0027',
+        '2019' => '2018',
+        '201D' => '201C',
+    );
+
+    my @q;
+    for %left-quotes.kv -> $leftHex, $rightHex {
+        # get the quote chars from the 4-char hex strings
+        my $Lc = parse-base($leftHex, 16).Int.chr;
+        my $Rc = parse-base($rightHex, 16).Int.chr;
+        # get the indices for each
+        my @left  = $s.indices: $Lc, :overlap;
+        @q.push: |@left;
+        my @right = $s.indices: $Rc, :overlap;
+        @q.push: |@right;
+    }
+    return $s unless @q.elems;
+
+    # any duplicate index is an error
+    unless @q.Set.unique {
+        die "FATAL: Overlapping indices for quote chars in string |$s|";
+    }
+    # need to sort the indices in numerical order
+    @q .= sort({ $^a <=> $^b });
+    if $debug {
+        note "DEBUG: quote indices for string |$s|";
+        for @q {
+            my $c = $s.comb[$_];
+            note "  $c ($_)";
+        }
+        note "Early exit"; exit;
+    }
+
+
+    # chop the string into chunks from the quote char indices array
+    my @chunks;
+    my $t = "";
+    for $s.comb -> {
+    }
+} # normalize-quotes
+=end comment
 
 #-----------------------------------------------------------------------
 #| Purpose : Split a string into two pieces
@@ -382,7 +478,7 @@ sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
         #$line  .= trim-trailing;
         #$line2 .= trim;
     }
-    return ($line, $line2);
+    $line, $line2;
 
 } # split-line
 
@@ -413,124 +509,13 @@ sub split-line-rw(Str:D $line is rw, Str:D $brk, UInt :$max-line-length = 0,
         #$line  .= trim-trailing;
         #$line2 .= trim;
     }
-    return $line2;
+    $line2;
 
 } # split-line-rw
 
-
-# DEPRECATED SUBROUTINE
-multi sub write-paragraph(@text,
-	                  UInt :$max-line-length = 78,
-                          UInt :$para-indent = 0,
-		          UInt :$first-line-indent = 0,
-                          Str  :$pre-text = '',
-                          --> List) is export(:wrap-paragraph-deprecated) {
-
-    # Calculate the various effective indents and any pre-text effects
-    # and get the effective first-line indent
-    my $findent = $first-line-indent ?? $first-line-indent !! $para-indent;
-    # Get the effective paragraph indent
-    my $pindent = $pre-text.chars + $para-indent;
-
-    my $findent-spaces = ' ' x $findent;
-    # ready to take care of the first line
-    my $first-line = $pre-text ~ $findent-spaces;
-    my $line = $first-line;
-
-    # now do a length check
-    {
-        my $nc = $line.chars;
-        if $nc > $max-line-length {
-            say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
-            say "line:   '$line'";
-            die "length: $nc";
-        }
-    }
-
-    # get all the words
-    my @words = (join ' ', @text).words;
-
-    my @para = ();
-    my $first-word = True;
-
-    loop {
-        if !@words.elems {
-            @para.push: $line if $line;
-            last;
-        }
-
-        my $next = @words[0];
-        $next = ' ' ~ $next if !$first-word;
-        $first-word = False;
-
-        # do a length check
-	{
-            my $nc = $next.chars;
-            if $nc > $max-line-length {
-                say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
-                say "line:   '$next'";
-                die "length: $nc";
-            }
-        }
-
-        if $next.chars + $line.chars <= $max-line-length {
-            $line ~= $next;
-            shift @words;
-            next;
-        }
-
-        # we're done with this line
-        @para.push: $line if $line;
-        #@para.push: $line;
-        last;
-    }
-
-    # and remaining lines
-    my $pindent-spaces = ' ' x $pindent;
-    $line = $pindent-spaces;
-    $first-word = True;
-    loop {
-        if !@words.elems {
-            @para.push: $line if $line;
-            last;
-        }
-
-        my $next = @words[0];
-        $next = ' ' ~ $next if !$first-word;
-        $first-word = False;
-
-        # do a length check
-	{
-            my $nc = $next.chars;
-            if $nc > $max-line-length {
-                say "FATAL:  Line length too long ($nc), must be <= \$max-line-length ($max-line-length)";
-                say "line:   '$next'";
-                die "length: $nc";
-            }
-        }
-
-        if $next.chars + $line.chars <= $max-line-length {
-            $line ~= $next;
-            shift @words;
-            next;
-        }
-
-        # we're done with this line
-        @para.push: $line if $line;
-
-        last if !@words.elems;
-
-        # replenish the line
-        $line = $pindent-spaces;
-        $first-word = True;
-    }
-
-    return @para;
-} # write-paragraph
-
 multi sub wrap-text($text, |c
                    --> List) is export(:wrap-text) {
-    return wrap-text($text.words, |c);
+    wrap-text($text.words, |c);
 }
 
 class BBox is export {
@@ -718,7 +703,7 @@ multi sub wrap-text(@text,
     }
 
     # TODO turn the para into a para object with line objects as children
-    return @para;
+    @para;
 }
 
 # define  "aliases" for convenience
@@ -871,5 +856,5 @@ multi sub typeset-text(Str:D $text,
     }
 
     # TODO turn the para into a para object with line objects as children
-    return @para;
+    @para;
 } # sub typeset-text

@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/tbrowder/Text-Utils/workflows/test/badge.svg)](https://github.com/tbrowder/Text-Utils/actions)
+[![Actions Status](https://github.com/tbrowder/Text-Utils/workflows/linux/badge.svg)](https://github.com/tbrowder/Text-Utils/actions) [![Actions Status](https://github.com/tbrowder/Text-Utils/workflows/macos/badge.svg)](https://github.com/tbrowder/Text-Utils/actions) [![Actions Status](https://github.com/tbrowder/Text-Utils/workflows/windows/badge.svg)](https://github.com/tbrowder/Text-Utils/actions)
 
 NAME
 ====
@@ -20,7 +20,7 @@ for $text.lines -> $line is copy {
     $line = strip-comment $line;
     say $line;
 }
-# OUTPUT:
+# OUTPUT with comments removed:
 any kind of text, including code;
 my $s = 'foo';
 ```
@@ -30,122 +30,16 @@ DESCRIPTION
 
 The module contains several routines to make text handling easier for module and program authors. Following is a short synopsis and signature for each of the routines.
 
-### sub wrap-paragraph
+### `sub sort-list`
 
-This routine wraps a list of words into a paragraph with a maximum line width in characters (default: 78), and returns a list of the new paragraph's lines formatted as desired. An option, `:$para-pre-text`, used in conjunction with `:$para-indent`, is very useful for use in auto-generation of code. For example, given this chunk of text describing a following PDF method `MoveTo(x, y)`:
+    #  StrLength, LengthStr, Str, Length, Number
+    enum Sort-type is export(:sort) < SL LS SS LL N >;
+    sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort)
+    {...}
 
-    my $str = q:to/HERE/;
-    Begin a new sub-path by moving the current point to coordinates (x,
-    y), omitting any connecting line segment. If the previous path
-    construction operator in the current path was also m, the new m
-    overrides it.
-    HERE
+By default, this routine sorts all lists by word length, then by Str order. The order by length is by the shortest abbreviation first unless the `:$reverse` option is used. 
 
-Run that string through the sub to see the results:
-
-```raku
-my @para = wrap-paragraph $str.lines, :para-pre-text('#| '), :para-indent(4);
-.say for @para;
-```
-
-yields:
-
-        #| Begin a new sub-path by moving the current point to coordinates (x, y),
-        #| omitting any connecting line segment. If the previous path construction
-        #| operator in the current path was also m, the new m overrides it.
-
-The signature:
-
-```Raku
-multi sub wrap-paragraph(
-    @text,
-    UInt :$max-line-length     = 78,
-    #------------------------------#
-    UInt :$para-indent         = 0,
-    UInt :$first-line-indent   = 0,
-    UInt :$line-indent         = 0,
-    #------------------------------#
-    Str  :$para-pre-text       = '',
-    Str  :$first-line-pre-text = '',
-    Str  :$line-pre-text       = '',
-    #------------------------------#
-    :$debug,
-    --> List) is export(:wrap-paragraph) 
-{...}
-multi sub wrap-paragraph(
-    $text, 
-    # ... other args same as the other multi
-    --> List) is export(:wrap-paragraph) 
-{...}
-```
-
-### sub wrap-text
-
-This routine is used in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it has all the options of the **wrap-paragraph** routine except the `:width` is expressed in PostScript points (72 per inch) as is the `:font-size`. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
-
-The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
-
-<table class="pod-table">
-<tbody>
-<tr> <td>Courier Courier-Bold Courier-Oblique Courier-BoldOblique</td> </tr> <tr> <td>Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman Times-Bold Times-Italic Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
-</tbody>
-</table>
-
-```Raku
-multi sub wrap-text(
-    @text,
-    Real :$width               = 468, #= PS points for 6.5 inches
-         :$font-name           = 'Times-Roman',
-    Real :$font-size           = 12, 
-    #------------------------------#
-    UInt :$para-indent         = 0,
-    UInt :$first-line-indent   = 0,
-    UInt :$line-indent         = 0,
-    #------------------------------#
-    Str  :$para-pre-text       = '',
-    Str  :$first-line-pre-text = '',
-    Str  :$line-pre-text       = '',
-    #------------------------------#
-    :$debug,
-    --> List) is export(:wrap-text) 
-{...}
-multi sub wrap-text(
-    $text, 
-    # ... other args same as the other multi
-    --> List) is export(:wrap-text)
-{...}
-```
-
-### sub list2text
-
-Turn a list into a text string for use in a document.
-
-For example, this list `1 2 3` becomes either this `"1, 2, and 3"` (the default result) or this `"1, 2 and 3"` (if the `$optional-comma` named variable is set to false). The default result uses the so-called *Oxford Comma* which is not popular among some writers, but those authors may change the default behavior by permanently by defining the environment variable `TEXT_UTILS_NO_OPTIONAL_COMMA`.
-
-The signature:
-
-```Raku
-sub list2text(
-    @list, 
-    :$optional-comma is copy = True
-    ) is export(:list2text)
-{...}
-```
-
-### sub count-substrs
-
-Count instances of a substring in a string.
-
-The signature:
-
-```Raku
-sub count-substrs(
-    Str:D $string, 
-    Str:D $substr 
-    --> UInt
-    ) is export(:count-substrs)
-{...}
-```
+The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the <enum Sort-type>s.
 
 ### sub strip-comment
 
@@ -166,6 +60,87 @@ sub strip-comment(
 {...}
 ```
 
+### sub normalize-string (or its alias 'normalize-text')
+
+This routine trims a string and collapses multiple whitespace characters (including tabs and newlines) into one.
+
+The signature:
+
+```Raku
+sub normalize-string(
+    Str:D $str is copy
+    --> Str) is export(:normalize-string)
+{...}
+```
+
+### sub wrap-text
+
+This routine is used in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it has all the options of the **wrap-paragraph** routine except the `:width` is expressed in PostScript points (72 per inch) as is the `:font-size`. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
+
+The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
+
+<table class="pod-table">
+<tbody>
+<tr> <td>Courier Courier-Bold Courier-Oblique Courier-BoldOblique</td> </tr> <tr> <td>Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman Times-Bold Times-Italic Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
+</tbody>
+</table>
+
+```Raku
+multi sub wrap-text(
+    @text,
+    Real :$width               = 468, #= PS points for 6.5 inches
+         :$font-name           = 'Times-Roman',
+    Real :$font-size           = 12,
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-text)
+{...}
+multi sub wrap-text(
+    $text,
+    # ... other args same as the other multi
+    --> List) is export(:wrap-text)
+{...}
+```
+
+### sub list2text
+
+Turn a list into a text string for use in a document.
+
+For example, this list `1 2 3` becomes either this `"1, 2, and 3"` (the default result) or this `"1, 2 and 3"` (if the `$optional-comma` named variable is set to false). The default result uses the so-called *Oxford Comma* which is not popular among some writers, but those authors may change the default behavior by permanently by defining the environment variable `TEXT_UTILS_NO_OPTIONAL_COMMA`.
+
+The signature:
+
+```Raku
+sub list2text(
+    @list,
+    :$optional-comma is copy = True
+    ) is export(:list2text)
+{...}
+```
+
+### sub count-substrs
+
+Count instances of a substring in a string.
+
+The signature:
+
+```Raku
+sub count-substrs(
+    Str:D $string,
+    Str:D $substr
+    --> UInt
+    ) is export(:count-substrs)
+{...}
+```
+
 ### sub commify
 
 This routine was originally ported from the Perl version in the *The Perl Cookbook, 2e*.
@@ -178,19 +153,6 @@ The signature:
 
 ```Raku
 sub commify($num, :$decimals --> Str) is export(:commify)
-{...}
-```
-
-### sub normalize-string
-
-This routine trims a string and collapses multiple whitespace characters.
-
-The signature:
-
-```Raku
-sub normalize-string(
-    Str:D $str is copy 
-    --> Str) is export(:normalize-string)
 {...}
 ```
 
@@ -236,22 +198,52 @@ sub split-line-rw(
 {...}
 ```
 
-### sub write-paragraph
+### sub wrap-paragraph
 
-**THIS ROUTINE IS DEPRECATED - USE `wrap-paragraph` FOR NEW AND OLD CODE**
+This routine wraps a list of words into a paragraph with a maximum line width in characters (default: 78), and returns a list of the new paragraph's lines formatted as desired. An option, `:$para-pre-text`, used in conjunction with `:$para-indent`, is very useful for use in auto-generation of code. For example, given this chunk of text describing a following PDF method `MoveTo(x, y)`:
 
-This routine wraps a list of words into a paragraph with a maximum line width (default: 78) and updates the input list with the results.
+    my $str = q:to/HERE/;
+    Begin a new sub-path by moving the current point to coordinates (x,
+    y), omitting any connecting line segment. If the previous path
+    construction operator in the current path was also m, the new m
+    overrides it.
+    HERE
+
+Run that string through the sub to see the results:
+
+```raku
+my @para = wrap-paragraph $str.lines, :para-pre-text('#| '), :para-indent(4);
+.say for @para;
+```
+
+yields:
+
+        #| Begin a new sub-path by moving the current point to coordinates (x, y),
+        #| omitting any connecting line segment. If the previous path construction
+        #| operator in the current path was also m, the new m overrides it.
 
 The signature:
 
 ```Raku
-sub write-paragraph(
+multi sub wrap-paragraph(
     @text,
-    UInt :$max-line-length   = 78,
-    UInt :$para-indent       = 0,
-    UInt :$first-line-indent = 0,
-    Str  :$pre-text          = ''
-    --> List) is export(:write-paragraph)
+    UInt :$max-line-length     = 78,
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-paragraph)
+{...}
+multi sub wrap-paragraph(
+    $text,
+    # ... other args same as the other multi
+    --> List) is export(:wrap-paragraph)
 {...}
 ```
 
@@ -263,7 +255,7 @@ Tom Browder <tbrowder@cpan.org>
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright &#x00A9; 2019-2021 Tom Browder
+Copyright &#x00A9; 2019-2024 Tom Browder
 
-This library is free software; you can redistribute it or modify it under the Artistic License 2.0.
+This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 

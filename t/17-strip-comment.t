@@ -96,9 +96,9 @@ $s = strip-comment $s;
 is $s, 'text 1 ';
 
 # how about tabs?
-$tstr = " some\t text # some  comment ";
+$tstr = " some\t\t text # some  comment ";
 $text = strip-comment $tstr;
-is $text, " some\t text ";
+is $text, " some\t\t text ";
 
 $text = strip-comment $tstr, :normalize;
 is $text, 'some text', 'normalize a string with tabs';

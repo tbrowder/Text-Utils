@@ -1,0 +1,23 @@
+#=begin table
+# Unicode hex code | Unicode name
+# -----------------+-------------
+# U+0022 | QUOTATION MARK 
+# U+0027 | APOSTROPHE   
+# U+2018 | LEFT SINGLE QUOTATION MARK 
+# U+2019 | RIGHT SINGLE QUOTATION MARK  
+# U+201C | LEFT DOUBLE QUOTATION MARK 
+# U+201D | RIGHT DOUBLE QUOTATION MARK  
+# =end table
+
+\x0022  |   \x0022
+"           "      # entered with vi insert ctl-v u <hex code> 
+"           "      # entered with termius keys on an iPad
+\x0027  |   \x0027
+'           '      # entered with vi insert ctl-v u <hex code> 
+'           '      # entered with termius keys on an iPad
+\x2018  |   \x2019
+‘           ’      # entered with vi insert ctl-v u <hex code> 
+?           ?      # maybe entered with my computer keyboard
+\x201C  |   \x201D
+“           ”      # entered with vi insert ctl-v u <hex code> 
+?           ?      # maybe entered with my computer keyboard
