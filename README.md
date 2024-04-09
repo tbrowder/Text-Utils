@@ -45,17 +45,19 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
 
-The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment if requested. All returned text is normalized if requested.
+The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. All returned text is normalized if requested.
 
 The signature:
 
 ```Raku
 sub strip-comment(
-    $line is copy,       # string of text with possible comment
-    :$mark = '#',        # desired comment character indicator
-    :$save-comment,      # if true, return the comment
-    :$normalize,         # if true, normalize returned strings
-    :$last,              # if true, use the last instead of first comment char
+    $line is copy,                # string of text with possible comment
+    :mark(:$comment-char) = '#',  # desired comment character indicator
+                                  #   (with alias :$comment-char)
+    :$save-comment,               # if true, return the comment
+    :$normalize,                  # if true, normalize returned strings
+    :$last,                       # if true, use the last instead of first 
+                                  #   comment char
     ) is export(:strip-comment)
 {...}
 ```
