@@ -1,6 +1,6 @@
 {{$NEXT}}
     - Ensure the returned comment has all text from the comment
-       character to the end of that line
+        character to the end of that line
     - Add new test and modify existing tests as required
     - Add alias named arg to sub strip-comment:
       + :mark(:$comment-char) <= new alias '$comment-char'
