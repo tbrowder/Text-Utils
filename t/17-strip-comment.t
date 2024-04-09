@@ -3,7 +3,7 @@ use Test;
 
 use Text::Utils :ALL;
 
-plan 25;
+plan 29;
 
 my (@s, @stripped);
 # comment char is default '#'
@@ -58,13 +58,13 @@ for 0..^+@s -> $i {
 my $tstr = 'some  text # some  comment';
 my ($text, $comm) = strip-comment $tstr, :save-comment;
 is $text, 'some  text ';
-is $comm, ' some  comment';
+is $comm, '# some  comment';
 
 ($text, $comm) = strip-comment $tstr, :save-comment, :normalize;
 is $text, 'some text';
-is $comm, 'some comment';
+is $comm, '# some comment';
 
-# test empty comment
+#== test empty comment (without mark)
 $tstr = ' some  text ';
 ($text, $comm) = strip-comment $tstr, :save-comment;
 is $text, ' some  text ';
@@ -74,18 +74,30 @@ is $comm, '';
 is $text, 'some text';
 is $comm, '';
 
+#== test empty comment (WITH mark)
+$tstr = ' some  text # ';
+($text, $comm) = strip-comment $tstr, :save-comment;
+is $text, ' some  text ';
+is $comm, '# ';
+
+($text, $comm) = strip-comment $tstr, :save-comment, :normalize;
+is $text, 'some text';
+is $comm, '#';
+
+
 # default is to take the first comment char found
 # note multi-char comment char is allowed
 $tstr = ' some  text %%  text %% some  comment ';
 ($text, $comm) = strip-comment $tstr, :mark<%%>, :save-comment;
 is $text, ' some  text ';
-is $comm, '  text %% some  comment ';
+is $comm, '%%  text %% some  comment ';
 
-# test the new signature
-
-($text, $comm) = strip-comment $tstr, :mark<%%>, :last, :save-comment, :normalize;
+# test the new signature option :last
+$tstr = ' some  text %%  text %% some  comment ';
+($text, $comm) = strip-comment $tstr, :mark<%%>, :last,
+                            :save-comment, :normalize;
 is $text, 'some text %% text';
-is $comm, 'some comment';
+is $comm, '%% some comment';
 
 # watch out for embedded newlines
 my $s = q:to/HERE/;

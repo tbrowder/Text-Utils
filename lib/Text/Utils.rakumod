@@ -132,20 +132,21 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #|             escaped or included in quotes.
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
-sub strip-comment($line is copy,    #= string of text with possible comment
-                    :$mark = '#',   #= desired comment char indicator
-                    :$save-comment, #= if true, return the comment
-                    :$normalize,    #= if true, normalize returned strings
-                    :$last,         #= if true, use the last instead of first
-                                    #=   comment char
-                   ) is export(:strip-comment) {
+sub strip-comment(
+    $line is copy,                 #= string of text with possible comment
+    :mark(:$comment-char) = '#',   #= desired comment char indicator
+    :$save-comment,                #= if true, return the comment (including 
+                                   #=   the mark)
+    :$normalize,                   #= if true, normalize returned strings
+    :$last,                        #= if true, use the last instead of first
+                                   #=   comment char
+) is export(:strip-comment) {
     my $comment = '';
-    my $clen    = $mark.chars;
-    my $idx     = $last ?? rindex $line, $mark
-                        !! index  $line, $mark;
+    my $idx     = $last ?? rindex $line, $comment-char
+                        !! index  $line, $comment-char;
     if $idx.defined {
-        $comment = substr $line, $idx+$clen; #= don't want the comment char
-	$line = substr $line, 0, $idx;
+        $comment = substr $line, $idx; #= we DO want the comment char and following
+	$line    = substr $line, 0, $idx;
     }
     if $normalize {
         $line    = normalize-string $line;
