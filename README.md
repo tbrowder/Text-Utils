@@ -45,7 +45,7 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
 
-The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. All returned text is normalized if requested.
+The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. All returned text is normalized if requested. Any returned comment will also be normalized if the `normalize-all` option is used in place of `normalize`.
 
 The signature:
 
@@ -55,12 +55,16 @@ sub strip-comment(
     :mark(:$comment-char) = '#',  # desired comment character indicator
                                   #   (with alias :$comment-char)
     :$save-comment,               # if true, return the comment
-    :$normalize,                  # if true, normalize returned strings
+    :$normalize,                  # if true, normalize returned string
+    :$normalize-all,              # if true, normalize returned string
+                                  #   and also normalize any saved comment
     :$last,                       # if true, use the last instead of first 
-                                  #   comment char
+                                  #   comment character
     ) is export(:strip-comment)
 {...}
 ```
+
+Note the default return is the returned string without any comment. However, if you use the `save-comment` option, a two-element list is returned: `($string, $comment)` (either element may be "" depending upon the input text line).
 
 ### sub normalize-string (or its alias 'normalize-text')
 

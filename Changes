@@ -1,4 +1,10 @@
 {{$NEXT}}
+    - Add new option to sub 'strip-comment':
+      + 'normalize-all': 
+          - normalizes the returned string
+          - also normalizes the returned comment when
+              the 'save-comment' option is True
+    - Added test for new option
 
 3.4.0  2024-04-09T14:57:37-05:00
     - Ensure the returned comment has all text from the comment
