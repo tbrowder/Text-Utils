@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+3.4.1  2024-04-23T08:20:00-05:00
     - Add new option to sub 'strip-comment':
       + 'normalize-all': 
           - normalizes the returned string
