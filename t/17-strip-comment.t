@@ -60,7 +60,7 @@ my ($text, $comm) = strip-comment $tstr, :save-comment;
 is $text, 'some  text ';
 is $comm, '# some  comment';
 
-($text, $comm) = strip-comment $tstr, :save-comment, :normalize;
+($text, $comm) = strip-comment $tstr, :save-comment, :normalize-all;
 is $text, 'some text';
 is $comm, '# some comment';
 
@@ -80,7 +80,7 @@ $tstr = ' some  text # ';
 is $text, ' some  text ';
 is $comm, '# ';
 
-($text, $comm) = strip-comment $tstr, :save-comment, :normalize;
+($text, $comm) = strip-comment $tstr, :save-comment, :normalize-all;
 is $text, 'some text';
 is $comm, '#';
 
@@ -95,13 +95,13 @@ is $comm, '%%  text %% some  comment ';
 # test the new signature option :last
 $tstr = ' some  text %%  text %% some  comment ';
 ($text, $comm) = strip-comment $tstr, :mark<%%>, :last,
-                            :save-comment, :normalize;
+                            :save-comment, :normalize-all;
 is $text, 'some text %% text';
 is $comm, '%% some comment';
 
 # watch out for embedded newlines
-my $s = q:to/HERE/;
-text 1 # comment 1
+my $s = qq:to/HERE/;
+text 1 # comment 1\n
 text 2 # comment 2
 HERE
 $s = strip-comment $s;

@@ -132,12 +132,43 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #|             escaped or included in quotes.
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
-sub strip-comment(
-    $line is copy,                 #= string of text with possible comment
-    :mark(:$comment-char) = '#',   #= desired comment char indicator
-    :$save-comment,                #= if true, return the comment (including 
+=begin comment
+multi sub strip-comment(
+    :$text is copy,                #= string of text with possible comment
+    :$save-comment,                #= if true, return the comment (including
                                    #=   the mark)
-    :$normalize,                   #= if true, normalize returned strings
+    :mark(:$comment-char) = '#',   #= desired comment char indicator
+    :$normalize,                   #= if true, normalize returned text
+    :$normalize-all,               #= if true, normalize returned comment
+    :$last,                        #= if true, use the last instead of first
+                                   #=   comment char
+    --> List
+) is export(:strip-comment) {
+    my $comment = '';
+    my $idx     = $last ?? rindex $text, $comment-char
+                        !! index  $text, $comment-char;
+    if $idx.defined {
+        $comment = substr $text, $idx; #= we DO want the comment char and following
+	$text    = substr $text, 0, $idx;
+    }
+    if $normalize {
+        $text    = normalize-string $text;
+    }
+    if $normalize-all {
+        $text    = normalize-string $text;
+        $comment = normalize-string $comment;
+    }
+    $text, $comment
+}
+=end comment
+
+multi sub strip-comment(
+    $line is copy,                 #= string of text with possible comment
+    :$save-comment,                #= if true, return the comment (including
+                                   #=   the mark)
+    :mark(:$comment-char) = '#',   #= desired comment char indicator
+    :$normalize,                   #= if true, normalize returned string
+    :$normalize-all,               #= if true, also normalize returned comment
     :$last,                        #= if true, use the last instead of first
                                    #=   comment char
 ) is export(:strip-comment) {
@@ -150,12 +181,15 @@ sub strip-comment(
     }
     if $normalize {
         $line    = normalize-string $line;
+    }
+    if $normalize-all {
+        $line    = normalize-string $line;
         $comment = normalize-string $comment;
     }
     if $save-comment {
         return $line, $comment;
     }
-    $line;
+    $line
 }
 
 #-----------------------------------------------------------------------
