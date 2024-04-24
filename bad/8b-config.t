@@ -10,34 +10,40 @@ my $debug = 1; # output files are place in local dir "tmp"
 my $tdir = $debug ?? "tmp" !! tempdir;
 mkdir $tdir;
 
-#                    |<== default
-my @line-endings = [ "\n", ";", "||",      ];
-my @sepchar      = [ "," , ";", "\t", "|", ];
-my @mark         = [ "#" , ";",            ];
+# this is the way to most easily create an array of strings
+#my @x = qqww{ "\n"  ; || , "\t" | \# };
+
+#                        |<== default
+my @line-endings = qqww{ "\n"  ;  ||    };
+my @sepchar      = qqww{  ,    ; "\t" | };
+my @mark         = qqww{ \#    ;        };
 
 # the test csv contents
 # by line without a defined line ending
 my @hdr  = [" name ", " age ", " notes " ];
-my @row1 = [" Sally x Jean ", " 22 "]; # replace 'x' with either '\n' or ' '
+my @row1 = [" Sally x Jean ", " 22 ", "" ]; # replace 'x' with either '\n' or ' '
 my @row2 = [" Tom ", " 30 ", " rakuun "];
 my $ncols = 3;
-
 # the test files
 my $prefix = "csv";
 my $idx = 0;
-for @line-endings -> $le {
+L: for @line-endings -> $le {
     note "DEBUG: line ending is \<$le\>";
     if $le ~~ /\n+/ {
         note "DEBUG: line ending is a newline";
     }
-    for @mark -> $mk {
-        next if $mk ~~ /$le/;
+    M: for @mark -> $mk {
+        next M if $mk ~~ /$le/;
 
-        for @sepchar -> $sc {
-            next if $sc ~~ /$mk/;
-            next if $sc ~~ /$le/;
+        S: for @sepchar -> $sc {
+            next S if $sc ~~ /$mk/;
+            next S if $sc ~~ /$le/;
 
-            my $comment = "using mark \<$mk\>, sepchars \<$sc\>, and line endings \<$le\>";
+            my $LE = $le;
+            my $SC = $sc;
+            $LE = "nl"  if $LE ~~ /\n/;
+            $SC = "tab" if $SC ~~ /\t/;
+            my $comment = "Using mark ($mk), sepchars ($SC), line endings ($LE)";
 
             my $num = ++$idx;
             my $fnam = $prefix ~ sprintf "%02d", $num;
@@ -49,6 +55,8 @@ for @line-endings -> $le {
                 $fh.print: $v;
                 $fh.print($sc) if $i < $ncols - 1;
             }
+            $fh.say();
+
             for @row1.kv -> $i, $v is copy  {
                 # special col 0
                 if $i == 0 and $v.contains('x') {
@@ -66,10 +74,13 @@ for @line-endings -> $le {
                 $fh.print: $v;
                 $fh.print($sc) if $i < $ncols - 1;
             }
+            $fh.say();
+
             for @row2.kv -> $i, $v is copy {
-                $fh.print($sc) if $i < $ncols - 1;
                 $fh.print: $v;
+                $fh.print($sc) if $i < $ncols - 1;
             }
+            $fh.say();
 
             #===========
             $fh.close;
