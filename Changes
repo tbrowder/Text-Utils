@@ -1,4 +1,9 @@
 {{$NEXT}}
+    - Add new option to sub 'strip-comment':
+      + 'first':
+         - requires the comment character to be the
+           first non-whitespace character on the line,
+           otherwise, no comment is defined
 
 3.4.1  2024-04-23T08:20:00-05:00
     - Add new option to sub 'strip-comment':
