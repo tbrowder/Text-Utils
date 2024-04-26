@@ -1,4 +1,7 @@
 {{$NEXT}}
+    - Add new options to sub 'normalize-string':
+      + ''
+      + ''
     - Add new option to sub 'strip-comment':
       + 'first':
          - requires the comment character to be the

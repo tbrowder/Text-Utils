@@ -45,8 +45,10 @@ class AFM-font is export {
     }
 }
 
-constant \SPACE is export = ' ';
-constant \EMPTY is export = '';
+constant \NL    is export(:nl)  = "\n";
+constant \TAB   is export(:tab) = "\t";
+constant \SPACE is export       = ' ';
+constant \EMPTY is export       = '';
 
 #| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;
@@ -58,6 +60,9 @@ BEGIN {
 	$DEBUG = False;
     }
 }
+
+# enum Char-type is export(:char-type) <>:
+# NL TAB SEMI HASH PIPE DPIPES DDASH COMMA 
 
 #  StrLength, LengthStr, Str, Length, Number
 enum Sort-type is export(:sort-list) < SL LS SS LL N >;
@@ -395,20 +400,59 @@ multi sub wrap-paragraph(
 #|             to single ones
 #| Params  : The string to be normalized
 #| Returns : The normalized string
-sub normalize-text(Str:D $str is copy --> Str) is export(:normalize-text) {
-    normalize-string $str;
-} # normalize-text
-
-sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
+sub normalize-string(
+    Str:D $str is copy,
+    :t(:$tabs)           where { /^ :i k|n /}, #= keep or normalize
+    :n(:$newlines)       where {^ :i k|n /},   #= keep or normalize
+    :c(:$collapse-ws-to) where {^ :i n|s|t },  #= collapse all contiguous ws 
+                                               #=   to one char
+    --> Str
+) is export(:normalize-string) {
+    my $space = " ";
+    # default is to trim and always normalize whitespace
     $str .= trim;
-    # this also takes care of tabs
-    $str ~~ s:g/ \s ** 2..*/ /;
+    $str ~~ s:g/ $space ** 2..*/ /;
+
+    if $collapse-ws-to.defined { 
+        if $c ~~ /^ :i s / {
+            # collapse to a single space
+        }
+        elsif $c ~~ /^ :i t / {
+            # collapse to a single tab
+        }
+        elsif $c ~~ /^ :i n / {
+            # collapse to a single newline
+        }
+    }
+    elsif $newlines.defined and $tabs.defined { 
+    }
+    elsif $tabs.defined { 
+        if $t ~~ /^ :i k / {
+        }
+        elsif $t ~~ /^ :i n / {
+        }
+    }
+    elsif $newlines.defined { 
+        if $n ~~ /^ :i k / {s
+        }
+        elsif $n ~~ /^ :i n / {
+        }
+    }
+
+    =begin comment
+    else {
+        #$str .= trim;
+        # this also takes care of tabs and newlines
+        $str ~~ s:g/ \s ** 2..*/ /;
+    }
+    =end comment
 
     $str;
 } # normalize-string
+constant &normalize-text is export(:normalize-text) = &normalize-string; # per lizmat, 2024-04-26
 
 =begin comment
-# put tonbed for now
+# put to bed for now
 sub normalize-quotes($s, :$debug --> Str) is export(:normalize-quotes) {
     # First we assume a string has had any line ending removed,
     # so any embedded newline must be handled as part of
