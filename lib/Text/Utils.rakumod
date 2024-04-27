@@ -47,6 +47,7 @@ class AFM-font is export {
 
 constant \NL    is export(:nl)  = "\n";
 constant \TAB   is export(:tab) = "\t";
+constant \WS    is export(:ws)  = ' ';
 constant \SPACE is export       = ' ';
 constant \EMPTY is export       = '';
 
@@ -402,26 +403,39 @@ multi sub wrap-paragraph(
 #| Returns : The normalized string
 sub normalize-string(
     Str:D $str is copy,
-    :t(:$tabs)           where { /^ :i k|n /}, #= keep or normalize
-    :n(:$newlines)       where {^ :i k|n /},   #= keep or normalize
-    :c(:$collapse-ws-to) where {^ :i n|s|t },  #= collapse all contiguous ws 
-                                               #=   to one char
+    :$tabs           where {/^ :i [k|n]   /}, #= keep or normalize
+    :$newlines       where {/^ :i [k|n]   /}, #= keep or normalize
+    :$collapse-ws-to where {/^ :i [n|s|t] /}, #= collapse all contiguous ws 
+                                            #=   to one char
     --> Str
 ) is export(:normalize-string) {
-    my $space = " ";
     # default is to trim and always normalize whitespace
-    $str .= trim;
-    $str ~~ s:g/ $space ** 2..*/ /;
+    $str .= trim; 
+    $str ~~ s:g/ WS ** 2..*/WS/;
+
+    # convenience aliases
+    my $t = $tabs;
+    my $n = $newlines;
+    my $c = $collapse-ws-to;
 
     if $collapse-ws-to.defined { 
         if $c ~~ /^ :i s / {
-            # collapse to a single space
+            # collapse all to a single space
+            $str ~~ s:g/ NL          /WS/;
+            $str ~~ s:g/ TAB         /WS/;
+            $str ~~ s:g/ WS  ** 2..* /WS/;
         }
         elsif $c ~~ /^ :i t / {
-            # collapse to a single tab
+            # collapse all to a single tab
+            $str ~~ s:g/ NS          /TAB/;
+            $str ~~ s:g/ NL          /TAB/;
+            $str ~~ s:g/ TAB ** 2..* /TAB/;
         }
         elsif $c ~~ /^ :i n / {
-            # collapse to a single newline
+            # collapse all to a single newline
+            $str ~~ s:g/ NS          /NL/;
+            $str ~~ s:g/ TAB         /NL/;
+            $str ~~ s:g/ NL  ** 2..* /NL/;
         }
     }
     elsif $newlines.defined and $tabs.defined { 
@@ -433,7 +447,7 @@ sub normalize-string(
         }
     }
     elsif $newlines.defined { 
-        if $n ~~ /^ :i k / {s
+        if $n ~~ /^ :i k / {
         }
         elsif $n ~~ /^ :i n / {
         }
