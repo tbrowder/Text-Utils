@@ -406,7 +406,7 @@ sub normalize-string(
     :$tabs           where {/^ :i [k|n]   /}, #= keep or normalize
     :$newlines       where {/^ :i [k|n]   /}, #= keep or normalize
     :$collapse-ws-to where {/^ :i [n|s|t] /}, #= collapse all contiguous ws 
-                                            #=   to one char
+                                              #=   to one char
     --> Str
 ) is export(:normalize-string) {
     # default is to trim and always normalize whitespace

@@ -17,7 +17,7 @@ constant $n = '1 2 3 4 5 6 7 8 9 0';
 my $sT  = " 1   \t\t 2 \t  3  ";
 #   normalized
 my $sTn = "1 \t\t 2 \t 3";
-is normalize-string($sT, :tabs("k")), $sTn, "save-tab";
+is normalize-string($sT, :tabs("k")), $sTn, "tabs<k>";
 
 done-testing;
 =finish
