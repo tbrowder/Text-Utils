@@ -3,7 +3,10 @@ use Test;
 
 use Text::Utils :ALL;
 
-#plan 20;
+#say "constant ws = '$WS'";
+#say $WS;
+#exit;
+plan 26;
 
 # normalize these strings
 my $str1 = '1 2  3   4    5     6      7       8        9         0';
@@ -17,22 +20,53 @@ constant $n = '1 2 3 4 5 6 7 8 9 0';
 my $sT  = " 1   \t\t 2 \t  3  ";
 #   normalized
 my $sTn = "1 \t\t 2 \t 3";
-is normalize-string($sT, :tabs("k")), $sTn, "tabs<k>";
-
-done-testing;
-=finish
+is normalize-string($sT, :tabs<k>), $sTn, "keep tabs";
 
 # strings with newlines
 my $sN  = " 1   \n\n 2 \n  3  ";
 #   normalized
 my $sNn = "1 \n\n 2 \n 3";
-is normalize-string($sN, :newlines<k>), $sNn, "save-nl";
+is normalize-string($sN, :newlines<k>), $sNn, "keep newlines";
 
 # strings with tabs and newlines
 my $sTN  = " 1   \t\t\n\n 2 \n\t  3  ";
 #   normalized
 my $sTNn = "1 \t\t\n\n 2 \n\t 3";
-#is normalize-string($sTN, :save-tabs, :save-nls), $sTNn, "save-tabs, save-nls (aliases)";
+is normalize-string($sTN, :t<k>, :n<k>), $sTNn, "keep tabs, keep nls (aliases)";
+
+# string with tabs and newlines
+my $st  = " 1   \t\t\n\n 2 \n\t  3  ";
+
+my $stn;
+# normalizing each tab
+#   normalized
+$stn  = "1 \t\n\n 2 \n\t 3";
+is normalize-string($st, :t<n>), $stn, "norm tabs (alias)";
+
+# normalizing each newline
+#   normalized
+$stn  = "1 \t\t\n 2 \n\t 3";
+is normalize-string($st, :n<n>), $stn, "norm newlines (alias)";
+
+# normalizing each tab and newline
+#   normalized
+$stn  = "1 \t\n 2 \n\t 3";
+is normalize-string($st, :t<n>, :n<n>), $stn, "norm tabs and nls (aliases)";
+
+# test collapsing
+$st  = " 1   \t\t\n\n 2 \n\t  3  ";
+
+# collapse to nl
+$stn  = "1\n2\n3";
+is normalize-string($st, :c<n>), $stn, "collapse to: nl (aliases)";
+
+# collapse to tab
+$stn  = "1\t2\t3";
+is normalize-string($st, :c<t>), $stn, "collapse to: tab (aliases)";
+
+# collapse to ws
+$stn  = "1 2 3";
+is normalize-string($st, :c<s>), $stn, "collapse to: ws (aliases)";
 
 is normalize-string($str1), $n;
 is normalize-string($str2), $n;

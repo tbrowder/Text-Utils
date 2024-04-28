@@ -1,7 +1,12 @@
 {{$NEXT}}
     - Add new options to sub 'normalize-string':
-      + ''
-      + ''
+      + 'tabs'
+         - keep or normalize tabs
+      + 'newlines'
+         - keep or normalize newlines
+      + 'collapse-ws-to'
+         - collapse all contiguous spaces, tabs, and newlines
+           to one's choice
     - Add new option to sub 'strip-comment':
       + 'first':
          - requires the comment character to be the

@@ -45,11 +45,11 @@ class AFM-font is export {
     }
 }
 
-constant \NL    is export(:nl)  = "\n";
-constant \TAB   is export(:tab) = "\t";
-constant \WS    is export(:ws)  = ' ';
-constant \SPACE is export       = ' ';
-constant \EMPTY is export       = '';
+constant $NL   is export(:nl)  = "\n";
+constant $TAB  is export(:tab) = "\t";
+constant $WS   is export(:ws)  = ' ';
+constant SPACE is export       = ' ';
+constant EMPTY is export       = '';
 
 #| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;
@@ -401,57 +401,82 @@ multi sub wrap-paragraph(
 #|             to single ones
 #| Params  : The string to be normalized
 #| Returns : The normalized string
+subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; #= keep or normalize
+subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws 
 sub normalize-string(
     Str:D $str is copy,
-    :$tabs           where {/^ :i [k|n]   /}, #= keep or normalize
-    :$newlines       where {/^ :i [k|n]   /}, #= keep or normalize
-    :$collapse-ws-to where {/^ :i [n|s|t] /}, #= collapse all contiguous ws 
-                                              #=   to one char
+    Kn :t(:$tabs)=0,           #= keep or normalize
+    Kn :n(:$newlines)=0,       #= keep or normalize
+    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws 
+                               #=   to one char
     --> Str
 ) is export(:normalize-string) {
-    # default is to trim and always normalize whitespace
+    # default is to always trim first
     $str .= trim; 
-    $str ~~ s:g/ WS ** 2..*/WS/;
+    # then normalize all space characters
+    $str ~~ s:g/ $WS ** 2..* /$WS/;
+
+    # then check for exceptions before normalizing all whitespace
 
     # convenience aliases
     my $t = $tabs;
-    my $n = $newlines;
     my $c = $collapse-ws-to;
+    my $n = $newlines;
 
-    if $collapse-ws-to.defined { 
+    if $collapse-ws-to { 
         if $c ~~ /^ :i s / {
             # collapse all to a single space
-            $str ~~ s:g/ NL          /WS/;
-            $str ~~ s:g/ TAB         /WS/;
-            $str ~~ s:g/ WS  ** 2..* /WS/;
+            $str ~~ s:g/ $NL          /$WS/;
+            $str ~~ s:g/ $TAB         /$WS/;
+            $str ~~ s:g/ $WS  ** 2..* /$WS/;
         }
         elsif $c ~~ /^ :i t / {
             # collapse all to a single tab
-            $str ~~ s:g/ NS          /TAB/;
-            $str ~~ s:g/ NL          /TAB/;
-            $str ~~ s:g/ TAB ** 2..* /TAB/;
+            $str ~~ s:g/ $WS          /$TAB/;
+            $str ~~ s:g/ $NL          /$TAB/;
+            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
         }
         elsif $c ~~ /^ :i n / {
             # collapse all to a single newline
-            $str ~~ s:g/ NS          /NL/;
-            $str ~~ s:g/ TAB         /NL/;
-            $str ~~ s:g/ NL  ** 2..* /NL/;
+            $str ~~ s:g/ $WS          /$NL/;
+            $str ~~ s:g/ $TAB         /$NL/;
+            $str ~~ s:g/ $NL  ** 2..* /$NL/;
         }
     }
-    elsif $newlines.defined and $tabs.defined { 
-    }
-    elsif $tabs.defined { 
+    elsif $newlines and $tabs { 
         if $t ~~ /^ :i k / {
+            ; # ok, a no-op
         }
         elsif $t ~~ /^ :i n / {
+            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
         }
-    }
-    elsif $newlines.defined { 
         if $n ~~ /^ :i k / {
+            ; # ok, a no-op
         }
         elsif $n ~~ /^ :i n / {
+            $str ~~ s:g/ $NL  ** 2..* /$NL/;
         }
     }
+    elsif $tabs { 
+        if $t ~~ /^ :i k / {
+            ; # ok, a no-op
+        }
+        elsif $t ~~ /^ :i n / {
+            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
+        }
+    }
+    elsif $newlines { 
+        if $n ~~ /^ :i k / {
+            ; # ok, a no-op
+        }
+        elsif $n ~~ /^ :i n / {
+            $str ~~ s:g/ $NL  ** 2..* /$NL/;
+        }
+    }
+    else {
+        $str ~~ s:g/ \s ** 2..* /$WS/;
+    }
+
 
     =begin comment
     else {
