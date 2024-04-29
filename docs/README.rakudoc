@@ -119,25 +119,39 @@ my $s = " 1   \t\t\n\n 2 \n\t  3  ";
 =end code
 
 The default:
-C<say normalize-string($s)> # OUTPUT: «1 2 3␤»
+=begin code
+say normalize-string($s) # OUTPUT: «1 2 3␤»
+=end code
 
 Normalize each tab:
-C<say normalize-string($s, :t<n>)> # OUTPUT: «1 \t\n\n 2 \n\t 3␤»
+=begin code
+say normalize-string($s, :t<n>) # OUTPUT: «1 \t\n\n 2 \n\t 3␤»
+=end code
 
 Normalize each newline:
-C<say normalize-string($s, :n<n>)> # OUTPUT: «1 \t\t\n 2 \n\t 3␤»
+=begin code
+say normalize-string($s, :n<n>) # OUTPUT: «1 \t\t\n 2 \n\t 3␤»
+=end code
 
 Normalize each tab and newline:
-C<say normalize-string($s, :t<n>, :n<n>)> # OUTPUT: «1 \t\n 2 \n\t 3␤»
+=begin code
+say normalize-string($s, :t<n>, :n<n>) # OUTPUT: «1 \t\n 2 \n\t 3␤»
+=end code
 
 Collapse to a space:
-C<say normalize-string($s, :c<s>)> # OUTPUT: «1 2 3␤»
+=begin code
+say normalize-string($s, :c<s>) # OUTPUT: «1 2 3␤»
+=end code
 
 Collapse to a tab:
-C<say normalize-string($s, :c<t>)> # OUTPUT: «1\t2\t3␤»
+=begin code
+say normalize-string($s, :c<t>) # OUTPUT: «1\t2\t3␤»
+=end code
 
 Collapse to a newline:
-C<say normalize-string($s, :c<n>)> # OUTPUT: «1\n2\n3␤»
+=begin code
+say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
+=end code
 
 =head3 sub wrap-text
 

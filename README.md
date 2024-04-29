@@ -94,19 +94,33 @@ Given a string with spaces, tabs, and newlines:
 
     my $s = " 1   \t\t\n\n 2 \n\t  3  ";
 
-The default: `say normalize-string($s)` # OUTPUT: «1 2 3␤»
+The default:
 
-Normalize each tab: `say normalize-string($s, :t<n>)` # OUTPUT: «1 \t\n\n 2 \n\t 3␤»
+    say normalize-string($s) # OUTPUT: «1 2 3␤»
 
-Normalize each newline: `say normalize-string($s, :n<n>)` # OUTPUT: «1 \t\t\n 2 \n\t 3␤»
+Normalize each tab:
 
-Normalize each tab and newline: `say normalize-string($s, :t<n>, :n<n>)` # OUTPUT: «1 \t\n 2 \n\t 3␤»
+    say normalize-string($s, :t<n>) # OUTPUT: «1 \t\n\n 2 \n\t 3␤»
 
-Collapse to a space: `say normalize-string($s, :c<s>)` # OUTPUT: «1 2 3␤»
+Normalize each newline:
 
-Collapse to a tab: `say normalize-string($s, :c<t>)` # OUTPUT: «1\t2\t3␤»
+    say normalize-string($s, :n<n>) # OUTPUT: «1 \t\t\n 2 \n\t 3␤»
 
-Collapse to a newline: `say normalize-string($s, :c<n>)` # OUTPUT: «1\n2\n3␤»
+Normalize each tab and newline:
+
+    say normalize-string($s, :t<n>, :n<n>) # OUTPUT: «1 \t\n 2 \n\t 3␤»
+
+Collapse to a space:
+
+    say normalize-string($s, :c<s>) # OUTPUT: «1 2 3␤»
+
+Collapse to a tab:
+
+    say normalize-string($s, :c<t>) # OUTPUT: «1\t2\t3␤»
+
+Collapse to a newline:
+
+    say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
 
 ### sub wrap-text
 
