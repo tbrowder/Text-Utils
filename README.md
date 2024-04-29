@@ -60,7 +60,10 @@ sub strip-comment(
                                   #   and also normalize any saved comment
     :$last,                       # if true, use the last instead of first 
                                   #   comment character
-    :$first,
+    :$first,                      #= if true, the comment char must be the
+                                  #=   first non-whitespace character on 
+                                  #=   the line; otherwise, the line is 
+                                  #=   returned as is
     ) is export(:strip-comment)
 {...}
 ```
