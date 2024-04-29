@@ -108,50 +108,36 @@ default algorithm to do that for a string C<$s> is
 C<$s = s:g/ \s ** 2 / />.
 
 This routine gives several options to control how the target string is 'normalized'.
-First, the user may choose one or more of the space characters, tabs, or newlines
+First, the user may choose one or more of the space character types
 to be normalized individually. Second, the user may choose to 'collapse' all space
-characters to one of the three.
+characters to one of the three types.
 
 Given a string with spaces, tabs, and newlines:
 
 =begin code
-my $st = " 1   \t\t\n\n 2 \n\t  3  ";
+my $s = " 1   \t\t\n\n 2 \n\t  3  ";
 =end code
 
-Normalize each tab:
+The default:
+C<say normalize-string($s)> # OUTPUT: «1 2 3␤»
 
-my $stn;
-# normalizing each tab
-#   normalized
-$stn  = "1 \t\n\n 2 \n\t 3";
-is normalize-string($st, :t<n>), $stn, "norm tabs (alias)";
+Normalize each tab:
+C<say normalize-string($s, :t<n>)> # OUTPUT: «1 \t\n\n 2 \n\t 3␤»
 
 Normalize each newline:
+C<say normalize-string($s, :n<n>)> # OUTPUT: «1 \t\t\n 2 \n\t 3␤»
 
-# normalizing each newline
-#   normalized
-$stn  = "1 \t\t\n 2 \n\t 3";
-is normalize-string($st, :n<n>), $stn, "norm newlines (alias)";
+Normalize each tab and newline:
+C<say normalize-string($s, :t<n>, :n<n>)> # OUTPUT: «1 \t\n 2 \n\t 3␤»
 
-# normalizing each tab and newline
-#   normalized
-$stn  = "1 \t\n 2 \n\t 3";
-is normalize-string($st, :t<n>, :n<n>), $stn, "norm tabs and nls (aliases)";
+Collapse to a space:
+C<say normalize-string($s, :c<s>)> # OUTPUT: «1 2 3␤»
 
-# test collapsing
-$st  = " 1   \t\t\n\n 2 \n\t  3  ";
+Collapse to a tab:
+C<say normalize-string($s, :c<t>)> # OUTPUT: «1\t2\t3␤»
 
-# collapse to nl
-$stn  = "1\n2\n3";
-is normalize-string($st, :c<n>), $stn, "collapse to: nl (aliases)";
-
-# collapse to tab
-$stn  = "1\t2\t3";
-is normalize-string($st, :c<t>), $stn, "collapse to: tab (aliases)";
-
-# collapse to ws
-$stn  = "1 2 3";
-is normalize-string($st, :c<s>), $stn, "collapse to: ws (aliases)";
+Collapse to a newline:
+C<say normalize-string($s, :c<n>)> # OUTPUT: «1\n2\n3␤»
 
 =head3 sub wrap-text
 

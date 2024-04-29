@@ -86,25 +86,27 @@ sub normalize-string(
 {...}
 ```
 
-'Normalization' is the process of converting a contiguous sequence of space characters into a single character. The three space characters are " ", "\t", and "\n". The default algorithm to do that for a string `$s` is `$s = s:g/ \s ** 2 / /`.
+'Normalization' is the process of converting a contiguous sequence of space characters into a single character. The three space characters recognized are " " (0x20, 'space'), "\t" (0x09, tab), and "\n" (0x0A, 'newline'). The default algorithm to do that for a string `$s` is `$s = s:g/ \s ** 2 / /`.
 
-This routine gives several options to control how the target string is 'normalized'. First, the user may choose one or more of the space characters, tabs, or newlines to be normalized individually. Second, the user may choose to 'collapse' all space characters to one of the three.
+This routine gives several options to control how the target string is 'normalized'. First, the user may choose one or more of the space character types to be normalized individually. Second, the user may choose to 'collapse' all space characters to one of the three types.
 
-# string with tabs and newlines my $st = " 1 \t\t\n\n 2 \n\t 3 ";
+Given a string with spaces, tabs, and newlines:
 
-my $stn; # normalizing each tab # normalized $stn = "1 \t\n\n 2 \n\t 3"; is normalize-string($st, :t<n>), $stn, "norm tabs (alias)";
+    my $s = " 1   \t\t\n\n 2 \n\t  3  ";
 
-# normalizing each newline # normalized $stn = "1 \t\t\n 2 \n\t 3"; is normalize-string($st, :n<n>), $stn, "norm newlines (alias)";
+The default: `say normalize-string($s)` # OUTPUT: «1 2 3␤»
 
-# normalizing each tab and newline # normalized $stn = "1 \t\n 2 \n\t 3"; is normalize-string($st, :t<n>, :n<n>), $stn, "norm tabs and nls (aliases)";
+Normalize each tab: `say normalize-string($s, :t<n>)` # OUTPUT: «1 \t\n\n 2 \n\t 3␤»
 
-# test collapsing $st = " 1 \t\t\n\n 2 \n\t 3 ";
+Normalize each newline: `say normalize-string($s, :n<n>)` # OUTPUT: «1 \t\t\n 2 \n\t 3␤»
 
-# collapse to nl $stn = "1\n2\n3"; is normalize-string($st, :c<n>), $stn, "collapse to: nl (aliases)";
+Normalize each tab and newline: `say normalize-string($s, :t<n>, :n<n>)` # OUTPUT: «1 \t\n 2 \n\t 3␤»
 
-# collapse to tab $stn = "1\t2\t3"; is normalize-string($st, :c<t>), $stn, "collapse to: tab (aliases)";
+Collapse to a space: `say normalize-string($s, :c<s>)` # OUTPUT: «1 2 3␤»
 
-# collapse to ws $stn = "1 2 3"; is normalize-string($st, :c<s>), $stn, "collapse to: ws (aliases)";
+Collapse to a tab: `say normalize-string($s, :c<t>)` # OUTPUT: «1\t2\t3␤»
+
+Collapse to a newline: `say normalize-string($s, :c<n>)` # OUTPUT: «1\n2\n3␤»
 
 ### sub wrap-text
 
