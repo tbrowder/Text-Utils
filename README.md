@@ -60,6 +60,7 @@ sub strip-comment(
                                   #   and also normalize any saved comment
     :$last,                       # if true, use the last instead of first 
                                   #   comment character
+    :$first,
     ) is export(:strip-comment)
 {...}
 ```
@@ -73,11 +74,37 @@ This routine trims a string and collapses multiple whitespace characters (includ
 The signature:
 
 ```Raku
+subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; #= keep or normalize
+subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws 
 sub normalize-string(
     Str:D $str is copy
+    Kn :t(:$tabs)=0,           #= keep or normalize
+    Kn :n(:$newlines)=0,       #= keep or normalize
+    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws 
+                               #=   to one char
     --> Str) is export(:normalize-string)
 {...}
 ```
+
+'Normalization' is the process of converting a contiguous sequence of space characters into a single character. The three space characters are " ", "\t", and "\n". The default algorithm to do that for a string `$s` is `$s = s:g/ \s ** 2 / /`.
+
+This routine gives several options to control how the target string is 'normalized'. First, the user may choose one or more of the space characters, tabs, or newlines to be normalized individually. Second, the user may choose to 'collapse' all space characters to one of the three.
+
+# string with tabs and newlines my $st = " 1 \t\t\n\n 2 \n\t 3 ";
+
+my $stn; # normalizing each tab # normalized $stn = "1 \t\n\n 2 \n\t 3"; is normalize-string($st, :t<n>), $stn, "norm tabs (alias)";
+
+# normalizing each newline # normalized $stn = "1 \t\t\n 2 \n\t 3"; is normalize-string($st, :n<n>), $stn, "norm newlines (alias)";
+
+# normalizing each tab and newline # normalized $stn = "1 \t\n 2 \n\t 3"; is normalize-string($st, :t<n>, :n<n>), $stn, "norm tabs and nls (aliases)";
+
+# test collapsing $st = " 1 \t\t\n\n 2 \n\t 3 ";
+
+# collapse to nl $stn = "1\n2\n3"; is normalize-string($st, :c<n>), $stn, "collapse to: nl (aliases)";
+
+# collapse to tab $stn = "1\t2\t3"; is normalize-string($st, :c<t>), $stn, "collapse to: tab (aliases)";
+
+# collapse to ws $stn = "1 2 3"; is normalize-string($st, :c<s>), $stn, "collapse to: ws (aliases)";
 
 ### sub wrap-text
 
