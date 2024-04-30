@@ -32,16 +32,16 @@ The module contains several routines to make text handling easier for module and
 
 <table class="pod-table">
 <thead><tr>
-<th>Name</th> <th>Alias</th>
+<th>Name</th> <th>Alias</th> <th>Notes</th>
 </tr></thead>
 <tbody>
-<tr> <td>normalize-string</td> <td>normalize-text</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>wrap-text</td> <td>wrap-paragraph</td> </tr> <tr> <td>strip-comment</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>commify</td> <td></td> </tr> <tr> <td>split-line</td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> </tr>
+<tr> <td>commify</td> <td></td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> <td></td> </tr> <tr> <td>list2text</td> <td></td> <td></td> </tr> <tr> <td>normalize-string</td> <td>normalize-text</td> <td></td> </tr> <tr> <td>sort-list</td> <td></td> <td></td> </tr> <tr> <td>split-line</td> <td></td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> <td></td> </tr> <tr> <td>strip-comment</td> <td></td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>| &#39;width&#39; is in PS points</td> <td></td> </tr> <tr> <td>wrap-text</td> <td>| &#39;width&#39; is in number of chars</td> <td></td> </tr>
 </tbody>
 </table>
 
 Following is a short synopsis and signature for each of the routines.
 
-### sub sort-list
+### sort-list
 
     #  StrLength, LengthStr, Str, Length, Number
     enum Sort-type is export(:sort-list) < SL LS SS LL N >;
@@ -52,7 +52,7 @@ By default, this routine sorts all lists by word length, then by Str order. The 
 
 The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the `enum Sort-type`s.
 
-### sub strip-comment
+### strip-comment
 
 Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
 
@@ -81,7 +81,11 @@ sub strip-comment(
 
 Note the default return is the returned string without any comment. However, if you use the `save-comment` option, a two-element list is returned: `($string, $comment)` (either element may be "" depending upon the input text line).
 
-### sub normalize-string (or its alias 'normalize-text')
+### normalize-text
+
+Alias for 'normalize-string'.
+
+### normalize-string
 
 This routine trims a string and collapses multiple whitespace characters (including tabs and newlines) into one.
 
@@ -136,7 +140,7 @@ Collapse to a newline:
 
     say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
 
-### sub wrap-text
+### wrap-text
 
 This routine is used in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it has all the options of the **wrap-paragraph** routine except the `:width` is expressed in PostScript points (72 per inch) as is the `:font-size`. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
 
