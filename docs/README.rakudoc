@@ -28,14 +28,14 @@ my $s = 'foo';
 The module contains several routines to make text handling easier for
 module and program authors. The routines:
 
-=item sort-list L<#sort-list>
+L<sort-list|#sort-list>
 
  
 
 Following is a short synopsis and
 signature for each of the routines.
 
-=head3 C<sub sort-list>
+=head3 L<sub sort-list|#sort-list>
 
 =begin code
 #  StrLength, LengthStr, Str, Length, Number
