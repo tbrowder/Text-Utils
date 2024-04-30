@@ -35,7 +35,7 @@ The module contains several routines to make text handling easier for module and
 <th>Name</th> <th>Alias</th> <th>Notes</th>
 </tr></thead>
 <tbody>
-<tr> <td>commify</td> <td></td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> <td></td> </tr> <tr> <td>list2text</td> <td></td> <td></td> </tr> <tr> <td>normalize-string</td> <td>normalize-text</td> <td></td> </tr> <tr> <td>sort-list</td> <td></td> <td></td> </tr> <tr> <td>split-line</td> <td></td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> <td></td> </tr> <tr> <td>strip-comment</td> <td></td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>| &#39;width&#39; is in PS points</td> <td></td> </tr> <tr> <td>wrap-text</td> <td>| &#39;width&#39; is in number of chars</td> <td></td> </tr>
+<tr> <td>commify</td> <td></td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> <td></td> </tr> <tr> <td>list2text</td> <td></td> <td></td> </tr> <tr> <td>normalize-string</td> <td>normalize-text</td> <td></td> </tr> <tr> <td>sort-list</td> <td></td> <td></td> </tr> <tr> <td>split-line</td> <td></td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> <td></td> </tr> <tr> <td>strip-comment</td> <td></td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td></td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td></td> <td>&#39;width&#39; is in number of chars</td> </tr>
 </tbody>
 </table>
 
