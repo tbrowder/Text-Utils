@@ -39,8 +39,8 @@ sort-list
 split-line
 split-line-rw
 strip-comment
-wrap-paragraph | | 'width' is in PS points
-wrap-text  | | 'width' is in number of chars 
+wrap-paragraph |  | 'width' is in PS points
+wrap-text  |  | 'width' is in number of chars 
 =end table
 
 Following is a short synopsis and
