@@ -4,7 +4,7 @@ use File::Temp;
 
 use Text::Utils :ALL; #:strip-comment :normalize-string;
 
-my $debug = 1; # output files are placed in local dir "tmp"
+my $debug = 0; # output files are placed in local dir "tmp"
 
 # test saving in a temp dir
 my $tdir = $debug ?? "tmp" !! tempdir;
@@ -118,12 +118,12 @@ LE: for @line-endings -> $le {
             $fh.close;
 
             # Now run tests on the generated file
-            note "DEBUG: testing file '$fnam'";
+            note "DEBUG: testing file '$fnam'" if $debug;
             $fh = open $fnam, :r, :nl-in($le); #, :!chomp;
             LINE: for $fh.lines.kv -> $i, $line is copy {
-                note "  DEBUG line pre-strip : '$line'";
+                note "  DEBUG line pre-strip : '$line'" if $debug;
                 $line = strip-comment $line, :first, :mark($cc);
-                note "  DEBUG line post-strip: '$line'";
+                note "  DEBUG line post-strip: '$line'" if $debug;
                 if $i == 0 {
                     # the comment line
                     # line should be empty
@@ -152,12 +152,7 @@ LE: for @line-endings -> $le {
                     is @tcells[2], "notes";
                 }
                 elsif $i == 2 {
-                    if $le ~~ /\n/ {
-                        is @tcells[0], "Sally Jean", "Sally with newline line ending";
-                    }
-                    else {
-                        is @tcells[0], "Sally\nJean", "Sally WITHOUT newline line ending";
-                    }
+                    is @tcells[0], "Sally Jean", "Sally with newline line ending";
                     is @tcells[1], "22";
                     is @tcells[2], "";
                 }
