@@ -26,7 +26,13 @@ my $s = 'foo';
 =head1 DESCRIPTION
 
 The module contains several routines to make text handling easier for
-module and program authors. Following is a short synopsis and
+module and program authors. The routines:
+
+=item sort-list L<#sort-list>
+
+ 
+
+Following is a short synopsis and
 signature for each of the routines.
 
 =head3 C<sub sort-list>
