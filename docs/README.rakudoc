@@ -29,23 +29,24 @@ The module contains several routines to make text handling easier for
 module and program authors. The routines:
 
 =begin table
-Name | Alias
------+------
+Name | Alias | Notes
+-----+-------+------
+commify
+count-substrs
+list2text
 normalize-string | normalize-text
 sort-list
-wrap-text | wrap-paragraph
-strip-comment
-list2text
-count-substrs
-commify
 split-line
 split-line-rw
+strip-comment
+wrap-paragraph | | 'width' is in PS points
+wrap-text  | | 'width' is in number of chars 
 =end table
 
 Following is a short synopsis and
 signature for each of the routines.
 
-=head3 sub sort-list
+=head3 sort-list
 
 =begin code
 #  StrLength, LengthStr, Str, Length, Number
@@ -61,7 +62,7 @@ the C<:$reverse> option is used.
 The routine's output can be modified for other uses by entering the
 C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
-=head3 sub strip-comment
+=head3 strip-comment
 
 Strip the comment from an input text line, save comment if requested,
 normalize returned text if requested.
@@ -100,7 +101,11 @@ However, if you use the C<save-comment> option, a two-element list
 is returned: C<($string, $comment)> (either element may be "" depending
 upon the input text line).
 
-=head3 sub normalize-string (or its alias 'normalize-text')
+=head3 normalize-text
+
+Alias for 'normalize-string'.
+
+=head3 normalize-string
 
 This routine trims a string and collapses multiple whitespace
 characters (including tabs and newlines) into one.
@@ -172,7 +177,7 @@ Collapse to a newline:
 say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
 =end code
 
-=head3 sub wrap-text
+=head3 wrap-text
 
 This routine is used in creating PostScript PDF or other output
 formats where blocks (e.g., paragraphs) need to be wrapped to a
