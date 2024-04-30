@@ -195,7 +195,7 @@ the C<:$reverse> option is used.
 The routine's output can be modified for other uses by entering the
 C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
-=head3 sub split-line
+=head3 split-line
 
 This routine splits a string into two pieces.
 
@@ -218,7 +218,7 @@ sub split-line(
 {...}
 =end code
 
-=head3 sub split-line-rw
+=head3 split-line-rw
 
 Splits a string into two pieces.
 
@@ -280,7 +280,7 @@ However, if you use the C<save-comment> option, a two-element list is
 returned: C<($string, $comment)> (either element may be "" depending
 upon the input text line).
 
-=head3 sub wrap-paragraph
+=head3 wrap-paragraph
 
 This routine wraps a list of words into a paragraph with a maximum
 line width in characters (default: 78), and returns a list of the new

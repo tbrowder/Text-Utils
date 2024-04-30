@@ -157,7 +157,7 @@ By default, this routine sorts all lists by word length, then by Str order. The 
 
 The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the `enum Sort-type`s.
 
-### sub split-line
+### split-line
 
 This routine splits a string into two pieces.
 
@@ -178,7 +178,7 @@ sub split-line(
 {...}
 ```
 
-### sub split-line-rw
+### split-line-rw
 
 Splits a string into two pieces.
 
@@ -234,7 +234,7 @@ sub strip-comment(
 
 Note the default return is the returned string without any comment. However, if you use the `save-comment` option, a two-element list is returned: `($string, $comment)` (either element may be "" depending upon the input text line).
 
-### sub wrap-paragraph
+### wrap-paragraph
 
 This routine wraps a list of words into a paragraph with a maximum line width in characters (default: 78), and returns a list of the new paragraph's lines formatted as desired. An option, `:$para-pre-text`, used in conjunction with `:$para-indent`, is very useful for use in auto-generation of code. For example, given this chunk of text describing a following PDF method `MoveTo(x, y)`:
 
