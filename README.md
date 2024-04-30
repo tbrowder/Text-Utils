@@ -32,54 +32,60 @@ The module contains several routines to make text handling easier for module and
 
 <table class="pod-table">
 <thead><tr>
-<th>Name</th> <th>Alias</th> <th>Notes</th>
+<th>Name</th> <th>Notes</th>
 </tr></thead>
 <tbody>
-<tr> <td>commify</td> <td></td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> <td></td> </tr> <tr> <td>list2text</td> <td></td> <td></td> </tr> <tr> <td>normalize-string</td> <td>normalize-text</td> <td></td> </tr> <tr> <td>sort-list</td> <td></td> <td></td> </tr> <tr> <td>split-line</td> <td></td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> <td></td> </tr> <tr> <td>strip-comment</td> <td></td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td></td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td></td> <td>&#39;width&#39; is in number of chars</td> </tr>
+<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> </tr> <tr> <td>strip-comment</td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
 </tbody>
 </table>
 
 Following is a short synopsis and signature for each of the routines.
 
-### sort-list
+### commify
 
-    #  StrLength, LengthStr, Str, Length, Number
-    enum Sort-type is export(:sort-list) < SL LS SS LL N >;
-    sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort-list)
-    {...}
+This routine was originally ported from the Perl version in the *The Perl Cookbook, 2e*.
 
-By default, this routine sorts all lists by word length, then by Str order. The order by length is by the shortest abbreviation first unless the `:$reverse` option is used. 
+The routine adds commas to a number to separate multiples of a thousand. For example, given an input of `1234.56`, the routine returns `1,234.56`.
 
-The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the `enum Sort-type`s.
-
-### strip-comment
-
-Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
-
-The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. All returned text is normalized if requested. Any returned comment will also be normalized if the `normalize-all` option is used in place of `normalize`.
+As an improvement, if real numbers are input, the routine returns the number stringified with two decimal places. The user may specify the desired number with the new `:$decimals` named argument.
 
 The signature:
 
 ```Raku
-sub strip-comment(
-    $line is copy,                # string of text with possible comment
-    :mark(:$comment-char) = '#',  # desired comment character indicator
-                                  #   (with alias :$comment-char)
-    :$save-comment,               # if true, return the comment
-    :$normalize,                  # if true, normalize returned string
-    :$normalize-all,              # if true, normalize returned string
-                                  #   and also normalize any saved comment
-    :$last,                       # if true, use the last instead of first 
-                                  #   comment character
-    :$first,                      #= if true, the comment char must be the
-                                  #=   first non-whitespace character on 
-                                  #=   the line; otherwise, the line is 
-                                  #=   returned as is
-    ) is export(:strip-comment)
+sub commify($num, :$decimals --> Str) is export(:commify)
 {...}
 ```
 
-Note the default return is the returned string without any comment. However, if you use the `save-comment` option, a two-element list is returned: `($string, $comment)` (either element may be "" depending upon the input text line).
+### count-substrs
+
+Count instances of a substring in a string.
+
+The signature:
+
+```Raku
+sub count-substrs(
+    Str:D $string,
+    Str:D $substr
+    --> UInt
+    ) is export(:count-substrs)
+{...}
+```
+
+### list2text
+
+Turn a list into a text string for use in a document.
+
+For example, this list `1 2 3` becomes either this `"1, 2, and 3"` (the default result) or this `"1, 2 and 3"` (if the `$optional-comma` named variable is set to false). The default result uses the so-called *Oxford Comma* which is not popular among some writers, but those authors may change the default behavior by permanently by defining the environment variable `TEXT_UTILS_NO_OPTIONAL_COMMA`.
+
+The signature:
+
+```Raku
+sub list2text(
+    @list,
+    :$optional-comma is copy = True
+    ) is export(:list2text)
+{...}
+```
 
 ### normalize-text
 
@@ -93,12 +99,12 @@ The signature:
 
 ```Raku
 subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; #= keep or normalize
-subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws 
+subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws
 sub normalize-string(
     Str:D $str is copy
     Kn :t(:$tabs)=0,           #= keep or normalize
     Kn :n(:$newlines)=0,       #= keep or normalize
-    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws 
+    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws
                                #=   to one char
     --> Str) is export(:normalize-string)
 {...}
@@ -140,88 +146,16 @@ Collapse to a newline:
 
     say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
 
-### wrap-text
+### sort-list
 
-This routine is used in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it has all the options of the **wrap-paragraph** routine except the `:width` is expressed in PostScript points (72 per inch) as is the `:font-size`. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
+    #  StrLength, LengthStr, Str, Length, Number
+    enum Sort-type is export(:sort-list) < SL LS SS LL N >;
+    sub sort-list(@list, :$type = SL, :$reverse --> List) is export(:sort-list)
+    {...}
 
-The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
+By default, this routine sorts all lists by word length, then by Str order. The order by length is by the shortest abbreviation first unless the `:$reverse` option is used.
 
-<table class="pod-table">
-<tbody>
-<tr> <td>Courier Courier-Bold Courier-Oblique Courier-BoldOblique</td> </tr> <tr> <td>Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman Times-Bold Times-Italic Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
-</tbody>
-</table>
-
-```Raku
-multi sub wrap-text(
-    @text,
-    Real :$width               = 468, #= PS points for 6.5 inches
-         :$font-name           = 'Times-Roman',
-    Real :$font-size           = 12,
-    #------------------------------#
-    UInt :$para-indent         = 0,
-    UInt :$first-line-indent   = 0,
-    UInt :$line-indent         = 0,
-    #------------------------------#
-    Str  :$para-pre-text       = '',
-    Str  :$first-line-pre-text = '',
-    Str  :$line-pre-text       = '',
-    #------------------------------#
-    :$debug,
-    --> List) is export(:wrap-text)
-{...}
-multi sub wrap-text(
-    $text,
-    # ... other args same as the other multi
-    --> List) is export(:wrap-text)
-{...}
-```
-
-### sub list2text
-
-Turn a list into a text string for use in a document.
-
-For example, this list `1 2 3` becomes either this `"1, 2, and 3"` (the default result) or this `"1, 2 and 3"` (if the `$optional-comma` named variable is set to false). The default result uses the so-called *Oxford Comma* which is not popular among some writers, but those authors may change the default behavior by permanently by defining the environment variable `TEXT_UTILS_NO_OPTIONAL_COMMA`.
-
-The signature:
-
-```Raku
-sub list2text(
-    @list,
-    :$optional-comma is copy = True
-    ) is export(:list2text)
-{...}
-```
-
-### sub count-substrs
-
-Count instances of a substring in a string.
-
-The signature:
-
-```Raku
-sub count-substrs(
-    Str:D $string,
-    Str:D $substr
-    --> UInt
-    ) is export(:count-substrs)
-{...}
-```
-
-### sub commify
-
-This routine was originally ported from the Perl version in the *The Perl Cookbook, 2e*.
-
-The routine adds commas to a number to separate multiples of a thousand. For example, given an input of `1234.56`, the routine returns `1,234.56`.
-
-As an improvement, if real numbers are input, the routine returns the number stringified with two decimal places. The user may specify the desired number with the new `:$decimals` named argument.
-
-The signature:
-
-```Raku
-sub commify($num, :$decimals --> Str) is export(:commify)
-{...}
-```
+The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the `enum Sort-type`s.
 
 ### sub split-line
 
@@ -263,7 +197,42 @@ sub split-line-rw(
     Bool  :$rindex          = False
     --> Str) is export(:split-line-rw)
 {...}
+=end cod
+
+=head3 strip-comment
+
+Strip the comment from an input text line, save comment if requested,
+normalize returned text if requested.
+
+The routine returns a string of text with any comment stripped
+off. Note the designated character will trigger the strip even though
+it is escaped or included in quotes.  Also returns the comment,
+including the comment character, if requested.  All returned text is
+normalized if requested.  Any returned comment will also be normalized
+if the C<normalize-all> option is used in place of C<normalize>.
+
+The signature:
+
+=begin code :lang<Raku>
+sub strip-comment(
+    $line is copy,                # string of text with possible comment
+    :mark(:$comment-char) = '#',  # desired comment character indicator
+                                  #   (with alias :$comment-char)
+    :$save-comment,               # if true, return the comment
+    :$normalize,                  # if true, normalize returned string
+    :$normalize-all,              # if true, normalize returned string
+                                  #   and also normalize any saved comment
+    :$last,                       # if true, use the last instead of first
+                                  #   comment character
+    :$first,                      #= if true, the comment char must be the
+                                  #=   first non-whitespace character on
+                                  #=   the line; otherwise, the line is
+                                  #=   returned as is
+    ) is export(:strip-comment)
+{...}
 ```
+
+Note the default return is the returned string without any comment. However, if you use the `save-comment` option, a two-element list is returned: `($string, $comment)` (either element may be "" depending upon the input text line).
 
 ### sub wrap-paragraph
 
@@ -311,6 +280,43 @@ multi sub wrap-paragraph(
     $text,
     # ... other args same as the other multi
     --> List) is export(:wrap-paragraph)
+{...}
+```
+
+### wrap-text
+
+This routine is used in creating PostScript PDF or other output formats where blocks (e.g., paragraphs) need to be wrapped to a specific maximum width based on the font face and font size to be used. Note it has all the options of the **wrap-paragraph** routine except the `:width` is expressed in PostScript points (72 per inch) as is the `:font-size`. The default `:width` is 468 points, the length of a line on a Letter paper, portrait orientation, with one-inch margins on all sides.
+
+The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
+
+<table class="pod-table">
+<tbody>
+<tr> <td>Courier Courier-Bold Courier-Oblique Courier-BoldOblique</td> </tr> <tr> <td>Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman Times-Bold Times-Italic Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
+</tbody>
+</table>
+
+```Raku
+multi sub wrap-text(
+    @text,
+    Real :$width               = 468, #= PS points for 6.5 inches
+         :$font-name           = 'Times-Roman',
+    Real :$font-size           = 12,
+    #------------------------------#
+    UInt :$para-indent         = 0,
+    UInt :$first-line-indent   = 0,
+    UInt :$line-indent         = 0,
+    #------------------------------#
+    Str  :$para-pre-text       = '',
+    Str  :$first-line-pre-text = '',
+    Str  :$line-pre-text       = '',
+    #------------------------------#
+    :$debug,
+    --> List) is export(:wrap-text)
+{...}
+multi sub wrap-text(
+    $text,
+    # ... other args same as the other multi
+    --> List) is export(:wrap-text)
 {...}
 ```
 
