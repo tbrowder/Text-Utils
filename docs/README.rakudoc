@@ -33,7 +33,7 @@ B<sort-list> L<#sort-list>
 Following is a short synopsis and
 signature for each of the routines.
 
-L<sub sort-list|#sort-list>
+L<sub sort-list|https://github.com/tbrowder/Text-Utils/buf/#sort-list>
 
 =head3 L<sub sort-list|#sort-list>
 
