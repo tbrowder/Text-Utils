@@ -7,6 +7,7 @@
   "build-depends": [
   ],
   "depends": [
+    "File::Temp",
     "Font::AFM:ver<1.24.10>",
     "AlgorithmsIT"
   ],
@@ -31,5 +32,5 @@
   ],
   "test-depends": [
   ],
-  "version": "3.4.1"
+  "version": "3.4.2"
 }

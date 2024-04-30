@@ -45,8 +45,11 @@ class AFM-font is export {
     }
 }
 
-constant \SPACE is export = ' ';
-constant \EMPTY is export = '';
+constant $NL   is export(:nl)  = "\n";
+constant $TAB  is export(:tab) = "\t";
+constant $WS   is export(:ws)  = ' ';
+constant SPACE is export       = ' ';
+constant EMPTY is export       = '';
 
 #| Export a debug var for users
 our $DEBUG is export(:DEBUG) = False;
@@ -58,6 +61,9 @@ BEGIN {
 	$DEBUG = False;
     }
 }
+
+# enum Char-type is export(:char-type) <>:
+# NL TAB SEMI HASH PIPE DPIPES DDASH COMMA 
 
 #  StrLength, LengthStr, Str, Length, Number
 enum Sort-type is export(:sort-list) < SL LS SS LL N >;
@@ -132,37 +138,7 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #|             escaped or included in quotes.
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
-=begin comment
-multi sub strip-comment(
-    :$text is copy,                #= string of text with possible comment
-    :$save-comment,                #= if true, return the comment (including
-                                   #=   the mark)
-    :mark(:$comment-char) = '#',   #= desired comment char indicator
-    :$normalize,                   #= if true, normalize returned text
-    :$normalize-all,               #= if true, normalize returned comment
-    :$last,                        #= if true, use the last instead of first
-                                   #=   comment char
-    --> List
-) is export(:strip-comment) {
-    my $comment = '';
-    my $idx     = $last ?? rindex $text, $comment-char
-                        !! index  $text, $comment-char;
-    if $idx.defined {
-        $comment = substr $text, $idx; #= we DO want the comment char and following
-	$text    = substr $text, 0, $idx;
-    }
-    if $normalize {
-        $text    = normalize-string $text;
-    }
-    if $normalize-all {
-        $text    = normalize-string $text;
-        $comment = normalize-string $comment;
-    }
-    $text, $comment
-}
-=end comment
-
-multi sub strip-comment(
+sub strip-comment(
     $line is copy,                 #= string of text with possible comment
     :$save-comment,                #= if true, return the comment (including
                                    #=   the mark)
@@ -171,10 +147,24 @@ multi sub strip-comment(
     :$normalize-all,               #= if true, also normalize returned comment
     :$last,                        #= if true, use the last instead of first
                                    #=   comment char
+    :$first,                       #= if true, the comment char must be the
+                                   #=   first non-whitespace character on 
+                                   #=   the line; otherwise, the line is 
+                                   #=   returned as is
 ) is export(:strip-comment) {
     my $comment = '';
-    my $idx     = $last ?? rindex $line, $comment-char
-                        !! index  $line, $comment-char;
+    my $idx;
+
+    if $first.defined {
+        if $line ~~ /^ \h* $comment-char / {
+            $idx = index $line, $comment-char;
+        }
+    }
+    else {
+        $idx = $last ?? rindex $line, $comment-char
+                     !! index  $line, $comment-char;
+    }
+
     if $idx.defined {
         $comment = substr $line, $idx; #= we DO want the comment char and following
 	$line    = substr $line, 0, $idx;
@@ -411,20 +401,97 @@ multi sub wrap-paragraph(
 #|             to single ones
 #| Params  : The string to be normalized
 #| Returns : The normalized string
-sub normalize-text(Str:D $str is copy --> Str) is export(:normalize-text) {
-    normalize-string $str;
-} # normalize-text
+subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; #= keep or normalize
+subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws 
+sub normalize-string(
+    Str:D $str is copy,
+    Kn :t(:$tabs)=0,           #= keep or normalize
+    Kn :n(:$newlines)=0,       #= keep or normalize
+    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws 
+                               #=   to one char
+    --> Str
+) is export(:normalize-string) {
+    # default is to always trim first
+    $str .= trim; 
+    # then normalize all space characters
+    $str ~~ s:g/ $WS ** 2..* /$WS/;
 
-sub normalize-string(Str:D $str is copy --> Str) is export(:normalize-string) {
-    $str .= trim;
-    # this also takes care of tabs
-    $str ~~ s:g/ \s ** 2..*/ /;
+    # then check for exceptions before normalizing all whitespace
+
+    # convenience aliases
+    my $t = $tabs;
+    my $c = $collapse-ws-to;
+    my $n = $newlines;
+
+    if $collapse-ws-to { 
+        if $c ~~ /^ :i s / {
+            # collapse all to a single space
+            $str ~~ s:g/ $NL          /$WS/;
+            $str ~~ s:g/ $TAB         /$WS/;
+            $str ~~ s:g/ $WS  ** 2..* /$WS/;
+        }
+        elsif $c ~~ /^ :i t / {
+            # collapse all to a single tab
+            $str ~~ s:g/ $WS          /$TAB/;
+            $str ~~ s:g/ $NL          /$TAB/;
+            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
+        }
+        elsif $c ~~ /^ :i n / {
+            # collapse all to a single newline
+            $str ~~ s:g/ $WS          /$NL/;
+            $str ~~ s:g/ $TAB         /$NL/;
+            $str ~~ s:g/ $NL  ** 2..* /$NL/;
+        }
+    }
+    elsif $newlines and $tabs { 
+        if $t ~~ /^ :i k / {
+            ; # ok, a no-op
+        }
+        elsif $t ~~ /^ :i n / {
+            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
+        }
+        if $n ~~ /^ :i k / {
+            ; # ok, a no-op
+        }
+        elsif $n ~~ /^ :i n / {
+            $str ~~ s:g/ $NL  ** 2..* /$NL/;
+        }
+    }
+    elsif $tabs { 
+        if $t ~~ /^ :i k / {
+            ; # ok, a no-op
+        }
+        elsif $t ~~ /^ :i n / {
+            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
+        }
+    }
+    elsif $newlines { 
+        if $n ~~ /^ :i k / {
+            ; # ok, a no-op
+        }
+        elsif $n ~~ /^ :i n / {
+            $str ~~ s:g/ $NL  ** 2..* /$NL/;
+        }
+    }
+    else {
+        $str ~~ s:g/ \s ** 2..* /$WS/;
+    }
+
+
+    =begin comment
+    else {
+        #$str .= trim;
+        # this also takes care of tabs and newlines
+        $str ~~ s:g/ \s ** 2..*/ /;
+    }
+    =end comment
 
     $str;
 } # normalize-string
+constant &normalize-text is export(:normalize-text) = &normalize-string; # per lizmat, 2024-04-26
 
 =begin comment
-# put tonbed for now
+# put to bed for now
 sub normalize-quotes($s, :$debug --> Str) is export(:normalize-quotes) {
     # First we assume a string has had any line ending removed,
     # so any embedded newline must be handled as part of
