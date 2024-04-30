@@ -30,9 +30,11 @@ DESCRIPTION
 
 The module contains several routines to make text handling easier for module and program authors. The routines:
 
-[sort-list](#sort-list)
+**sort-list** [sort-list](#sort-list)
 
 Following is a short synopsis and signature for each of the routines.
+
+[sub sort-list](#sort-list)
 
 ### [sub sort-list](#sort-list)
 
