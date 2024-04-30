@@ -30,13 +30,18 @@ DESCRIPTION
 
 The module contains several routines to make text handling easier for module and program authors. The routines:
 
-**sort-list** [sort-list](#sort-list)
+<table class="pod-table">
+<thead><tr>
+<th>Name</th> <th>Alias</th>
+</tr></thead>
+<tbody>
+<tr> <td>normalize-string</td> <td>normalize-text</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>wrap-text</td> <td>wrap-paragraph</td> </tr> <tr> <td>strip-comment</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>commify</td> <td></td> </tr> <tr> <td>split-line</td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> </tr>
+</tbody>
+</table>
 
 Following is a short synopsis and signature for each of the routines.
 
-[sub sort-list](#sort-list)
-
-### [sub sort-list](#sort-list)
+### sub sort-list
 
     #  StrLength, LengthStr, Str, Length, Number
     enum Sort-type is export(:sort-list) < SL LS SS LL N >;
