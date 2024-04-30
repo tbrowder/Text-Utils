@@ -28,7 +28,7 @@ my $s = 'foo';
 The module contains several routines to make text handling easier for
 module and program authors. The routines:
 
-L<sort-list|#sort-list>
+L<#sort-list>
 
  
 
