@@ -7,6 +7,7 @@
   "build-depends": [
   ],
   "depends": [
+    "File::Temp",
     "Font::AFM:ver<1.24.10>",
     "AlgorithmsIT"
   ],
