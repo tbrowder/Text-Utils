@@ -409,6 +409,7 @@ sub normalize-string(
     Kn :n(:$newlines)=0,       #= keep or normalize
     Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws 
                                #=   to one char
+    :$no-trim=0,               #= do not trim the input string
     --> Str
 ) is export(:normalize-string) {
     # default is to always trim first
