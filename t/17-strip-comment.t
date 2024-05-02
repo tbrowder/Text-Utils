@@ -9,7 +9,7 @@ my (@s, @stripped);
 # comment char is default '#'
 @s = (
 'some text',
-'text # coment...',
+'text # comment...',
 ' #comment',
 'more text',
 '#',
@@ -36,7 +36,7 @@ for 0..^+@s -> $i {
 # comment char is ';'
 @s = (
 'some text',
-'text ; coment...',
+'text ; comment...',
 ' ;comment',
 'more text',
 ';',
