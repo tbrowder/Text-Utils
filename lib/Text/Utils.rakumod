@@ -413,7 +413,9 @@ sub normalize-string(
     --> Str
 ) is export(:normalize-string) {
     # default is to always trim first
-    $str .= trim; 
+    unless $no-trim {
+        $str .= trim; 
+    }
     # then normalize all space characters
     $str ~~ s:g/ $WS ** 2..* /$WS/;
 
@@ -475,9 +477,9 @@ sub normalize-string(
         }
     }
     else {
+        $str .= trim;
         $str ~~ s:g/ \s ** 2..* /$WS/;
     }
-
 
     =begin comment
     else {
