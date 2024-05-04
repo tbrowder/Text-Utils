@@ -146,7 +146,7 @@ Collapse to a newline:
 
     say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
 
-Notice that in the normaalization routines, spaces (' ') are always normalized, even when tabs and newlines are normalized separately.
+Notice that in the normalization routines, spaces (' ') are always normalized, even when tabs and newlines are normalized separately.
 
 ### sort-list
 

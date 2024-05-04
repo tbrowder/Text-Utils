@@ -179,7 +179,7 @@ Collapse to a newline:
 say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
 =end code
 
-Notice that in the normaalization routines, spaces (' ') are always 
+Notice that in the normalization routines, spaces (' ') are always 
 normalized, even when tabs and newlines are normalized separately.
 
 =head3 sort-list
