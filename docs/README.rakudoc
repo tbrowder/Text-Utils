@@ -245,7 +245,7 @@ sub split-line-rw(
     Bool  :$rindex          = False
     --> Str) is export(:split-line-rw)
 {...}
-=end cod
+=end code
 
 =head3 strip-comment
 

@@ -199,23 +199,17 @@ sub split-line-rw(
     Bool  :$rindex          = False
     --> Str) is export(:split-line-rw)
 {...}
-=end cod
+```
 
-=head3 strip-comment
+### strip-comment
 
-Strip the comment from an input text line, save comment if requested,
-normalize returned text if requested.
+Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
 
-The routine returns a string of text with any comment stripped
-off. Note the designated character will trigger the strip even though
-it is escaped or included in quotes.  Also returns the comment,
-including the comment character, if requested.  All returned text is
-normalized if requested.  Any returned comment will also be normalized
-if the C<normalize-all> option is used in place of C<normalize>.
+The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. All returned text is normalized if requested. Any returned comment will also be normalized if the `normalize-all` option is used in place of `normalize`.
 
 The signature:
 
-=begin code :lang<Raku>
+```Raku
 sub strip-comment(
     $line is copy,                # string of text with possible comment
     :mark(:$comment-char) = '#',  # desired comment character indicator
