@@ -348,12 +348,22 @@ as is the C<:font-size>.  The default C<:width> is 468 points, the
 length of a line on a Letter paper, portrait orientation, with
 one-inch margins on all sides.
 
-The fonts currently handled are the the 14 PostScript and PDF I<Core Fonts>:
+The fonts currently handled are the the 14 PostScript and PDF I<Core
+Fonts>:
 
 =begin table
-Courier Courier-Bold Courier-Oblique Courier-BoldOblique
-Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique
-Times-Roman Times-Bold Times-Italic Times-BoldItalic
+Courier
+Courier-Bold
+Courier-Oblique
+Courier-BoldOblique
+Helvetica
+Helvatica-Bold
+Helvetica-Oblique
+Helvatica-BoldOblique
+Times-Roman
+Times-Bold
+Times-Italic
+Times-BoldItalic
 Symbol
 Zaphdingbats
 =end table

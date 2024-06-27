@@ -277,7 +277,7 @@ The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
 
 <table class="pod-table">
 <tbody>
-<tr> <td>Courier Courier-Bold Courier-Oblique Courier-BoldOblique</td> </tr> <tr> <td>Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman Times-Bold Times-Italic Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
+<tr> <td>Courier</td> </tr> <tr> <td>Courier-Bold</td> </tr> <tr> <td>Courier-Oblique</td> </tr> <tr> <td>Courier-BoldOblique</td> </tr> <tr> <td>Helvetica</td> </tr> <tr> <td>Helvatica-Bold</td> </tr> <tr> <td>Helvetica-Oblique</td> </tr> <tr> <td>Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman</td> </tr> <tr> <td>Times-Bold</td> </tr> <tr> <td>Times-Italic</td> </tr> <tr> <td>Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
 </tbody>
 </table>
 
