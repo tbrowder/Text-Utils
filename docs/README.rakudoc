@@ -36,11 +36,10 @@ count-substrs
 list2text
 normalize-string | alias 'normalize-text'
 sort-list
-split-line
-split-line-rw
+split-line       | aliases 'splitstr', 'split-str'
 strip-comment
-wrap-paragraph | 'width' is in PS points
-wrap-text  |  'width' is in number of chars
+wrap-paragraph   | 'width' is in PS points
+wrap-text        | 'width' is in number of chars
 =end table
 
 Following is a short synopsis and
@@ -179,10 +178,22 @@ Collapse to a newline:
 say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
 =end code
 
-Notice that in the normalization 
-routines, spaces (' ') are always 
-normalized, even when tabs and
-newlines are normalized separately.
+Notice that in the normalization routines, spaces (' ') are always
+normalized, even when tabs and newlines are normalized separately.
+
+Also notice all strings are normally trimmed of leading and trailing
+whitespace regardless of the option used. However, option C<:no-trim>
+protects the input string from any such trimming.  Consider the first
+example from above:
+
+=begin code
+my $s = " 1   \t\t\n\n 2 \n\t  3  ";
+=end code
+
+Using the 'no-trim' option:
+=begin code
+say normalize-string($s, :no-trim) # OUTPUT: « 1 2 3  ␤»
+=end code
 
 =head3 sort-list
 
@@ -202,13 +213,19 @@ C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
 =head3 split-line
 
-This routine splits a string into two pieces.
+Splits a string into two pieces.
 
-Inputs are the string to be split, the split character, maximum
-length, a starting position for the search, and the search direction.
+Inputs are the string to be split, the split character or string,
+maximum length, a starting position for the search, and the search
+direction (normally forward unless the C<:$rindex> option is C<True>).
 
-It returns the two parts of the split string; the second part will be
-an empty string if the input string is not too long.
+An additional option, C<:$break-after>, causes the split to be delayed
+to the position after the input break string on a normal forward
+split.
+
+It returns the two parts of the split string.  The second part will be
+shortened to the C<:$max-line-length> value if its entered value is
+greater than the default zero.
 
 The signature:
 
@@ -218,32 +235,9 @@ sub split-line(
     Str:D $brk,
     UInt  :$max-line-length = 0,
     UInt  :$start-pos       = 0,
-    Bool  :$rindex          = False
+    Bool  :$rindex          = False,
+    Bool  :$break-after     = False,
     --> List) is export(:split-line)
-{...}
-=end code
-
-=head3 split-line-rw
-
-Splits a string into two pieces.
-
-Inputs are the string to be split, the split character, maximum
-length, a starting position for the search, and search direction.
-
-It returns the part of the input string past the break character, or
-an empty string (the input string is modified in-place if it is too
-long).
-
-The signature:
-
-=begin code :lang<Raku>
-sub split-line-rw(
-    Str:D $line is rw,
-    Str:D $brk,
-    UInt  :$max-line-length = 0,
-    UInt  :$start-pos       = 0,
-    Bool  :$rindex          = False
-    --> Str) is export(:split-line-rw)
 {...}
 =end code
 
@@ -354,12 +348,22 @@ as is the C<:font-size>.  The default C<:width> is 468 points, the
 length of a line on a Letter paper, portrait orientation, with
 one-inch margins on all sides.
 
-The fonts currently handled are the the 14 PostScript and PDF I<Core Fonts>:
+The fonts currently handled are the the 14 PostScript and PDF I<Core
+Fonts>:
 
 =begin table
-Courier Courier-Bold Courier-Oblique Courier-BoldOblique
-Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique
-Times-Roman Times-Bold Times-Italic Times-BoldItalic
+Courier
+Courier-Bold
+Courier-Oblique
+Courier-BoldOblique
+Helvetica
+Helvatica-Bold
+Helvetica-Oblique
+Helvatica-BoldOblique
+Times-Roman
+Times-Bold
+Times-Italic
+Times-BoldItalic
 Symbol
 Zaphdingbats
 =end table

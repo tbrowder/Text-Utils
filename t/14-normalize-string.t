@@ -1,12 +1,8 @@
-use v6;
 use Test;
 
 use Text::Utils :ALL;
 
-#say "constant ws = '$WS'";
-#say $WS;
-#exit;
-plan 26;
+plan 27;
 
 # normalize these strings
 my $str1 = '1 2  3   4    5     6      7       8        9         0';
@@ -18,9 +14,15 @@ constant $n = '1 2 3 4 5 6 7 8 9 0';
 
 # strings with tabs
 my $sT  = " 1   \t\t 2 \t  3  ";
-#   normalized
+#   normalized with tabs kept
 my $sTn = "1 \t\t 2 \t 3";
+my $sTnn = " 1 2 3  ";
 is normalize-string($sT, :tabs<k>), $sTn, "keep tabs";
+
+# test no-trim option
+is normalize-string($sT, :no-trim), $sTnn, "no-default";
+# another case:
+
 
 # strings with newlines
 my $sN  = " 1   \n\n 2 \n  3  ";
@@ -103,3 +105,5 @@ is $str4, $n;
 # check for failing on a non-string
 $str1 = 3;
 dies-ok { $str1 = normalize-string $str1 }, 'Fails on a non-string';
+
+done-testing;

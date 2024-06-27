@@ -1,4 +1,3 @@
-use v6;
 use Test;
 
 use Text::Utils :ALL;
@@ -28,5 +27,3 @@ is $f.llx, -2.016;
 is $f.lly, -2.616;
 is $f.urx, 12;
 is $f.ury, 10.776;
-
-

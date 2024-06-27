@@ -63,7 +63,7 @@ BEGIN {
 }
 
 # enum Char-type is export(:char-type) <>:
-# NL TAB SEMI HASH PIPE DPIPES DDASH COMMA 
+# NL TAB SEMI HASH PIPE DPIPES DDASH COMMA
 
 #  StrLength, LengthStr, Str, Length, Number
 enum Sort-type is export(:sort-list) < SL LS SS LL N >;
@@ -148,8 +148,8 @@ sub strip-comment(
     :$last,                        #= if true, use the last instead of first
                                    #=   comment char
     :$first,                       #= if true, the comment char must be the
-                                   #=   first non-whitespace character on 
-                                   #=   the line; otherwise, the line is 
+                                   #=   first non-whitespace character on
+                                   #=   the line; otherwise, the line is
                                    #=   returned as is
 ) is export(:strip-comment) {
     my $comment = '';
@@ -402,17 +402,32 @@ multi sub wrap-paragraph(
 #| Params  : The string to be normalized
 #| Returns : The normalized string
 subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; #= keep or normalize
-subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws 
+subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws
 sub normalize-string(
     Str:D $str is copy,
     Kn :t(:$tabs)=0,           #= keep or normalize
     Kn :n(:$newlines)=0,       #= keep or normalize
-    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws 
+    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws
                                #=   to one char
+    :$no-trim,                 #= do not trim the input string
     --> Str
 ) is export(:normalize-string) {
-    # default is to always trim first
-    $str .= trim; 
+    # default is to always trim first, but to do so we must save the
+    # original leading and trailing spaces
+    my ($pre-ws, $post-ws);
+    if $no-trim.defined {
+        if $str ~~ /^ (\s+) / {
+            $pre-ws = ~$0;
+        }
+        if $str ~~ / (\s+) $/ {
+            $post-ws = ~$0;
+        }
+        $str .= trim;
+    }
+    else {
+        $str .= trim;
+    }
+
     # then normalize all space characters
     $str ~~ s:g/ $WS ** 2..* /$WS/;
 
@@ -423,7 +438,7 @@ sub normalize-string(
     my $c = $collapse-ws-to;
     my $n = $newlines;
 
-    if $collapse-ws-to { 
+    if $collapse-ws-to {
         if $c ~~ /^ :i s / {
             # collapse all to a single space
             $str ~~ s:g/ $NL          /$WS/;
@@ -443,7 +458,7 @@ sub normalize-string(
             $str ~~ s:g/ $NL  ** 2..* /$NL/;
         }
     }
-    elsif $newlines and $tabs { 
+    elsif $newlines and $tabs {
         if $t ~~ /^ :i k / {
             ; # ok, a no-op
         }
@@ -457,7 +472,7 @@ sub normalize-string(
             $str ~~ s:g/ $NL  ** 2..* /$NL/;
         }
     }
-    elsif $tabs { 
+    elsif $tabs {
         if $t ~~ /^ :i k / {
             ; # ok, a no-op
         }
@@ -465,7 +480,7 @@ sub normalize-string(
             $str ~~ s:g/ $TAB ** 2..* /$TAB/;
         }
     }
-    elsif $newlines { 
+    elsif $newlines {
         if $n ~~ /^ :i k / {
             ; # ok, a no-op
         }
@@ -474,9 +489,9 @@ sub normalize-string(
         }
     }
     else {
+        $str .= trim;
         $str ~~ s:g/ \s ** 2..* /$WS/;
     }
-
 
     =begin comment
     else {
@@ -486,6 +501,15 @@ sub normalize-string(
     }
     =end comment
 
+    if $no-trim.defined {
+        # add back any original leading or trailing spaces
+        if $pre-ws {
+            $str = $pre-ws ~ $str;
+        }
+        if $post-ws {
+            $str = $str ~ $post-ws;
+        }
+    }
     $str;
 } # normalize-string
 constant &normalize-text is export(:normalize-text) = &normalize-string; # per lizmat, 2024-04-26
@@ -554,16 +578,41 @@ sub normalize-quotes($s, :$debug --> Str) is export(:normalize-quotes) {
 } # normalize-quotes
 =end comment
 
-#-----------------------------------------------------------------------
-#| Purpose : Split a string into two pieces
-#| Params  : String to be split, the split character, maximum length, a
-#|             starting position for the search, search direction
-#| Returns : The two parts of the split string; the second part will be
-#|             empty string if the input string is not too long
-sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
-               UInt :$start-pos = 0, Bool :$rindex = False --> List) is export(:split-line) {
+=begin comment
+=head3 split-line
+
+Splits a string into two pieces.
+
+Inputs are the string to be split, the split character or string,
+maximum length, a starting position for the search, and the search
+direction (normally forward unless the C<:$rindex> option is C<True>).
+
+An additional option, C<:$break-after>, causes the split to be delayed
+to the position after the input break string on a normal forward
+split.
+
+It returns the two parts of the split string.  The second part will be
+shortened to the C<:$max-line-length> value if its entered value is
+greater than the default zero.
+
+=end comment
+
+# define  "aliases" for convenience
+our &splitstr is export(:splitstr) = &split-line;
+our &split-str is export(:split-str) = &split-line;
+sub split-line(
+    Str:D $line is copy,
+    Str:D $brk,
+    UInt :$max-line-length = 0,
+    UInt :$start-pos       = 0,
+    Bool :$rindex          = False,
+    Bool :$break-after     = False, # if True, break after the $brk string
+    --> List) is export(:split-line) {
+
     my $line2 = '';
-    return ($line, $line2) if $max-line-length && $line.chars <= $max-line-length;
+    if $max-line-length and $line.chars <= $max-line-length {
+        return ($line, $line2)
+    }
 
     my $idx;
     if $rindex {
@@ -573,47 +622,18 @@ sub split-line(Str:D $line is copy, Str:D $brk, UInt :$max-line-length = 0,
     else {
         $idx = $start-pos ?? index $line, $brk, $start-pos !! index $line, $brk;
     }
+
+    if $break-after {
+        $idx += $brk.chars - 1;
+    }
+
     if $idx.defined {
         $line2 = substr $line, $idx+1;
         $line  = substr $line, 0, $idx+1;
-
-        #$line  .= trim-trailing;
-        #$line2 .= trim;
     }
     $line, $line2;
 
 } # split-line
-
-#-----------------------------------------------------------------------
-#| Purpose : Split a string into two pieces
-#| Params  : String to be split, the split character, maximum length, a
-#|             starting position for the search, search direction
-#| Returns : The part of the input string past the break character, or
-#|             an empty string (the input string is modified in-place if
-#|             it is too long)
-sub split-line-rw(Str:D $line is rw, Str:D $brk, UInt :$max-line-length = 0,
-                  UInt :$start-pos = 0, Bool :$rindex = False --> Str) is export(:split-line-rw) {
-    my $line2 = '';
-    return $line2 if $max-line-length && $line.chars <= $max-line-length;
-
-    my $idx;
-    if $rindex {
-        my $spos = max $start-pos, $max-line-length;
-        $idx = $spos ?? rindex $line, $brk, $spos !! rindex $line, $brk;
-    }
-    else {
-        $idx = $start-pos ?? index $line, $brk, $start-pos !! index $line, $brk;
-    }
-    if $idx.defined {
-        $line2 = substr $line, $idx+1;
-        $line  = substr $line, 0, $idx+1;
-
-        #$line  .= trim-trailing;
-        #$line2 .= trim;
-    }
-    $line2;
-
-} # split-line-rw
 
 multi sub wrap-text($text, |c
                    --> List) is export(:wrap-text) {

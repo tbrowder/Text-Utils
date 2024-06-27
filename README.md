@@ -35,7 +35,7 @@ The module contains several routines to make text handling easier for module and
 <th>Name</th> <th>Notes</th>
 </tr></thead>
 <tbody>
-<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> </tr> <tr> <td>strip-comment</td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
+<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td>aliases &#39;splitstr&#39;, &#39;split-str&#39;</td> </tr> <tr> <td>strip-comment</td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
 </tbody>
 </table>
 
@@ -148,6 +148,14 @@ Collapse to a newline:
 
 Notice that in the normalization routines, spaces (' ') are always normalized, even when tabs and newlines are normalized separately.
 
+Also notice all strings are normally trimmed of leading and trailing whitespace regardless of the option used. However, option `:no-trim` protects the input string from any such trimming. Consider the first example from above:
+
+    my $s = " 1   \t\t\n\n 2 \n\t  3  ";
+
+Using the 'no-trim' option:
+
+    say normalize-string($s, :no-trim) # OUTPUT: « 1 2 3  ␤»
+
 ### sort-list
 
     #  StrLength, LengthStr, Str, Length, Number
@@ -161,11 +169,13 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 ### split-line
 
-This routine splits a string into two pieces.
+Splits a string into two pieces.
 
-Inputs are the string to be split, the split character, maximum length, a starting position for the search, and the search direction.
+Inputs are the string to be split, the split character or string, maximum length, a starting position for the search, and the search direction (normally forward unless the `:$rindex` option is `True`).
 
-It returns the two parts of the split string; the second part will be an empty string if the input string is not too long.
+An additional option, `:$break-after`, causes the split to be delayed to the position after the input break string on a normal forward split.
+
+It returns the two parts of the split string. The second part will be shortened to the `:$max-line-length` value if its entered value is greater than the default zero.
 
 The signature:
 
@@ -175,29 +185,9 @@ sub split-line(
     Str:D $brk,
     UInt  :$max-line-length = 0,
     UInt  :$start-pos       = 0,
-    Bool  :$rindex          = False
+    Bool  :$rindex          = False,
+    Bool  :$break-after     = False,
     --> List) is export(:split-line)
-{...}
-```
-
-### split-line-rw
-
-Splits a string into two pieces.
-
-Inputs are the string to be split, the split character, maximum length, a starting position for the search, and search direction.
-
-It returns the part of the input string past the break character, or an empty string (the input string is modified in-place if it is too long).
-
-The signature:
-
-```Raku
-sub split-line-rw(
-    Str:D $line is rw,
-    Str:D $brk,
-    UInt  :$max-line-length = 0,
-    UInt  :$start-pos       = 0,
-    Bool  :$rindex          = False
-    --> Str) is export(:split-line-rw)
 {...}
 ```
 
@@ -287,7 +277,7 @@ The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
 
 <table class="pod-table">
 <tbody>
-<tr> <td>Courier Courier-Bold Courier-Oblique Courier-BoldOblique</td> </tr> <tr> <td>Helvetica Helvatica-Bold Helvetica-Oblique Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman Times-Bold Times-Italic Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
+<tr> <td>Courier</td> </tr> <tr> <td>Courier-Bold</td> </tr> <tr> <td>Courier-Oblique</td> </tr> <tr> <td>Courier-BoldOblique</td> </tr> <tr> <td>Helvetica</td> </tr> <tr> <td>Helvatica-Bold</td> </tr> <tr> <td>Helvetica-Oblique</td> </tr> <tr> <td>Helvatica-BoldOblique</td> </tr> <tr> <td>Times-Roman</td> </tr> <tr> <td>Times-Bold</td> </tr> <tr> <td>Times-Italic</td> </tr> <tr> <td>Times-BoldItalic</td> </tr> <tr> <td>Symbol</td> </tr> <tr> <td>Zaphdingbats</td> </tr>
 </tbody>
 </table>
 

@@ -1,4 +1,3 @@
-use v6;
 use Test;
 
 use Text::Utils :ALL;
@@ -105,11 +104,11 @@ my (@para, @p1);
     "words words words words words",
     "words";
 
-    is-deeply @para, @p1 
+    is-deeply @para, @p1
         , "first-line-indent";
 
     @para = wrap-paragraph $text, :max-line-length(30), :first-line-indent(3), :$debug;
-    is-deeply @para, @p1 
+    is-deeply @para, @p1
         , "first-line-indent";
 }
 
@@ -207,19 +206,19 @@ my (@para, @p1);
 
 # test 12
 {
-    dies-ok { @para = wrap-paragraph @text30, :max-line-length(30), :para-pre-text('def: '), :$debug; }, 
+    dies-ok { @para = wrap-paragraph @text30, :max-line-length(30), :para-pre-text('def: '), :$debug; },
         "line exactly the max length but too long with pre-text";
-    dies-ok { @para = wrap-paragraph $text30, :max-line-length(30), :para-pre-text('def: '), :$debug; }, 
+    dies-ok { @para = wrap-paragraph $text30, :max-line-length(30), :para-pre-text('def: '), :$debug; },
         "line exactly the max length but too long with pre-text";
 }
 
 # test 13
 {
-    @para = wrap-paragraph @text, 
+    @para = wrap-paragraph @text,
                             :max-line-length(39),
-                            :para-indent(2), 
-			    :line-indent(6), 
-                            :first-line-pre-text('defn: '), 
+                            :para-indent(2),
+			    :line-indent(6),
+                            :first-line-pre-text('defn: '),
                             :$debug;
 
    #          1         2         3        4
@@ -231,11 +230,11 @@ my (@para, @p1);
     is-deeply @para, @p1
         , "para-indent, line-indent, first-line-pre-text with one trailing space";
 
-    @para = wrap-paragraph $text, 
+    @para = wrap-paragraph $text,
                             :max-line-length(39),
-                            :para-indent(2), 
-			    :line-indent(6), 
-                            :first-line-pre-text('defn: '), 
+                            :para-indent(2),
+			    :line-indent(6),
+                            :first-line-pre-text('defn: '),
                             :$debug;
     is-deeply @para, @p1
         , "para-indent, line-indent, first-line-pre-text with one trailing space";
