@@ -1,4 +1,3 @@
-use v6;
 use Test;
 
 use Text::Utils :ALL;
@@ -26,5 +25,3 @@ is commify($n5), '1,003,000,000.0000';
 is commify($n6), '1,000,000,000.1000';
 
 is commify(1035.924002, :decimals(4)), '1,035.9240';
- 
-

@@ -1,4 +1,15 @@
 - need to handle signature constraints better
 - add a feature to consider the font and print width
   for wrapping paragraphs
-
+- get no-trim working
+    save lesding and trailing spaces
+      and add back at the end of 
+      processing
+- add aliases for split-line;
+    split-str, splitstr
+    split-str-rw, splitstr-rw
+- for splitstr, split on str should
+    clearly state the effect
+    split at beginning or end of 
+      the str found
+    make sure that is clear

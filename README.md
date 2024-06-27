@@ -35,7 +35,7 @@ The module contains several routines to make text handling easier for module and
 <th>Name</th> <th>Notes</th>
 </tr></thead>
 <tbody>
-<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td></td> </tr> <tr> <td>split-line-rw</td> <td></td> </tr> <tr> <td>strip-comment</td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
+<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td>aliases &#39;splitstr&#39;, &#39;split-str&#39;</td> </tr> <tr> <td>strip-comment</td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
 </tbody>
 </table>
 
@@ -146,6 +146,16 @@ Collapse to a newline:
 
     say normalize-string($s, :c<n>) # OUTPUT: «1\n2\n3␤»
 
+Notice that in the normalization routines, spaces (' ') are always normalized, even when tabs and newlines are normalized separately.
+
+Also notice all strings are normally trimmed of leading and trailing whitespace regardless of the option used. However, option `:no-trim` protects the input string from any such trimming. Consider the first example from above:
+
+    my $s = " 1   \t\t\n\n 2 \n\t  3  ";
+
+Using the 'no-trim' option:
+
+    say normalize-string($s, :no-trim) # OUTPUT: « 1 2 3  ␤»
+
 ### sort-list
 
     #  StrLength, LengthStr, Str, Length, Number
@@ -159,11 +169,13 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 ### split-line
 
-This routine splits a string into two pieces.
+Splits a string into two pieces.
 
-Inputs are the string to be split, the split character, maximum length, a starting position for the search, and the search direction.
+Inputs are the string to be split, the split character or string, maximum length, a starting position for the search, and the search direction (normally forward unless the `:$rindex` option is `True`).
 
-It returns the two parts of the split string; the second part will be an empty string if the input string is not too long.
+An additional option, `:$break-after`, causes the split to be delayed to the position after the input break string on a normal forward split.
+
+It returns the two parts of the split string. The second part will be shortened to the `:$max-line-length` value if its entered value is greater than the default zero.
 
 The signature:
 
@@ -173,47 +185,21 @@ sub split-line(
     Str:D $brk,
     UInt  :$max-line-length = 0,
     UInt  :$start-pos       = 0,
-    Bool  :$rindex          = False
+    Bool  :$rindex          = False,
+    Bool  :$break-after     = False,
     --> List) is export(:split-line)
 {...}
 ```
 
-### split-line-rw
+### strip-comment
 
-Splits a string into two pieces.
+Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
 
-Inputs are the string to be split, the split character, maximum length, a starting position for the search, and search direction.
-
-It returns the part of the input string past the break character, or an empty string (the input string is modified in-place if it is too long).
+The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. All returned text is normalized if requested. Any returned comment will also be normalized if the `normalize-all` option is used in place of `normalize`.
 
 The signature:
 
 ```Raku
-sub split-line-rw(
-    Str:D $line is rw,
-    Str:D $brk,
-    UInt  :$max-line-length = 0,
-    UInt  :$start-pos       = 0,
-    Bool  :$rindex          = False
-    --> Str) is export(:split-line-rw)
-{...}
-=end cod
-
-=head3 strip-comment
-
-Strip the comment from an input text line, save comment if requested,
-normalize returned text if requested.
-
-The routine returns a string of text with any comment stripped
-off. Note the designated character will trigger the strip even though
-it is escaped or included in quotes.  Also returns the comment,
-including the comment character, if requested.  All returned text is
-normalized if requested.  Any returned comment will also be normalized
-if the C<normalize-all> option is used in place of C<normalize>.
-
-The signature:
-
-=begin code :lang<Raku>
 sub strip-comment(
     $line is copy,                # string of text with possible comment
     :mark(:$comment-char) = '#',  # desired comment character indicator
