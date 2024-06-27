@@ -11,6 +11,9 @@
          - do NOT trim and collapse spaces by default
     - Add tests for new options
 
+3.4.3  2024-05-06T16:01:13-05:00
+    - Fix doc error
+
 3.4.2  2024-04-30T18:12:06-05:00
     - Add new options to sub 'normalize-string':
       + 'tabs'
