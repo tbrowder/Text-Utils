@@ -173,7 +173,7 @@ Splits a string into two pieces.
 
 Inputs are the string to be split, the split character or string, maximum length, a starting position for the search, and the search direction (normally forward unless the `:$rindex` option is `True`).
 
-An additional option, `:$clean`, causes the break character to be removed from the firsst part, and both parts to be normalized.
+An additional option, `:$clean`, causes the break character to be removed from the first part, and both parts to be normalized.
 
 An additional option, `:$break-after`, causes the split to be delayed to the position after the input break string on a normal forward split.
 
@@ -189,6 +189,7 @@ sub split-line(
     UInt  :$start-pos       = 0,
     Bool  :$rindex          = False,
     Bool  :$break-after     = False,
+    Bool  :$clean           = False,
     --> List) is export(:split-line)
 {...}
 ```
@@ -316,7 +317,7 @@ Tom Browder <tbrowder@cpan.org>
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright &#x00A9; 2019-2024 Tom Browder
+Copyright &#x00A9; 2019-2025 Tom Browder
 
 This library is free software; you may redistribute it or modify it under the Artistic License 2.0.
 
