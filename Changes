@@ -5,6 +5,7 @@
     - Add test for new option
     - Update docs
     - Fixed Windows github tests
+    - Update copyright year
 
 3.4.4  2024-06-27T15:17:47-05:00
     - Removed sub 'split-line-rw'
