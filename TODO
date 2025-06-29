@@ -2,7 +2,7 @@
 - add a feature to consider the font and print width
   for wrapping paragraphs
 - get no-trim working
-    save lesding and trailing spaces
+    save lealding and trailing spaces
       and add back at the end of 
       processing
 - add aliases for split-line;

@@ -219,6 +219,9 @@ Inputs are the string to be split, the split character or string,
 maximum length, a starting position for the search, and the search
 direction (normally forward unless the C<:$rindex> option is C<True>).
 
+An additional option, C<:$clean>, causes the break character to
+be removed from the firsst part, and both parts to be normalized.
+
 An additional option, C<:$break-after>, causes the split to be delayed
 to the position after the input break string on a normal forward
 split.

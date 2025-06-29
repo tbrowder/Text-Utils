@@ -173,6 +173,8 @@ Splits a string into two pieces.
 
 Inputs are the string to be split, the split character or string, maximum length, a starting position for the search, and the search direction (normally forward unless the `:$rindex` option is `True`).
 
+An additional option, `:$clean`, causes the break character to be removed from the firsst part, and both parts to be normalized.
+
 An additional option, `:$break-after`, causes the split to be delayed to the position after the input break string on a normal forward split.
 
 It returns the two parts of the split string. The second part will be shortened to the `:$max-line-length` value if its entered value is greater than the default zero.

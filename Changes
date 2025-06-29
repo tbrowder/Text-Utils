@@ -1,4 +1,9 @@
 {{$NEXT}}
+    - Add option :clean to split-line
+        which removes the brk char from the first part
+        and normalizes both parts
+    - Add test for new optio
+    - Update docs
 
 3.4.4  2024-06-27T15:17:47-05:00
     - Removed sub 'split-line-rw'

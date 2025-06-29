@@ -607,6 +607,8 @@ sub split-line(
     UInt :$start-pos       = 0,
     Bool :$rindex          = False,
     Bool :$break-after     = False, # if True, break after the $brk string
+    Bool :$clean           = False, # if True, remove $brk char from first part,
+                                    #   normalize both parts
     --> List) is export(:split-line) {
 
     my $line2 = '';
@@ -631,6 +633,13 @@ sub split-line(
         $line2 = substr $line, $idx+1;
         $line  = substr $line, 0, $idx+1;
     }
+    if $clean {
+        # remove the brk char from the first part
+        $line ~~ s/$brk \h* $//;
+        $line  = normalize-string $line;
+        $line2 = normalize-string $line2;
+    }
+
     $line, $line2;
 
 } # split-line
