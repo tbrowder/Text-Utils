@@ -1,13 +1,21 @@
-- need to handle signature constraints better
 - add a feature to consider the font and print width
   for wrapping paragraphs
-- get no-trim working
-    save lealding and trailing spaces
-      and add back at the end of 
-      processing
+
 - add aliases for split-line;
     split-str, splitstr
     split-str-rw, splitstr-rw
+
+=COMPLETED
+
+2025-07-06
+==========
+- get "no-trim" (!normalize and !normalize-all); working
+    save lealding and trailing spaces
+      and add back at the end of 
+      processing
+
+- need to handle signature constraints better
+
 - for splitstr, split on str should
     clearly state the effect
     split at beginning or end of 

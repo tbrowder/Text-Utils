@@ -198,9 +198,21 @@ sub split-line(
 
 Strip the comment from an input text line, save comment if requested, normalize returned text by default.
 
-The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. 
+The routine returns a string of text with any comment stripped off. Note the designated comment character (default '#') character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. It is very useful in argument handling, and the author uses it constantly:
 
 All returned text is normalized by default unless you add the `!normalize` option. Any returned comment will also be normalized if the `normalize-all` option is used in place of `normalize`.
+
+For example, this is the default behavior:
+
+    my $s = " my  dog Gus # a Shit Tzu";
+    $s = strip-comment $s; # OUTPUT: "my dog Gus"
+
+For other needs, the comment can be stripped and the argument returned returned in its original form including and trailing spaces. Given the previous example and using the `!normalize` option yields this result:
+
+    my $s = " my  dog Gus # a Shit Tzu";
+    $s = strip-comment $s, !normalize; # OUTPUT: " my  dog Gus "
+
+Notice the returned text is identical to its original form.
 
 The signature:
 
