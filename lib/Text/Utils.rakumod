@@ -139,17 +139,21 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
 sub strip-comment(
-    $line is copy,                 #= string of text with possible comment
-    :$save-comment,                #= if true, return the comment (including
-                                   #=   the mark)
+    $line is copy,                 #= string of text with possible 
+                                   #=   comment
+    :$save-comment,                #= if true, return the comment 
+                                   #=   (including the mark)
     :mark(:$comment-char) = '#',   #= desired comment char indicator
-    :$normalize,                   #= if true, normalize returned string
-    :$normalize-all,               #= if true, also normalize returned comment
-    :$last,                        #= if true, use the last instead of first
-                                   #=   comment char
-    :$first,                       #= if true, the comment char must be the
-                                   #=   first non-whitespace character on
-                                   #=   the line; otherwise, the line is
+    :$normalize = True,            #= if true, normalize returned 
+                                   #=   string
+    :$normalize-all = False,       #= if true, also normalize 
+                                   #=   returned comment
+    :$last,                        #= if true, use the last instead 
+                                   #=   of first comment char
+    :$first,                       #= if true, the comment char must 
+                                   #=   be the first non-whitespace 
+                                   #=   character on the line; 
+                                   #=   otherwise, the line is 
                                    #=   returned as is
 ) is export(:strip-comment) {
     my $comment = '';
@@ -176,6 +180,7 @@ sub strip-comment(
         $line    = normalize-string $line;
         $comment = normalize-string $comment;
     }
+
     if $save-comment {
         return $line, $comment;
     }
