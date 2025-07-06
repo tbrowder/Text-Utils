@@ -1,6 +1,7 @@
 {{$NEXT}}
-    - Add option use !normalize to sub strip-comment
-    - Add test for new option
+    - Add option !normalize to sub strip-comment
+    - Add option !normalize-all to sub strip-comment
+    - Add tests for new options
     - Update docs
 
 3.4.5  2025-06-29T09:39:35-05:00
