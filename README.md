@@ -196,9 +196,11 @@ sub split-line(
 
 ### strip-comment
 
-Strip the comment from an input text line, save comment if requested, normalize returned text if requested.
+Strip the comment from an input text line, save comment if requested, normalize returned text by default.
 
-The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. All returned text is normalized if requested. Any returned comment will also be normalized if the `normalize-all` option is used in place of `normalize`.
+The routine returns a string of text with any comment stripped off. Note the designated character will trigger the strip even though it is escaped or included in quotes. Also returns the comment, including the comment character, if requested. 
+
+All returned text is normalized by default unless you add the `!normalize` option. Any returned comment will also be normalized if the `normalize-all` option is used in place of `normalize`.
 
 The signature:
 
