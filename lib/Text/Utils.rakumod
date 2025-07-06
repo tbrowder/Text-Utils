@@ -144,9 +144,9 @@ sub strip-comment(
     :$save-comment,                #= if true, return the comment 
                                    #=   (including the mark)
     :mark(:$comment-char) = '#',   #= desired comment char indicator
-    :$normalize = True,            #= if true, normalize returned 
+    :$normalize,                   #= if true, normalize returned 
                                    #=   string
-    :$normalize-all = False,       #= if true, also normalize 
+    :$normalize-all,               #= if true, also normalize 
                                    #=   returned comment
     :$last,                        #= if true, use the last instead 
                                    #=   of first comment char

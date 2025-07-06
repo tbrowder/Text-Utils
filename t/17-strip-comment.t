@@ -2,7 +2,7 @@ use Test;
 
 use Text::Utils :ALL;
 
-plan 29;
+plan 31;
 
 my (@s, @stripped);
 # comment char is default '#'
@@ -113,3 +113,13 @@ is $text, " some\t\t text ";
 
 $text = strip-comment $tstr, :normalize;
 is $text, 'some text', 'normalize a string with tabs';
+
+# test no normalize on strip comment
+$tstr = " some      text # some  comment ";
+$text = strip-comment $tstr, :!normalize;
+is $text, ' some      text ', '!normalize a string with tabs';
+
+$tstr = " some      text # some  comment ";
+$text = strip-comment $tstr, :normalize(False);
+is $text, ' some      text ', '!normalize a string with tabs';
+
