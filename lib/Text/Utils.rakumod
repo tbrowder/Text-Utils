@@ -138,6 +138,8 @@ sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
 #|             escaped or included in quotes.
 #|             Also returns the comment if requested.
 #|             All returned text is normalized if requested.
+# define  "aliases" for convenience (with unique export keys)
+our &strip is export(:strip) = &strip-comment;
 sub strip-comment(
     $line is copy,                 #= string of text with possible 
                                    #=   comment
@@ -592,60 +594,59 @@ Inputs are the string to be split, the split character or string,
 maximum length, a starting position for the search, and the search
 direction (normally forward unless the C<:$rindex> option is C<True>).
 
-An additional option, C<:$break-after>, causes the split to be delayed
-to the position after the input break string on a normal forward
-split.
-
-It returns the two parts of the split string.  The second part will be
-shortened to the C<:$max-line-length> value if its entered value is
-greater than the default zero.
+It returns the two parts of the split string. If the C<:$clean>
+option is used, the first part has the split character or word i
+removes and the remaining string normalize (which will remove
+any remaning blank spaces).
 
 =end comment
 
-# define  "aliases" for convenience
+# define  "aliases" for convenience (with unique export keys)
 our &splitstr is export(:splitstr) = &split-line;
 our &split-str is export(:split-str) = &split-line;
 sub split-line(
     Str:D $line is copy,
     Str:D $brk,
-    UInt :$max-line-length = 0,
-    UInt :$start-pos       = 0,
-    Bool :$rindex          = False,
-    Bool :$break-after     = False, # if True, break after the $brk string
-    Bool :$clean           = False, # if True, remove $brk char from first part,
-                                    #   normalize both parts
+    UInt :$start-pos       = 0,     # default forward search 
+    Bool :$rindex          = False, # if True, search starting at end
+    Bool :$clean           = False, # if True, remove $brk char from 
+                                    # first part and normalize it
     --> List) is export(:split-line) {
 
-    my $line2 = '';
-    if $max-line-length and $line.chars <= $max-line-length {
-        return ($line, $line2)
+    my $spos = $start-pos;
+    my $idx;
+    if 0 {
+        # special handling required
+        die "FATAL: Fix splitting on words...";
+        # sub find-all-text-chunks (
+        #     Str $haystack, # the string to search 
+        #     Str $needle,   # the text chunk of interest
+        #     --> List       # list of hashes of match data
     }
 
-    my $idx;
     if $rindex {
-        my $spos = max $start-pos, $max-line-length;
-        $idx = $spos ?? rindex $line, $brk, $spos !! rindex $line, $brk;
+        $spos = $line.chars - 1;
+        $idx = rindex $line, $brk, $spos;
     }
     else {
-        $idx = $start-pos ?? index $line, $brk, $start-pos !! index $line, $brk;
+        $idx = index $line, $brk;
     }
 
-    if $break-after {
-        $idx += $brk.chars - 1;
-    }
-
+    my ($first, $last);
     if $idx.defined {
-        $line2 = substr $line, $idx+1;
-        $line  = substr $line, 0, $idx+1;
+        if $idx > 0 {
+            $last  = substr $line, $idx+1;
+            $first = substr $line, 0, $idx+1;
+        }
+        else {
+        }
     }
     if $clean {
         # remove the brk char from the first part
-        $line ~~ s/$brk \h* $//;
-        $line  = normalize-string $line;
-        $line2 = normalize-string $line2;
+        $first ~~ s/$brk \h* $//;
+        $first = normalize-string $first if $first.chars;
     }
-
-    $line, $line2;
+    $first, $last;
 
 } # split-line
 
@@ -842,7 +843,7 @@ multi sub wrap-text(@text,
     @para;
 }
 
-# define  "aliases" for convenience
+# define  "aliases" for convenience (with unique export keys)
 our &typeset-line is export(:typeset-line) = &typeset-text;
 our &typeset-string is export(:typeset-string) = &typeset-text;
 multi sub typeset-text(Str:D $text,

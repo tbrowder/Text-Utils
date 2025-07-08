@@ -23,6 +23,12 @@ any kind of text, including code;
 my $s = 'foo';
 =end code
 
+WARNING: This is a major update with several improvements.
+Unused or untested options
+were removed. See L<Changes|Changes> for details.
+
+Users needing those must file an issue if this
+is a breaking change for them.
 =head1 DESCRIPTION
 
 The module contains several routines to make text handling easier for
@@ -37,7 +43,7 @@ list2text
 normalize-string | alias 'normalize-text'
 sort-list
 split-line       | aliases 'splitstr', 'split-str'
-strip-comment
+strip-comment    | alias 'strip'
 wrap-paragraph   | 'width' is in PS points
 wrap-text        | 'width' is in number of chars
 =end table
@@ -215,20 +221,26 @@ C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
 Splits a string into two pieces.
 
-Inputs are the string to be split, the split character or string,
-maximum length, a starting position for the search, and the search
+Inputs are the string to be split, the split (or break) character 
+or string, a starting position for the search, and the search
 direction (normally forward unless the C<:$rindex> option is C<True>).
+The split character is kept with the first part of the
+string by default. The default behavior with a semicolon as the
+split character:
 
-An additional option, C<:$clean>, causes the break character to
-be removed from the first part, and both parts to be normalized.
+=begin comment
+ Sally ; Jones # OUTPUT: " Sally ;", " Jones "
+=end comment
 
-An additional option, C<:$break-after>, causes the split to be delayed
-to the position after the input break string on a normal forward
-split.
+An additional option, C<:$clean>, causes the split character to
+be removed from the first part, and the first part to be normalized.
+The second part remains unchanged.
 
-It returns the two parts of the split string.  The second part will be
-shortened to the C<:$max-line-length> value if its entered value is
-greater than the default zero.
+The same input as before but using the C<:clean> option yields:
+
+=begin comment
+ Sally ; Jones # OUTPUT: "Sally", " Jones "
+=end comment
 
 The signature:
 
@@ -236,10 +248,8 @@ The signature:
 sub split-line(
     Str:D $line is copy,
     Str:D $brk,
-    UInt  :$max-line-length = 0,
     UInt  :$start-pos       = 0,
     Bool  :$rindex          = False,
-    Bool  :$break-after     = False,
     Bool  :$clean           = False,
     --> List) is export(:split-line)
 {...}

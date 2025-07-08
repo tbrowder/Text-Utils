@@ -1,9 +1,17 @@
+- fix split-line handling of multi-char split words
+
 - add a feature to consider the font and print width
   for wrapping paragraphs
 
 - add aliases for split-line;
-    split-str, splitstr
     split-str-rw, splitstr-rw
+
+- for splitstr, split on str should
+    clearly state the effects of a
+    split at beginning or end of 
+      the str found
+    make sure that is clear
+    add examples to readme
 
 =COMPLETED
 
@@ -16,8 +24,10 @@
 
 - need to handle signature constraints better
 
-- for splitstr, split on str should
-    clearly state the effect
-    split at beginning or end of 
-      the str found
-    make sure that is clear
+- add alias strip for strip-comment
+
+In previous versions
+====================
+
+- add aliases for split-line;
+    split-str, splitstr

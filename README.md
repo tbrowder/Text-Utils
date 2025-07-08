@@ -25,6 +25,10 @@ any kind of text, including code;
 my $s = 'foo';
 ```
 
+WARNING: This is a major update with several improvements. Unused or untested options were removed. See [Changes](Changes) for details.
+
+Users needing those must file an issue if this is a breaking change for them.
+
 DESCRIPTION
 ===========
 
@@ -35,7 +39,7 @@ The module contains several routines to make text handling easier for module and
 <th>Name</th> <th>Notes</th>
 </tr></thead>
 <tbody>
-<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td>aliases &#39;splitstr&#39;, &#39;split-str&#39;</td> </tr> <tr> <td>strip-comment</td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
+<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td>aliases &#39;splitstr&#39;, &#39;split-str&#39;</td> </tr> <tr> <td>strip-comment</td> <td>alias &#39;strip&#39;</td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
 </tbody>
 </table>
 
@@ -171,13 +175,11 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 Splits a string into two pieces.
 
-Inputs are the string to be split, the split character or string, maximum length, a starting position for the search, and the search direction (normally forward unless the `:$rindex` option is `True`).
+Inputs are the string to be split, the split (or break) character or string, a starting position for the search, and the search direction (normally forward unless the `:$rindex` option is `True`). The split character is kept with the first part of the string by default. The default behavior with a semicolon as the split character:
 
-An additional option, `:$clean`, causes the break character to be removed from the first part, and both parts to be normalized.
+An additional option, `:$clean`, causes the split character to be removed from the first part, and the first part to be normalized. The second part remains unchanged.
 
-An additional option, `:$break-after`, causes the split to be delayed to the position after the input break string on a normal forward split.
-
-It returns the two parts of the split string. The second part will be shortened to the `:$max-line-length` value if its entered value is greater than the default zero.
+The same input as before but using the `:clean` option yields:
 
 The signature:
 
@@ -185,10 +187,8 @@ The signature:
 sub split-line(
     Str:D $line is copy,
     Str:D $brk,
-    UInt  :$max-line-length = 0,
     UInt  :$start-pos       = 0,
     Bool  :$rindex          = False,
-    Bool  :$break-after     = False,
     Bool  :$clean           = False,
     --> List) is export(:split-line)
 {...}

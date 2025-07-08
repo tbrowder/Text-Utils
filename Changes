@@ -1,10 +1,15 @@
 {{$NEXT}}
+    - Released as new version 4.0.0 
     - Add option !normalize to sub strip-comment
     - Add option !normalize-all to sub strip-comment
     - Add tests for new options
+    - Add a standard load test
+    - Added alias 'strip' for 'strip-comment'
+    - Removed unneeded and untested options
+      + updated tests
     - Updated docs
       + added useful examples for 'strip-comment'
-
+      + added useful examples for 'split-line'
 
 3.4.5  2025-06-29T09:39:35-05:00
     - Add option :clean to split-line
