@@ -5,7 +5,7 @@ use Text::Utils::Subs;
 
 # plan 8;
 
-my ($s1, $s2, $s3, $left, $right);
+my ($s1, $s2, $s3, $left, $right, $splitter, $m, $string);
 
 $s1 = 'sub foo($song, $tool, @long-array, :$good) is export { say pwd }';
 
@@ -16,7 +16,7 @@ is $right, '$song, $tool, @long-array, :$good) is export { say pwd }',
            "default split-line";
 
 $s2  = "Free Sans";
-my $splitter = "Free";
+$splitter = "Free";
 
 # default behavior: char stays with first part, no cleaning
 $s3 = " key : some  text "; 
@@ -34,14 +34,14 @@ is $left, "key", "use new :clean option";
 is $right, " some  text ", "use new :clean option";
 
 #=================================
-# forward search with chunk as key:
+# forward search with splitter as key:
 #             1     3    1
-my $string = " Free   Sans "; # 13 chars
+$string = " Free   Sans "; # 13 chars
 #      first: 6 chars
 #      last:  7 chars
 #                 1
-my $chunk  = "Free "; # 5 chars
-my $m = find-text-forward :$string, :$chunk;
+$splitter  = "Free "; # 5 chars
+$m = find-text-forward :$string, :$splitter;
 isa-ok $m, Hash, "\$m is a Hash";
 for $m.kv -> $k, $v {
     say "key: '$k' => '$v'";
@@ -50,9 +50,9 @@ for $m.kv -> $k, $v {
 done-testing;
 =finish
 #=================================
-# reverse search with chunk as key:
+# reverse search with splitter as key:
 #             1     3    1
-my $string = " Free : Sans "; # 13 chars
+$string = " Free : Sans "; # 13 chars
 
 
 done-testing;
