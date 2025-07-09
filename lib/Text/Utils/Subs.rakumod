@@ -1,9 +1,9 @@
 unit module Text::Utils::Subs;
 
 # Helper routines for special needs by primary routines.
-sub find-all-text-chunks (
+sub find-all-text-splitters (
     Str $haystack, # the string to search 
-    Str $needle,   # the text chunk of interest
+    Str $needle,   # the text splitter of interest
     --> List       # list of hashes of match data
     ) is export {
     my @matches; 
@@ -11,7 +11,7 @@ sub find-all-text-chunks (
     my $pos = 0;
     while $haystack.index($needle, $pos) -> $found-at {
        @matches.push: {
-           chunk => $needle,
+           splitter => $needle,
            start => $found-at,
            end   => $found-at + $needle.chars - 1,
         };
@@ -22,17 +22,17 @@ sub find-all-text-chunks (
 } # end of sub
 
 sub find-text-reverse (
-    Str :$chunk,   # the text chunk of interest for the split
+    Str :$splitter,   # the text splitter of interest for the split
     Str :$string,  # the string to search
     ) is export {
-    my $first;     # text before the chunk plus the chunk
-    my $last;      # text after the chunk
+    my $first;     # text before the splitter plus the splitter
+    my $last;      # text after the splitter
     my $pos = 0;   # beginning of the search string
 
-    with $string.rindex($chunk) -> $pos {
+    with $string.rindex($splitter) -> $pos {
         my %m = %(
            start => $pos,
-           end   => $pos + $chunk.chars - 1,
+           end   => $pos + $splitter.chars - 1,
         );
         my $first = $string.comb[0..%m<end>].join;
         my $spos  = %m<end> + 1; # start point for next search
@@ -40,7 +40,7 @@ sub find-text-reverse (
         $last = $string.comb[$spos..*].join;
         if 1 {
             say "string: '$string'";
-            say "chunk:  '$chunk'";
+            say "splitter:  '$splitter'";
             say "first:  '$first'";
             say "last:   '$last'";
         }
@@ -50,18 +50,18 @@ sub find-text-reverse (
 }
 
 sub find-text-forward (
-    Str :$chunk,   # the text chunk of interest for the split
+    Str :$splitter,   # the text splitter of interest for the split
     Str :$string,  # the string to search
     --> Hash       # hash of match data
     ) is export {
-    my $first;     # text before the chunk plus the chunk
-    my $last;      # text after the chunk
+    my $first;     # text before the splitter plus the splitter
+    my $last;      # text after the splitter
     my $pos = 0;   # beginning of the search string
 
-    with $string.index($chunk) -> $pos {
+    with $string.index($splitter) -> $pos {
         my %m = %(
            start => $pos,
-           end   => $pos + $chunk.chars - 1,
+           end   => $pos + $splitter.chars - 1,
         );
         my $first = $string.comb[0..%m<end>].join;
         my $spos  = %m<end> + 1; # start point for next search
@@ -69,7 +69,7 @@ sub find-text-forward (
         $last = $string.comb[$spos..*].join;
         if 1 {
             say "string: '$string'";
-            say "chunk:  '$chunk'";
+            say "splitter:  '$splitter'";
             say "first:  '$first'";
             say "last:   '$last'";
         }

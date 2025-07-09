@@ -32,7 +32,8 @@ is a breaking change for them.
 =head1 DESCRIPTION
 
 The module contains several routines to make text handling easier for
-module and program authors. The routines:
+module and program authors. The routines are described below in
+alphabetical order:
 
 =begin table
 Name | Notes
@@ -219,38 +220,55 @@ C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
 =head3 split-line
 
-Splits a string into two pieces.
+Splits a string into two pieces at a user-defined delimiter 
+(or 'splitter').  The first piece will be an empty
+string if no split delimiter was found.
 
 Inputs are the string to be split, the split (or break) character 
-or string, a starting position for the search, and the search
-direction (normally forward unless the C<:$rindex> option is C<True>).
-The split character is kept with the first part of the
-string by default. The default behavior with a semicolon as the
-split character:
+or string, and a starting position for the search (default: 0,
+the beginning of the line).
+string by default. 
+
+The output will be a list of two strings consisting of the first
+part of the split and the remainder of the split. If no match with
+the delimiter is found, the first string will be empty.
+
+The results of the default behavior, with a 
+semicolon as the split character, is shown here:
 
 =begin comment
- Sally ; Jones # OUTPUT: " Sally ;", " Jones "
+ Sally ; Jones # OUTPUT: " Sally ", " Jones "
 =end comment
 
-An additional option, C<:$clean>, causes the split character to
-be removed from the first part, and the first part to be normalized.
-The second part remains unchanged.
+An additional option, C<:$clean>, causes the first part to be 
+normalized.  The second part remains unchanged.
 
-The same input as before but using the C<:clean> option yields:
+The same input as before, but using the C<:clean> option, yields:
 
 =begin comment
  Sally ; Jones # OUTPUT: "Sally", " Jones "
 =end comment
+
+Note the C<split-line> routine encapsulates the Raku core routine 
+C<split> and uses constants as well as new names for options
+in an attempt to make it easier to use for novices as well as those,
+like the author, who find that routine a bit confusing with
+its awkward option names and purposes.
+For example, the core routine has a fourth unnamed argument, 
+C<$limit>, whose default value is C<*> which ensures all splits are
+captured into the resulting C<Sequence>. The C<$level> value is
+described as the number of parts of the split to be kept.
+The C<split-line> routine in this package holds that value to
+C<$level = 2> the result will be either 
 
 The signature:
 
 =begin code :lang<Raku>
 sub split-line(
     Str:D $line is copy,
-    Str:D $brk,
-    UInt  :$start-pos       = 0,
-    Bool  :$rindex          = False,
-    Bool  :$clean           = False,
+    Str:D :s(:$splitter)!, #= the splitting delimiter  
+    UInt  :$start-pos = 0, #= the beginning of the string
+    Bool  :$clean = False, #= if True, the first part is normalized
     --> List) is export(:split-line)
 {...}
 =end code
@@ -287,7 +305,7 @@ $s = strip-comment $s; # OUTPUT: "my dog Gus"
 =end code
 
 For other needs, the comment can be stripped and the argument
-returned returned in its original form including and trailing 
+returned returned in its original form including any trailing 
 spaces. Given the previous example and using the C<!normalize> 
 option yields this result:
 

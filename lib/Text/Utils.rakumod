@@ -116,7 +116,11 @@ sub list2text(@list, :$optional-comma is copy = True) is export(:list2text) {
 #| Purpose : Count instances of a substring in a string
 #| Params  : String, Substring
 #| Returns : Number of substrings found
-sub count-substrs(Str:D $ip, Str:D $substr --> UInt) is export(:count-substrs) {
+sub count-substrs(
+    Str:D $ip, 
+    Str:D $substr 
+    --> UInt
+    ) is export(:count-substrs) {
     use AlgorithmsIT :ALL;
     use AlgorithmsIT::Classes;
     my $T = ArrayOneBased.new: $ip;
@@ -252,8 +256,10 @@ para-indent spaces + line-indent spaces + para-pre-text + line-pre-text + text
 
 =end comment
 
-multi sub wrap-paragraph($text, |c
-                   --> List) is export(:wrap-paragraph) {
+multi sub wrap-paragraph(
+    $text, |c
+    --> List
+    ) is export(:wrap-paragraph) {
     wrap-paragraph($text.words, |c);
 }
 
@@ -270,7 +276,8 @@ multi sub wrap-paragraph(
     Str  :$line-pre-text       = '',
     #------------------------------#
     :$debug,
-    --> List) is export(:wrap-paragraph) {
+    --> List
+    ) is export(:wrap-paragraph) {
 
     my $mll = $max-line-length;
 
@@ -318,7 +325,10 @@ multi sub wrap-paragraph(
         my $word = @words.head;
         my $wc = $word.chars;
         if $wc > $max-line-length {
-            die "FATAL: Word '$word' has $wc chars, too long for max line length of $mll chars";
+            die qq:to/HERE/;
+            FATAL: Word '$word' has $wc chars, too long for max 
+                   line length of $mll chars
+            HERE
         }
 
         my $next = $first-word ?? $word !! SPACE ~ $word;
@@ -339,14 +349,22 @@ multi sub wrap-paragraph(
         if $begin-first-line {
             # check mll with first word
             if $tc > $max-line-length {
-                die "FATAL: First line, first Word '$tmp-line' has $tc chars, too long for max line length of $mll chars";
+                die qq:to/HERE/;
+                FATAL: First line, first Word '$tmp-line' has $tc 
+                       chars, too long for max line length of $mll 
+                       chars
+                HERE
             }
             $begin-first-line = False;
         }
         if $begin-following-line {
             # check mll with first word
             if $tc > $max-line-length {
-                die "FATAL: First line, first Word '$tmp-line' has $tc chars, too long for max line length of $mll chars";
+                die qq:to/HERE/;
+                FATAL: First line, first Word '$tmp-line' has $tc 
+                       chars, too long for max line length of $mll 
+                       chars
+                HERE
             }
             $begin-following-line = False;
         }
@@ -357,7 +375,8 @@ multi sub wrap-paragraph(
             note "DEBUG: good line: '$line'" if $debug;
             @words.shift; # remove the used word
             $first-word = False;
-            note "DEBUG: good line with {@words.elems} words" if $debug;
+            note "DEBUG: good line with {@words.elems} words" 
+                if $debug;
             next;
         }
 
@@ -384,17 +403,30 @@ multi sub wrap-paragraph(
 
     # should not have any  words left
     if @words.elems {
-        die "FATAL: Unexpected non-empty \@words: '{join(SPACE, @words)}'";
+        die qq:to/HERE/;
+        FATAL: Unexpected non-empty \@words: 
+               '{join(SPACE, @words)}'
+        HERE
     }
 
-    my sub line-length-ok(:$line, :$initial-first, :$initial-following) {
+    my sub line-length-ok(
+        :$line, 
+        :$initial-first, 
+        :$initial-following
+    ) {
         my $mll = $max-line-length;
         my $nc  = $line.chars;
         if $initial-first and $nc > $mll {
-            die "FATAL: first line pre too long: $nc chars is too long for max length $mll";
+            die qq:to/HERE/;
+            FATAL: First line pre too long: $nc chars is too long 
+                   for max length $mll
+            HERE
         }
         elsif $initial-following and $nc > $mll {
-            die "FATAL: following lines pre too long: $nc chars is too long for max length $mll";
+            die qq:to/HERE/;
+            FATAL: Following lines pre too long: $nc chars is too 
+                   long for max length $mll
+            HERE
         }
         return $nc <= $mll;
     }
@@ -418,7 +450,7 @@ sub normalize-string(
                                #=   to one char
     :$no-trim,                 #= do not trim the input string
     --> Str
-) is export(:normalize-string) {
+    ) is export(:normalize-string) {
     # default is to always trim first, but to do so we must save the
     # original leading and trailing spaces
     my ($pre-ws, $post-ws);
@@ -576,7 +608,6 @@ sub normalize-quotes($s, :$debug --> Str) is export(:normalize-quotes) {
         note "Early exit"; exit;
     }
 
-
     # chop the string into chunks from the quote char indices array
     my @chunks;
     my $t = "";
@@ -602,51 +633,46 @@ any remaning blank spaces).
 =end comment
 
 # define  "aliases" for convenience (with unique export keys)
-our &splitstr is export(:splitstr) = &split-line;
+our &splitstr is export(:splitstr)   = &split-line;
 our &split-str is export(:split-str) = &split-line;
-sub split-line(
+multi sub split-line(
     Str:D $line is copy,
-    Str:D $brk,
-    UInt :$start-pos       = 0,     # default forward search 
-    Bool :$rindex          = False, # if True, search starting at end
-    Bool :$clean           = False, # if True, remove $brk char from 
-                                    # first part and normalize it
+    Str:D :d($delimiter)!, 
+    Bool :$clean = False, # if True, normalize the left part of the
+    ) is export {
+    split-line $line, $delimiter, :$clean;
+}
+
+multi sub split-line(
+    Str:D $line is copy,
+    Str:D $delimiter,
+    Bool :$clean = False, # if True, normalize the left part of the
+                          # split results
     --> List) is export(:split-line) {
 
-    my $spos = $start-pos;
-    my $idx;
-    if 0 {
-        # special handling required
-        die "FATAL: Fix splitting on words...";
-        # sub find-all-text-chunks (
-        #     Str $haystack, # the string to search 
-        #     Str $needle,   # the text chunk of interest
-        #     --> List       # list of hashes of match data
+    constant $limit = 2;  # docs are confusing
+    my ($left, $right);
+    # We ALWAYS keep the delimiter
+    my @parts = split $delimiter, $line, $limit, :v;
+    # parts should be 1 or 3
+    my $np = @parts.elems;
+    $left =  @parts.shift;
+    if $np == 2 {
+        die "FATAL: Expected 1 or 3 elements, got 2 instead.";
     }
-
-    if $rindex {
-        $spos = $line.chars - 1;
-        $idx = rindex $line, $brk, $spos;
-    }
-    else {
-        $idx = index $line, $brk;
-    }
-
-    my ($first, $last);
-    if $idx.defined {
-        if $idx > 0 {
-            $last  = substr $line, $idx+1;
-            $first = substr $line, 0, $idx+1;
+    if $np == 3 {
+        my $td = @parts.shift;
+        # this should be the returned delimiter
+        unless $td eq $delimiter {
+            die "FATAL: The delimiter ('$delimiter')";
         }
-        else {
-        }
+        $right = @parts.shift;
     }
+    
     if $clean {
-        # remove the brk char from the first part
-        $first ~~ s/$brk \h* $//;
-        $first = normalize-string $first if $first.chars;
+        $left = normalize-string $left if $left.chars;
     }
-    $first, $last;
+    $left, $right;
 
 } # split-line
 
@@ -697,7 +723,8 @@ class Para is export {
 
 }
 
-multi sub wrap-text(@text,
+multi sub wrap-text(
+         @text,
     Real :$width               = 468, #= PS points for 6.5 inches
          :$font-name           = 'Times-Roman',
     Real :$font-size           = 12,

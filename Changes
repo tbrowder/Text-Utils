@@ -5,6 +5,10 @@
     - Add tests for new options
     - Add a standard load test
     - Added alias 'strip' for 'strip-comment'
+    - Made sub split-line a multi with a different signature
+      + added a more user-friendly split word option
+      + fixed the core routine call option 'level' at a constant 2
+    - Remove 'reverse' option from routine 'split-line'
     - Removed unneeded and untested options
       + updated tests
     - Updated docs
