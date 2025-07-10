@@ -1,10 +1,6 @@
-- fix split-line handling of multi-char split words
-
+:
 - add a feature to consider the font and print width
   for wrapping paragraphs
-
-- add aliases for split-line;
-    split-str-rw, splitstr-rw
 
 - for splitstr, split on str should
     clearly state the effects of a
@@ -15,10 +11,15 @@
 
 =COMPLETED
 
+2025-07-10
+==========
+- fix split-line handling of multi-char split words
+
+
 2025-07-06
 ==========
 - get "no-trim" (!normalize and !normalize-all); working
-    save lealding and trailing spaces
+    save leading and trailing spaces
       and add back at the end of 
       processing
 
