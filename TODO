@@ -1,13 +1,13 @@
-:
-- add a feature to consider the font and print width
-  for wrapping paragraphs
-
 - for splitstr, split on str should
     clearly state the effects of a
     split at beginning or end of 
       the str found
     make sure that is clear
     add examples to readme
+    compare opts used by Raku split
+
+- add a feature to consider the font and print width
+  for wrapping paragraphs
 
 =COMPLETED
 
