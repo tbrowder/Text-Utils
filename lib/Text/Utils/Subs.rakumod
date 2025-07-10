@@ -132,3 +132,11 @@ sub test-and-show-string-list(
         say "      {$np}      {$nv}";
     }
 } # end of sub test-and-show-string-list
+
+sub core-split(
+    $delimiter,
+    $string,
+    $limit?,
+    :$v, :$k, :$kv, :$p,
+    ) is export {
+} # end of sub core-split

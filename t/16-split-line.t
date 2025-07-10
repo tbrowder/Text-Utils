@@ -3,9 +3,10 @@ use Test;
 use Text::Utils :ALL;
 use Text::Utils::Subs;
 
-plan 11;
+# plan 11;
 
-my ($s1, $s2, $s3, $left, $right, $splitter, $m, $string);
+my ($s1, $s2, $s3, $s4, $left, $right, $splitter, $m, $string);
+my (@str1, @str2, @str3, @str4);
 
 $s1 = 'sub foo($song, $tool, @long-array, :$good) is export { say pwd }';
 
@@ -55,3 +56,35 @@ $splitter = 'Free ';
 ($left, $right) = split-line $s2, $splitter;
 is $left, " ", "split ' Free Sans ' at 'Free ', pre: '$left'";
 is $right, " Sans ", "split 'Free Sans' at 'Free', post: '$right'";
+
+# more default use cases
+
+$splitter = ":";         # expected
+$s1 = "foo : bar";       # | | |
+$s2 = "foo : bar : baz"; # | | |
+$s3 = "foo   bar   baz"; # | | |
+$s4 = ": bar";           # | | |
+
+@str1 = split-line $s1, $splitter;
+is @str1.elems, 2, "default: 2 pieces";
+is @str1.head, "foo ", "default";
+is @str1.tail, " bar", "default";
+
+done-testing;
+=finish
+
+@str2 = split-line $s2, $splitter;
+is @str2.elems, 2, "default: 2 pieces";
+is @str2.head, "", "default";
+is @str2.tail, "", "default";
+
+@str3 = split-line $s3, $splitter;
+is @str3.elems, 2, "default: 2 pieces";
+is @str3.head, "", "default";
+is @str3.tail, "", "default";
+
+@str4 = split-line $s4, $splitter;
+is @str4.elems, 2, "default: 2 pieces";
+is @str4.head, "", "default";
+is @str4.tail, "", "default";
+

@@ -1,3 +1,5 @@
+- create a sub that call core raku split with same signature
+
 - for splitstr, split on str should
     clearly state the effects of a
     split at beginning or end of 
