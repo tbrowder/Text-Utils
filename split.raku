@@ -1,9 +1,14 @@
 #!/usr/bin/env raku
 
+=begin comment
 sub test-and-show {...}
+=end comment
+
+use lib "lib";
+use Text::Utils::Subs;
 
 # test nuances
-my ($level, $de, $s2, @p2, @np, @nv, $np, $nv);
+my ($opt, $level, $de, $s2, @p2, @np, @nv, $np, $nv);
 $de = ";";
 $s2 = "a ; b";
 
@@ -42,7 +47,7 @@ my @str = [
 
 $level = 2;
 @np=[]; @nv=[];
-$opt = 'v'
+$opt = 'v';
 print qq:to/HERE/;
 #=================================================
 Params: :level({$level}), using option :{$opt}
@@ -73,15 +78,16 @@ for @np.kv -> $i, $np {
     say "      {$np}      {$nv}";
 }
 
+=begin comment
+subset SplitOp of Str where * ~~ /^ ':' (v|k|kv) $/;
+subset LevelOp of Str where * >= 1;
 sub test-and-show-string-list(
-    @str,                                      #= strings to test ($s0, $s1, ..., ^$sN)
-    Str :$delim!,                              #= delimiter
-    UInt :$level! where * >= 1,                #= level
-    Str  :$opt! where * ~~ /^ ':' (v|k|kv) $/; #= option used
+    @str,             #= strings to test
+    Str :$delim!,     #= delimiter
+    LevelOp :$level!, #= min number of matches
+    SplitOp :$opt!,   #= option used
 ) {
-#   $level = 2;
     my @np=[]; my @nv=[];
-#    $opt = 'v'
     print qq:to/HERE/;
     #=================================================
     Params: :level({$level}), using option {$opt}
@@ -112,6 +118,7 @@ sub test-and-show-string-list(
         say "      {$np}      {$nv}";
     }
 }
+=end comment
 
 =finish
 

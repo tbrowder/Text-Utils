@@ -23,12 +23,12 @@ any kind of text, including code;
 my $s = 'foo';
 =end code
 
-WARNING: This is a major update with several improvements.
-Unused or untested options
-were removed. See L<Changes|Changes> for details.
+WARNING: This is a major update with several improvements.  Unused or
+untested options were removed. See L<Changes|Changes> for details.
 
-Users needing those must file an issue if this
-is a breaking change for them.
+Users needing those must file an issue if this is a breaking change
+for them.
+
 =head1 DESCRIPTION
 
 The module contains several routines to make text handling easier for
@@ -156,11 +156,13 @@ say normalize-string($s) # OUTPUT: «1 2 3␤»
 =end code
 
 Normalize each tab:
+
 =begin code
 say normalize-string($s, :t<n>) # OUTPUT: «1 \t\n\n 2 \n\t 3␤»
 =end code
 
 Normalize each newline:
+
 =begin code
 say normalize-string($s, :n<n>) # OUTPUT: «1 \t\t\n 2 \n\t 3␤»
 =end code
@@ -220,27 +222,25 @@ C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
 =head3 split-line
 
-Splits a string into two pieces at a user-defined delimiter 
-(or 'splitter').  The first piece will be an empty
-string if no split delimiter was found.
+Splits a string into a list of zero or two pieces at a 
+user-defined delimiter (or 'splitter').
 
-Inputs are the string to be split, the split (or break) character 
-or string, and a starting position for the search (default: 0,
-the beginning of the line).
-string by default. 
+Inputs are the string to be split, the split (or break) character or
+string, and a starting position for the search (default: 0, the
+beginning of the line).
 
-The output will be a list of two strings consisting of the first
-part of the split and the remainder of the split. If no match with
-the delimiter is found, the first string will be empty.
+The output will be a list of left and right pieces of the input
+string split by the delimiter if it is found, or
+an empty list otherwise.
 
-The results of the default behavior, with a 
-semicolon as the split character, is shown here:
+The results of the default behavior, with a semicolon as the split
+character, is shown here:
 
 =begin comment
  Sally ; Jones # OUTPUT: " Sally ", " Jones "
 =end comment
 
-An additional option, C<:$clean>, causes the first part to be 
+An additional option, C<:$clean>, causes the first part to be
 normalized.  The second part remains unchanged.
 
 The same input as before, but using the C<:clean> option, yields:
@@ -249,24 +249,23 @@ The same input as before, but using the C<:clean> option, yields:
  Sally ; Jones # OUTPUT: "Sally", " Jones "
 =end comment
 
-Note the C<split-line> routine encapsulates the Raku core routine 
-C<split> and uses constants as well as new names for options
-in an attempt to make it easier to use for novices as well as those,
-like the author, who find that routine a bit confusing with
-its awkward option names and purposes.
-For example, the core routine has a fourth unnamed argument, 
-C<$limit>, whose default value is C<*> which ensures all splits are
-captured into the resulting C<Sequence>. The C<$level> value is
-described as the number of parts of the split to be kept.
-The C<split-line> routine in this package holds that value to
-C<$level = 2> the result will be either 
+Note the C<split-line> routine encapsulates the Raku core routine
+C<split> and uses constants as well as new names for options in an
+attempt to make it easier to use for novices as well as those, like
+the author, who find that routine a bit confusing with its awkward
+option names and purposes.  For example, the core routine has a fourth
+unnamed argument, C<$limit>, whose default value is C<*> which ensures
+all splits are captured into the resulting C<Sequence>. The C<$level>
+value is described as the number of parts of the split to be kept.
+The C<split-line> routine in this package holds that value to C<$level
+= 2> the result will be either a list of two strings or an empty list.
 
 The signature:
 
 =begin code :lang<Raku>
 sub split-line(
     Str:D $line is copy,
-    Str:D :s(:$splitter)!, #= the splitting delimiter  
+    Str:D :s(:$splitter)!, #= the splitting delimiter
     UInt  :$start-pos = 0, #= the beginning of the string
     Bool  :$clean = False, #= if True, the first part is normalized
     --> List) is export(:split-line)
@@ -279,12 +278,11 @@ Strip the comment from an input text line, save comment if requested,
 normalize returned text by default.
 
 The routine returns a string of text with any comment stripped
-off. Note the designated comment character (default '#') character 
-will trigger the strip even though
-it is escaped or included in quotes.  Also returns the comment,
-including the comment character, if requested.  
-It is very useful in argument handling, and the author uses it
-constantly:
+off. Note the designated comment character (default '#') character
+will trigger the strip even though it is escaped or included in
+quotes.  Also returns the comment, including the comment character, if
+requested.  It is very useful in argument handling, and the author
+uses it constantly:
 
 =begin comment
 for @lines -> $line is copy {
@@ -293,9 +291,9 @@ for @lines -> $line is copy {
 }
 =end comment
 
-All returned text is normalized by default unless you add the 
-C<!normalize> option.  Any returned comment will also be normalized
-if the C<normalize-all> option is used in place of C<normalize>.
+All returned text is normalized by default unless you add the
+C<!normalize> option.  Any returned comment will also be normalized if
+the C<normalize-all> option is used in place of C<normalize>.
 
 For example, this is the default behavior:
 
@@ -304,10 +302,10 @@ my $s = " my  dog Gus # a Shit Tzu";
 $s = strip-comment $s; # OUTPUT: "my dog Gus"
 =end code
 
-For other needs, the comment can be stripped and the argument
-returned returned in its original form including any trailing 
-spaces. Given the previous example and using the C<!normalize> 
-option yields this result:
+For other needs, the comment can be stripped and the argument returned
+returned in its original form including any trailing spaces. Given the
+previous example and using the C<!normalize> option yields this
+result:
 
 =begin code
 my $s = " my  dog Gus # a Shit Tzu";

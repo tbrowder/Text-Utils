@@ -32,7 +32,7 @@ Users needing those must file an issue if this is a breaking change for them.
 DESCRIPTION
 ===========
 
-The module contains several routines to make text handling easier for module and program authors. The routines:
+The module contains several routines to make text handling easier for module and program authors. The routines are described below in alphabetical order:
 
 <table class="pod-table">
 <thead><tr>
@@ -173,23 +173,28 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 ### split-line
 
-Splits a string into two pieces.
+Splits a string into a list of zero or two pieces at a user-defined delimiter (or 'splitter').
 
-Inputs are the string to be split, the split (or break) character or string, a starting position for the search, and the search direction (normally forward unless the `:$rindex` option is `True`). The split character is kept with the first part of the string by default. The default behavior with a semicolon as the split character:
+Inputs are the string to be split, the split (or break) character or string, and a starting position for the search (default: 0, the beginning of the line).
 
-An additional option, `:$clean`, causes the split character to be removed from the first part, and the first part to be normalized. The second part remains unchanged.
+The output will be a list of left and right pieces of the input string split by the delimiter if it is found, or an empty list otherwise.
 
-The same input as before but using the `:clean` option yields:
+The results of the default behavior, with a semicolon as the split character, is shown here:
+
+An additional option, `:$clean`, causes the first part to be normalized. The second part remains unchanged.
+
+The same input as before, but using the `:clean` option, yields:
+
+Note the `split-line` routine encapsulates the Raku core routine `split` and uses constants as well as new names for options in an attempt to make it easier to use for novices as well as those, like the author, who find that routine a bit confusing with its awkward option names and purposes. For example, the core routine has a fourth unnamed argument, `$limit`, whose default value is `*` which ensures all splits are captured into the resulting `Sequence`. The `$level` value is described as the number of parts of the split to be kept. The `split-line` routine in this package holds that value to `$level = 2` the result will be either a list of two strings or an empty list.
 
 The signature:
 
 ```Raku
 sub split-line(
     Str:D $line is copy,
-    Str:D $brk,
-    UInt  :$start-pos       = 0,
-    Bool  :$rindex          = False,
-    Bool  :$clean           = False,
+    Str:D :s(:$splitter)!, #= the splitting delimiter
+    UInt  :$start-pos = 0, #= the beginning of the string
+    Bool  :$clean = False, #= if True, the first part is normalized
     --> List) is export(:split-line)
 {...}
 ```
@@ -207,7 +212,7 @@ For example, this is the default behavior:
     my $s = " my  dog Gus # a Shit Tzu";
     $s = strip-comment $s; # OUTPUT: "my dog Gus"
 
-For other needs, the comment can be stripped and the argument returned returned in its original form including and trailing spaces. Given the previous example and using the `!normalize` option yields this result:
+For other needs, the comment can be stripped and the argument returned returned in its original form including any trailing spaces. Given the previous example and using the `!normalize` option yields this result:
 
     my $s = " my  dog Gus # a Shit Tzu";
     $s = strip-comment $s, !normalize; # OUTPUT: " my  dog Gus "
