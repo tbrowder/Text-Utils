@@ -175,28 +175,37 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 Splits a string into a list of pieces at a user-defined delimiter (or 'splitter').
 
-Inputs are the string to be split, the delimiter, and th split (or break) character or string, and a starting position for the search (default: 0, the beginning of the line).
+Inputs are the string to be split, the delimiter, and the split (or break) character.
 
-The output will be a list of pieces of the input string split by any matches of the delimiter.
-
-an empty list otherwise.
+The output will be a list of pieces of the input string split by any matches of the delimiter. If there were no matches, the list should contain two elements, with the first element being an empty string and the other element the original string.
 
 The results of the default behavior, with a semicolon as the split character, is shown here:
 
-An additional option, `:$clean`, causes the first part to be normalized. The second part remains unchanged.
+An additional option, `:$clean`, causes the first part to be normalized. The following parts remain unchanged.
 
 The same input as before, but using the `:clean` option, yields:
 
-Note the `split-line` routine encapsulates the Raku core routine `split` and uses constants as well as new names for options in an attempt to make it easier to use for novices as well as those, like the author, who find that routine a bit confusing with its awkward option names and purposes. For example, the core routine has a fourth unnamed argument, `$limit`, whose default value is `*` which ensures all splits are captured into the resulting `Sequence`. The `$level` value is described as the number of parts of the split to be kept. The `split-line` routine in this package holds that value to `$level = 2` the result will be either a list of two strings or an empty list.
+An additional option, `:$clean-all`, causes all parts to be normalized.
+
+The same input as before, but using the `:clean-all` option, yields:
+
+Note the `split-line` routine encapsulates the Raku core routine `split` and uses default values as well as new names for options in an attempt to make it easier to use for novices as well as those, like the author, who find that routine a bit confusing with its awkward option names and purposes. 
+
+For example, the core routine has a fourth unnamed argument, `$limit`, whose default value is `*` which ensures all splits are captured into the resulting `Sequence`. The `$level` value is described as the number of parts of the split to be kept. The `split-line` routine in this package defaults to `$level = 2`. 
+
+It also has an optional named argument, `$v`, which keeps the delimiter string between any matches found. The default for `split-line` it to *always* define that option to ensure consistent, easy-to-parse results.
+
+Use the core split routine if you have special needs or want to use regexes as delimiters.
 
 The signature:
 
 ```Raku
 sub split-line(
     Str:D $line is copy,
-    Str:D :s(:$splitter)!, #= the splitting delimiter
-    UInt  :$start-pos = 0, #= the beginning of the string
-    Bool  :$clean = False, #= if True, the first part is normalized
+    Str:D :s(:$splitter)!,     #= the splitting delimiter
+    Bool  :$clean     = False, #= if True, the first part is 
+                               #= normalized
+    Bool  :$clean-all = False, #= if True, all parts are normalized
     --> List) is export(:split-line)
 {...}
 ```

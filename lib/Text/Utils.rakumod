@@ -9,7 +9,8 @@ class AFM-font is export {
     has Real $.sf; # font size scale factor
     has Font::AFM $.afm;
     has Bool $.kern = True;
-    has Real $.UnderlinePosition; # one source says this is the TOP of the stroke
+    has Real $.UnderlinePosition; # one source says this is the TOP 
+                                  # of the stroke
     has Real $.UnderlineThickness;
     # convenience
     has Real $.upos; # underline position (PS points)
@@ -44,6 +45,8 @@ class AFM-font is export {
         $!kern = False;
     }
 }
+
+use Text::Utils::Subs;
 
 constant $NL   is export(:nl)  = "\n";
 constant $TAB  is export(:tab) = "\t";
@@ -618,18 +621,7 @@ sub normalize-quotes($s, :$debug --> Str) is export(:normalize-quotes) {
 
 =begin comment
 =head3 split-line
-
-Splits a string into two pieces.
-
-Inputs are the string to be split, the split character or string,
-maximum length, a starting position for the search, and the search
-direction (normally forward unless the C<:$rindex> option is C<True>).
-
-It returns the two parts of the split string. If the C<:$clean>
-option is used, the first part has the split character or word i
-removes and the remaining string normalize (which will remove
-any remaning blank spaces).
-
+Splits a string into two or more pieces.
 =end comment
 
 # define  "aliases" for convenience (with unique export keys)
@@ -638,41 +630,72 @@ our &split-str is export(:split-str) = &split-line;
 multi sub split-line(
     Str:D $line is copy,
     Str:D :d($delimiter)!, 
-    Bool :$clean = False, # if True, normalize the left part of the
+    Bool :$clean     = False, #= if True, normalize the first part of 
+                              #=   the split
+    Bool :$clean-all = False, #= if True, normalize all parts of 
+                              #=   the split
+    :$max-level,              #= if defined and an int, use it;
+                              #    otherwise calculate it as strlen;
+                              #    otherwise use 2
     ) is export {
-    split-line $line, $delimiter, :$clean;
+    split-line $line, $delimiter, :$clean, :$clean-all, :$max-level;
 }
 
 multi sub split-line(
     Str:D $line is copy,
     Str:D $delimiter,
-    Bool :$clean = False, # if True, normalize the left part of the
-                          # split results
+    Bool :$clean     = False, #= if True, normalize the first part of 
+                              #=   the split
+    Bool :$clean-all = False, #= if True, normalize all parts of 
+                              #=   the split
+    :$max-limit,              #= if defined and an int, use it;
+                              #    otherwise calculate it as strlen;
+                              #    otherwise use 2
     --> List) is export(:split-line) {
 
-    constant $limit = 2;  # docs are confusing
-    my ($left, $right);
-    # We ALWAYS keep the delimiter
-    my @parts = split $delimiter, $line, $limit, :v;
-    # parts should be 1 or 3
-    my $np = @parts.elems;
-    $left =  @parts.shift;
-    if $np == 2 {
-        die "FATAL: Expected 1 or 3 elements, got 2 instead.";
-    }
-    if $np == 3 {
-        my $td = @parts.shift;
-        # this should be the returned delimiter
-        unless $td eq $delimiter {
-            die "FATAL: The delimiter ('$delimiter')";
+    my $limit = 2;  # docs are confusing
+    if $max-limit.defined {
+        if $max-limit ~~ Int {
+            $limit = $max-limit;
         }
-        $right = @parts.shift;
+        else {
+            $limit = $line.chars;
+        }
+    }
+
+#   my ($left, $right);
+    # We ALWAYS keep the delimiter (but remove it afterwards);
+    my @parts = split $delimiter, $line, $limit; #, :v;
+    my @pieces;
+    for @parts.kv -> $i, $v {
+        # skip the delimiters
+        next if is-odd $i; # zero is "even"
+        @pieces.push: $v;
+    }
+    # pieces should be 1 or a max of $limit
+    my $np = @pieces.elems;
+#   $left =  @parts.shift;
+    unless 1 <= $np <= $limit {
+        die "FATAL: Expected 1 or $limit elements, got $np instead.";
     }
     
-    if $clean {
-        $left = normalize-string $left if $left.chars;
+    if $clean and @pieces.head.chars {
+        @pieces.head = normalize-string @pieces.head;
     }
-    $left, $right;
+    elsif $clean-all {
+        my @tmp;
+        for @pieces -> $p is copy {
+            if not $p.chars {
+                @tmp.push: $p; 
+                next;
+            }
+            $p = normalize-string $p;
+            @tmp.push: $p; 
+        }
+        @pieces = @tmp;
+    }
+
+    @pieces; #$left, $right;
 
 } # split-line
 

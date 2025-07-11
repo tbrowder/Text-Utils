@@ -4,6 +4,15 @@ use Test;
 
 #my ($level, $de, $s2, @p2, @np, @nv, $np, $nv);
 
+sub is-odd(UInt $num) is export {
+    if $num % 2 == 1 {
+        return True
+    }
+    else {
+        return False
+    }
+}
+
 # Helper routines for special needs by primary routines.
 sub find-all-text-splitters (
     Str $haystack, # the string to search
@@ -133,10 +142,42 @@ sub test-and-show-string-list(
     }
 } # end of sub test-and-show-string-list
 
+sub core-split-wmods(
+    # reverse order of first two args
+    $string,
+    $delimiter,
+    # rest
+    $limit?,
+    :$v, :$k, :$kv, :$p,
+    :$debug,
+    ) is export {
+    my @res = core-split $delimiter, $string, $limit, 
+       :$v, :$k, :$kv, :$p, :$debug;
+    @res;
+}
+
 sub core-split(
     $delimiter,
     $string,
     $limit?,
     :$v, :$k, :$kv, :$p,
+    :$debug,
     ) is export {
+    my @res = split $delimiter, $string, $limit;
+    my $np = @res.elems;
+
+    if $debug {
+    say "DEBUG: Raku core routine 'split'";
+    say "       delimeter: |$delimiter|";
+    say "       string   : |$string|";
+    my $lim = $limit.defined ?? $limit !! "*";
+    say "       limit    : |$lim|";
+    say "       num parts: |$np|";
+    if $np {
+        for $np.kv -> $i, $v {
+            say "         part $i:   |$v|";
+        }
+    }
+    }
+    @res;
 } # end of sub core-split
