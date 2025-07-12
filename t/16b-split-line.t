@@ -1,9 +1,9 @@
 use Test;
 
-#use Text::Utils :ALL;
+use Text::Utils;
 use Text::Utils::Subs;
 
-plan 23;
+plan 26;
 
 my ($s1, $s2, $s3, $s4, $left, $right, $splitter, $m, $string);
 my (@str1, @str2, @str3, @str4);
@@ -45,8 +45,10 @@ $string = " Free   Sans "; # 13 chars
 $splitter  = "Free "; # 5 chars
 $m = find-text-forward :$string, :$splitter;
 isa-ok $m, Hash, "\$m is a Hash";
-for $m.kv -> $k, $v {
-    say "key: '$k' => '$v'";
+subtest {
+    for $m.kv -> $k, $v {
+        say "key: '$k' => '$v'";
+    }
 }
 
 # using a word as key
@@ -88,8 +90,10 @@ say "core split with NO delimiter match";
 say "  delimiter: '$splitter'";
 say "  input    : '$s3'";
 say "  output   :";
-for @str3 -> $s {
-    say "    '$s'";
+subtest {
+    for @str3 -> $s {
+        say "    '$s'";
+    }
 }
 is @str3.elems, 1, "strange default: 1 part (max) for core split";
 is @str3.head, "foo   bar   baz", "1st part: '{@str3.head}'";
@@ -103,9 +107,12 @@ say "core split with NO text BEFORE the delimiter";
 say "  delimiter: '$splitter'";
 say "  input    : '$s4'";
 say "  output   :";
-for @str4 -> $s {
-    say "    '$s'";
+subtest {
+    for @str4 -> $s {
+        say "    '$s'";
+    }
 }
+
 is @str4.elems, 2, "strange default: 2 parts (max) for core split";
 is @str4.head, "", "1st part: '{@str4.head}'";
 is @str4.tail, " bar", "2nd part: '{@str4.tail}'";
