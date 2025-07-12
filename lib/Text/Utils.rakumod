@@ -637,8 +637,10 @@ multi sub split-line(
     :$max-level,              #= if defined and an int, use it;
                               #    otherwise calculate it as strlen;
                               #    otherwise use 2
+    --> List
     ) is export {
-    split-line $line, $delimiter, :$clean, :$clean-all, :$max-level;
+    my @res = split-line $line, $delimiter, :$clean, :$clean-all, :$max-level;
+    @res;
 }
 
 multi sub split-line(
@@ -665,7 +667,7 @@ multi sub split-line(
 
 #   my ($left, $right);
     # We ALWAYS keep the delimiter (but remove it afterwards);
-    my @parts = split $delimiter, $line, $limit; #, :v;
+    my @parts = split $delimiter, $line, $limit, :v;
     my @pieces;
     for @parts.kv -> $i, $v {
         # skip the delimiters

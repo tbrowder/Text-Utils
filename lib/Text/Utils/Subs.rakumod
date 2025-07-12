@@ -4,13 +4,11 @@ use Test;
 
 #my ($level, $de, $s2, @p2, @np, @nv, $np, $nv);
 
-sub is-odd(UInt $num) is export {
-    if $num % 2 == 1 {
-        return True
-    }
-    else {
-        return False
-    }
+sub is-odd(
+    UInt $num
+    --> Bool
+    ) is export {
+    $num % 2 == 1 ?? True !! False
 }
 
 # Helper routines for special needs by primary routines.
@@ -96,7 +94,7 @@ subset LevelOp of UInt is export where * >= 1;
 sub test-and-show-string-list(
     @str,                 #= strings to test
     Str :$delim!,         #= delimiter
-    LevelOp :$level = 1 , #= min number of matches
+    LevelOp :$level,      #= max number of matches
     SplitOp :$opt,        #= 'split' option used, if any
 ) is export {
     my @np=[]; my @nv=[];
@@ -114,7 +112,14 @@ sub test-and-show-string-list(
         $s .= trim;
 
         say "=== string: '$s', delim: '{$delim.trim}'";
-        my @res = split $delim, $s, $level, {$opt.raku};
+        my @res;
+        if $level {
+            @res = split $delim, $s, $level, {$opt.raku};
+        }
+        else {
+            @res = split $delim, $s, {$opt.raku};
+        }
+
         # note the docs say the results depend on 
         #   level and any Raku core 'split' named option
         #   the only named option this package recognizes for a
@@ -144,40 +149,55 @@ sub test-and-show-string-list(
 
 sub core-split-wmods(
     # reverse order of first two args
-    $string,
+    $string,    
     $delimiter,
     # rest
-    $limit?,
-    :$v, :$k, :$kv, :$p,
+    $limit = Inf,
+    :$v, :$k, :$kv, :$p, :$skip-empty,
     :$debug,
+    --> List
     ) is export {
-    my @res = core-split $delimiter, $string, $limit, 
-       :$v, :$k, :$kv, :$p, :$debug;
+
+    my @res = split $delimiter, $string, $limit, 
+                         :$v, :$k, :$kv, :$p, :$skip-empty;
+
+    # debug handling
+
+
     @res;
 }
 
-sub core-split(
-    $delimiter,
-    $string,
-    $limit?,
-    :$v, :$k, :$kv, :$p,
-    :$debug,
-    ) is export {
-    my @res = split $delimiter, $string, $limit;
-    my $np = @res.elems;
+=finish
 
-    if $debug {
-    say "DEBUG: Raku core routine 'split'";
-    say "       delimeter: |$delimiter|";
-    say "       string   : |$string|";
-    my $lim = $limit.defined ?? $limit !! "*";
-    say "       limit    : |$lim|";
-    say "       num parts: |$np|";
-    if $np {
-        for $np.kv -> $i, $v {
-            say "         part $i:   |$v|";
+=begin comment
+sub core-split(
+    Str:D $delimiter,
+    Str:D $input,
+    $limit = Inf,
+    :$v, :$k, :$kv, :$p,
+    #:$debug,
+    --> List
+    ) is export {
+    my @res = split $delimiter, $string, $limit, |c;
+
+    =begin comment
+    if 0 {
+        my $np = @res.elems;
+        my $lim = $limit.defined ?? $limit !! "*";
+        print qq:to/HERE/;
+        DEBUG: Raku core routine 'split'
+               delimiter: |$delimiter|
+               string   : |$string|
+               limit    : |$lim|
+               num parts: |$np|
+        HERE
+        if $np {
+            for $np.kv -> $i, $v {
+                say "         part $i:   |$v|";
+            }
         }
     }
-    }
+    =end comment
+
     @res;
 } # end of sub core-split
