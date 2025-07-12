@@ -7,7 +7,8 @@
     - Added alias 'strip' for 'strip-comment'
     - Made sub split-line a multi with a different signature
       + added a more user-friendly split word option
-      + fixed the core routine call option 'level' at a constant 2
+      + added an option :max-level to affect the desired core
+        routine call option 'level?'
       + added :clean-all option to normalize all parts of the split
     - Remove 'reverse' option from routine 'split-line'
     - Removed unneeded and untested options
