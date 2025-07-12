@@ -1,40 +1,39 @@
 use Test;
 
-use Text::Utils :ALL;
+#use Text::Utils :ALL;
 use Text::Utils::Subs;
 
-# plan 11;
+plan 23;
 
 my ($s1, $s2, $s3, $s4, $left, $right, $splitter, $m, $string);
 my (@str1, @str2, @str3, @str4);
 
 $s1 = 'sub foo($song, $tool, @long-array, :$good) is export { say pwd }';
 
-($left, $right) = core-split-wmods $s1, '(';
-is $left, 'sub foo', "default core-split-wmods";
-is $right, '$song, $tool, @long-array, :$good) is export { say pwd }',
-           "default core-split-wmods";
+@str1 = core-split-wmods $s1, '(', :v;
+is @str1.head, 'sub foo', "default core-split-wmods";
+is @str1.tail, '$song, $tool, @long-array, :$good) is export { say pwd }', "default core-split-wmods";
 
 $s2  = "Free Sans";
 $splitter = "Free";
-($left, $right) = core-split-wmods $s2, $splitter;
-is $left, "", "default behavior";
-is $right, " Sans", "default behavior";
+@str2 = core-split-wmods $s2, $splitter;
+is @str2.head, "", "default behavior";
+is @str2.tail, " Sans", "default behavior";
 
 # default behavior: no split text saved, 0 or 2 parts, no cleaning
-$s3 = " key : some  text "; 
+$s3 = " key : some  text ";
 $splitter = ':';
-($left, $right) = core-split-wmods $s3, $splitter;
-is $left, " key ", "default behavior";
-is $right, " some  text ", "default behavior";
+@str3 = core-split-wmods $s3, $splitter;
+is @str3.head, " key ", "default behavior";
+is @str3.tail, " some  text ", "default behavior";
 
 # behavior with :clean option: split char removed, first part cleaned
 #   last part untouched
 $s3 = " key : some  text ";
 $splitter = ':';
-($left, $right) = core-split-wmods $s3, $splitter; #, :clean;
-is $left, "key", "use new :clean option";
-is $right, " some  text ", "use new :clean option";
+@str3 = core-split-wmods $s3, $splitter; #, :clean;
+is @str3.head, " key ", "use new :clean option";
+is @str3.tail, " some  text ", "use new :clean option";
 
 #=================================
 # forward search with splitter as key:
@@ -53,38 +52,61 @@ for $m.kv -> $k, $v {
 # using a word as key
 $s2  = " Free  Sans ";
 $splitter = 'Free ';
-($left, $right) = core-split-wmods $s2, $splitter;
-is $left, " ", "split ' Free Sans ' at 'Free ', pre: '$left'";
-is $right, " Sans ", "split 'Free Sans' at 'Free', post: '$right'";
+@str2 = core-split-wmods $s2, $splitter;
+is @str2.head, " ";
+is @str2.tail, " Sans ", "split 'Free Sans' at 'Free '";
 
 # more default use cases
+$splitter = ":";         # expected
+$s1 = "foo : bar";
+$s2 = "foo : bar : baz";
+$s3 = "foo   bar   baz";
+$s4 = ": bar";
 
 $splitter = ":";         # expected
-$s1 = "foo : bar";       # | | |
-$s2 = "foo : bar : baz"; # | | |
-$s3 = "foo   bar   baz"; # | | |
-$s4 = ": bar";           # | | |
-
 @str1 = core-split-wmods $s1, $splitter;
-is @str1.elems, 2, "default: 2 pieces";
+is @str1.elems, 2, "default: 2 parts (max) for core split";
 is @str1.head, "foo ", "default";
 is @str1.tail, " bar", "default";
 
+$splitter = ":";         # expected
+$s2 = "foo : bar : baz";
 @str2 = core-split-wmods $s2, $splitter;
-is @str2.elems, 2, "default: 2 pieces";
+is @str2.elems, 3, "default: 3 parts (max) for core split";
 is @str2.head, "foo ", "default";
-is @str2.tail, " bar : baz", "default";
+is @str2[1], " bar ", "default";
+is @str2.tail, " baz", "default";
 
+# STRANGE DEFAULT RESULTS for tests below
+# discuss on #raku
+
+$splitter = ":";         # expected
+$s3 = "foo   bar   baz";
 @str3 = core-split-wmods $s3, $splitter;
-is @str3.elems, 2, "default: 2 pieces";
-is @str3.head, "", "default";
-is @str3.tail, "foo   bar   baz", "default";
+say "==================================";
+say "core split with NO delimiter match";
+say "  delimiter: '$splitter'";
+say "  input    : '$s3'";
+say "  output   :";
+for @str3 -> $s {
+    say "    '$s'";
+}
+is @str3.elems, 1, "strange default: 1 part (max) for core split";
+is @str3.head, "foo   bar   baz", "1st part: '{@str3.head}'";
+say "==================================";
 
+$splitter = ":";         # expected
+$s4 = ": bar";
 @str4 = core-split-wmods $s4, $splitter;
-is @str4.elems, 2, "default: 2 pieces";
-is @str4.head, "", "default";
-is @str4.tail, " bar", "default";
-
-done-testing;
-=finish
-
+say "==================================================";
+say "core split with NO text BEFORE the delimiter";
+say "  delimiter: '$splitter'";
+say "  input    : '$s4'";
+say "  output   :";
+for @str4 -> $s {
+    say "    '$s'";
+}
+is @str4.elems, 2, "strange default: 2 parts (max) for core split";
+is @str4.head, "", "1st part: '{@str4.head}'";
+is @str4.tail, " bar", "2nd part: '{@str4.tail}'";
+say "==================================================";
