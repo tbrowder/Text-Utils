@@ -239,7 +239,7 @@ The results of the default behavior, with a semicolon as the split
 character, is shown here:
 
 =begin code
- Sally ; Jones # OUTPUT: « Sally ', ' Jones ␤»
+" Sally ; Jones " # OUTPUT: " Sally ", " Jones "
 =end code
 
 An additional option, C<:$clean>, causes the first part to be
@@ -248,7 +248,7 @@ normalized.  The following parts remain unchanged.
 The same input as before, but using the C<:clean> option, yields:
 
 =begin code
- Sally ; Jones # OUTPUT: «Sally', ' Jones ␤»
+" Sally ; Jones " # OUTPUT: "Sally", " Jones "
 =end code
 
 An additional option, C<:$clean-all>, causes all parts to be
@@ -257,7 +257,7 @@ normalized.
 The same input as before, but using the C<:clean-all> option, yields:
 
 =begin code
- Sally ; Jones # OUTPUT: «Sally', 'Jones␤»
+" Sally ; Jones " # OUTPUT: "Sally", "Jones"
 =end code
 
 Note the C<split-line> routine encapsulates the Raku core routine
@@ -286,7 +286,7 @@ following way:
 
 1. If it is defined and is an C<Int>, it is used as the C<$limit>
 argument to C<split>; otherwise, C<$limit> is set to the number
-of characters in the input string (practical equivalent of '*').
+of characters in the input string (practical equivalent of C<*>).
 
 2. If it is I<not> defined, C<$limit> is set to C<2>;
 

@@ -181,19 +181,19 @@ The output will be a list of pieces of the input string split by any matches of 
 
 The results of the default behavior, with a semicolon as the split character, is shown here:
 
-     Sally ; Jones # OUTPUT: « Sally ', ' Jones ␤»
+    " Sally ; Jones " # OUTPUT: " Sally ", " Jones "
 
 An additional option, `:$clean`, causes the first part to be normalized. The following parts remain unchanged.
 
 The same input as before, but using the `:clean` option, yields:
 
-     Sally ; Jones # OUTPUT: «Sally', ' Jones ␤»
+    " Sally ; Jones " # OUTPUT: "Sally", " Jones "
 
 An additional option, `:$clean-all`, causes all parts to be normalized.
 
 The same input as before, but using the `:clean-all` option, yields:
 
-     Sally ; Jones # OUTPUT: «Sally', 'Jones␤»
+    " Sally ; Jones " # OUTPUT: "Sally", "Jones"
 
 Note the `split-line` routine encapsulates the Raku core routine `split` and uses default values as well as new names for options in an attempt to make it easier to use for novices as well as those, like the author, who find that routine a bit confusing with its awkward option names and purposes. 
 
@@ -203,7 +203,7 @@ The core `split` routine also has an optional named argument, `:$v`, which keeps
 
 Finally, `split-line` has another optional named argument, `:$max-limit`, which affects the number of matches expected in the following way:
 
-1. If it is defined and is an `Int`, it is used as the `$limit` argument to `split`; otherwise, `$limit` is set to the number of characters in the input string (practical equivalent of '*').
+1. If it is defined and is an `Int`, it is used as the `$limit` argument to `split`; otherwise, `$limit` is set to the number of characters in the input string (practical equivalent of `*`).
 
 2. If it is *not* defined, `$limit` is set to `2`;
 
