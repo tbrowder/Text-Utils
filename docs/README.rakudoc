@@ -225,7 +225,8 @@ C<:$type> parameter to choose another of the C<enum Sort-type>s.
 Splits a string into a list of pieces at a user-defined delimiter (or 'splitter').
 
 Inputs are the string to be split, the delimiter, and the split (or 
-break) character.
+break) character. (Notice the first two inputs are reversed from
+their equivalent options' order in the Raku core routine.)
 
 The output will be a list of pieces of the input
 string split by any matches of the delimiter.
