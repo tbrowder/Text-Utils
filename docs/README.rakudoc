@@ -224,8 +224,9 @@ C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
 Splits a string into a list of pieces at a user-defined delimiter (or 'splitter').
 
-Inputs are the string to be split, the delimiter, and the split (or 
-break) character. (Notice the first two inputs are reversed from
+The only required arguments are the C<$string> to be split and the 
+named C<:$delimiter> which I<must be a string>.
+(Notice the first two inputs are reversed from
 their equivalent options' order in the Raku core routine.)
 
 The output will be a list of pieces of the input
@@ -255,8 +256,6 @@ normalized.
 
 The same input as before, but using the C<:clean-all> option, yields:
 
-«
-␤»
 =begin code
  Sally ; Jones # OUTPUT: «Sally', 'Jones␤»
 =end code
@@ -270,27 +269,43 @@ awkward option names and purposes.
 For example, the core routine 
 has a fourth unnamed argument, C<$limit>, whose default value is 
 C<*> which ensures all splits are captured into the resulting 
-C<Sequence>. The C<$level> value is described as the number of parts 
+C<Sequence>. The C<$limit> value is described as the 
+I<minimum> number of parts 
 of the split to be kept.  The C<split-line> routine in this package 
-defaults to C<$level = 2>. 
+defaults to C<$limit = 2>. 
 
-It also has an optional named argument, C<$v>, which keeps the 
-delimiter string between any matches found. The default
-for C<split-line> it to I<always> define that option to
+The core C<split> routine also has an optional named argument, 
+C<:$v>, which 
+keeps the delimiter string between any matches found. The default
+for C<split-line> is to I<always> define that option to
 ensure consistent, easy-to-parse results.
 
-Use the core C<split> routine if you have special needs or want to
-use regexes as delimiters.
+Finally, C<split-line> has another optional named argument, 
+C<:$max-limit>, which affects the number of matches expected in the
+following way:
+
+1. If it is defined and is an C<Int>, it is used as the C<$limit>
+argument to C<split>; otherwise, C<$limit> is set to the number
+of characters in the input string (practical equivalent of '*').
+
+2. If it is I<not> defined, C<$limit> is set to C<2>;
+
+In summary: This routine attempts to ease splitting strings for
+many common use cases. Use the core C<split> routine if you have 
+special needs or want to use regexes as delimiters.
 
 The signature:
 
 =begin code :lang<Raku>
 sub split-line(
     Str:D $line is copy,
-    Str:D :s(:$splitter)!,     #= the splitting delimiter
+    Str:D :d($delimiter)!,     #= the splitting delimiter
     Bool  :$clean     = False, #= if True, the first part is 
                                #= normalized
     Bool  :$clean-all = False, #= if True, all parts are normalized
+          :$max-limit,         #= if defined and an int, use it;
+                               #    otherwise calculate it as strlen;
+                               #    otherwise use 2
     --> List) is export(:split-line)
 {...}
 =end code
