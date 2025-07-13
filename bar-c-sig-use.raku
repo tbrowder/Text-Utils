@@ -10,9 +10,14 @@ if not @*ARGS {
     Demonstrates using '|c' to pass arguments to another
     routine which decodes and uses them.
 
+    Note the subs should not be multis, but one should be
+    private, i.e., not exported.
+
     HERE
     exit;
 }
+
+has-all-args;
 
 sub has-all-args (
     UInt $a = 1,
@@ -23,6 +28,9 @@ sub has-all-args (
     ) is export {
     @e = <f g h>;
     %d = 5 => "i";
+
+    has-c-arg $a, |c;
+
 } # sub Caller
 
 sub has-c-arg($a, |c) is export {
@@ -31,6 +39,13 @@ sub has-c-arg($a, |c) is export {
     my $c = c.c;
     my %d = c.d;
     my @e = c.e;
+
+    print qq:to/HERE/;
+      a:  {$a}
+      b:  {$b}
+    HERE
 } # sub Called
+
+
 
 
