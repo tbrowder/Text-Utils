@@ -236,27 +236,29 @@ element the original string.
 The results of the default behavior, with a semicolon as the split
 character, is shown here:
 
-=begin comment
- Sally ; Jones # OUTPUT: " Sally ", " Jones "
-=end comment
+=begin code
+ Sally ; Jones # OUTPUT: « Sally ", " Jones ␤»
+=end code
 
 An additional option, C<:$clean>, causes the first part to be
 normalized.  The following parts remain unchanged.
 
 The same input as before, but using the C<:clean> option, yields:
 
-=begin comment
- Sally ; Jones # OUTPUT: "Sally", " Jones "
-=end comment
+=begin code
+ Sally ; Jones # OUTPUT: «Sally", " Jones ␤»
+=end code
 
 An additional option, C<:$clean-all>, causes all parts to be
 normalized.
 
 The same input as before, but using the C<:clean-all> option, yields:
 
-=begin comment
- Sally ; Jones # OUTPUT: "Sally", "Jones"
-=end comment
+«
+␤»
+=begin code
+ Sally ; Jones # OUTPUT: «Sally", "Jones␤»
+=end code
 
 Note the C<split-line> routine encapsulates the Raku core routine
 C<split> and uses default values as well as new names for options 
@@ -276,7 +278,7 @@ delimiter string between any matches found. The default
 for C<split-line> it to I<always> define that option to
 ensure consistent, easy-to-parse results.
 
-Use the core split routine if you have special needs or want to
+Use the core C<split> routine if you have special needs or want to
 use regexes as delimiters.
 
 The signature:

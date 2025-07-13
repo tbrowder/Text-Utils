@@ -181,13 +181,21 @@ The output will be a list of pieces of the input string split by any matches of 
 
 The results of the default behavior, with a semicolon as the split character, is shown here:
 
+     Sally ; Jones # OUTPUT: « Sally ", " Jones ␤»
+
 An additional option, `:$clean`, causes the first part to be normalized. The following parts remain unchanged.
 
 The same input as before, but using the `:clean` option, yields:
 
+     Sally ; Jones # OUTPUT: «Sally", " Jones ␤»
+
 An additional option, `:$clean-all`, causes all parts to be normalized.
 
 The same input as before, but using the `:clean-all` option, yields:
+
+« ␤»
+
+     Sally ; Jones # OUTPUT: «Sally", "Jones␤»
 
 Note the `split-line` routine encapsulates the Raku core routine `split` and uses default values as well as new names for options in an attempt to make it easier to use for novices as well as those, like the author, who find that routine a bit confusing with its awkward option names and purposes. 
 
@@ -195,7 +203,7 @@ For example, the core routine has a fourth unnamed argument, `$limit`, whose def
 
 It also has an optional named argument, `$v`, which keeps the delimiter string between any matches found. The default for `split-line` it to *always* define that option to ensure consistent, easy-to-parse results.
 
-Use the core split routine if you have special needs or want to use regexes as delimiters.
+Use the core `split` routine if you have special needs or want to use regexes as delimiters.
 
 The signature:
 
