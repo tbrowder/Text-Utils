@@ -1,3 +1,11 @@
+- GET RID OF DUPLICATE SPLIT-LINE SUBS
+  have 2 public signatures?   YES
+     use two different names? NO
+
+- ensure "max-limit" is tested
+
+- ensure arg "max-limit" is really max
+
 - ensure the docs match the code!!
 
 - finish the docs with the split-line examples

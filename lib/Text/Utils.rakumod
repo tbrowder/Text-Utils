@@ -9,7 +9,7 @@ class AFM-font is export {
     has Real $.sf; # font size scale factor
     has Font::AFM $.afm;
     has Bool $.kern = True;
-    has Real $.UnderlinePosition; # one source says this is the TOP 
+    has Real $.UnderlinePosition; # one source says this is the TOP
                                   # of the stroke
     has Real $.UnderlineThickness;
     # convenience
@@ -120,8 +120,8 @@ sub list2text(@list, :$optional-comma is copy = True) is export(:list2text) {
 #| Params  : String, Substring
 #| Returns : Number of substrings found
 sub count-substrs(
-    Str:D $ip, 
-    Str:D $substr 
+    Str:D $ip,
+    Str:D $substr
     --> UInt
     ) is export(:count-substrs) {
     use AlgorithmsIT :ALL;
@@ -148,21 +148,21 @@ sub count-substrs(
 # define  "aliases" for convenience (with unique export keys)
 our &strip is export(:strip) = &strip-comment;
 sub strip-comment(
-    $line is copy,                 #= string of text with possible 
+    $line is copy,                 #= string of text with possible
                                    #=   comment
-    :$save-comment,                #= if true, return the comment 
+    :$save-comment,                #= if true, return the comment
                                    #=   (including the mark)
     :mark(:$comment-char) = '#',   #= desired comment char indicator
-    :$normalize,                   #= if true, normalize returned 
+    :$normalize,                   #= if true, normalize returned
                                    #=   string
-    :$normalize-all,               #= if true, also normalize 
+    :$normalize-all,               #= if true, also normalize
                                    #=   returned comment
-    :$last,                        #= if true, use the last instead 
+    :$last,                        #= if true, use the last instead
                                    #=   of first comment char
-    :$first,                       #= if true, the comment char must 
-                                   #=   be the first non-whitespace 
-                                   #=   character on the line; 
-                                   #=   otherwise, the line is 
+    :$first,                       #= if true, the comment char must
+                                   #=   be the first non-whitespace
+                                   #=   character on the line;
+                                   #=   otherwise, the line is
                                    #=   returned as is
 ) is export(:strip-comment) {
     my $comment = '';
@@ -329,7 +329,7 @@ multi sub wrap-paragraph(
         my $wc = $word.chars;
         if $wc > $max-line-length {
             die qq:to/HERE/;
-            FATAL: Word '$word' has $wc chars, too long for max 
+            FATAL: Word '$word' has $wc chars, too long for max
                    line length of $mll chars
             HERE
         }
@@ -353,8 +353,8 @@ multi sub wrap-paragraph(
             # check mll with first word
             if $tc > $max-line-length {
                 die qq:to/HERE/;
-                FATAL: First line, first Word '$tmp-line' has $tc 
-                       chars, too long for max line length of $mll 
+                FATAL: First line, first Word '$tmp-line' has $tc
+                       chars, too long for max line length of $mll
                        chars
                 HERE
             }
@@ -364,8 +364,8 @@ multi sub wrap-paragraph(
             # check mll with first word
             if $tc > $max-line-length {
                 die qq:to/HERE/;
-                FATAL: First line, first Word '$tmp-line' has $tc 
-                       chars, too long for max line length of $mll 
+                FATAL: First line, first Word '$tmp-line' has $tc
+                       chars, too long for max line length of $mll
                        chars
                 HERE
             }
@@ -378,7 +378,7 @@ multi sub wrap-paragraph(
             note "DEBUG: good line: '$line'" if $debug;
             @words.shift; # remove the used word
             $first-word = False;
-            note "DEBUG: good line with {@words.elems} words" 
+            note "DEBUG: good line with {@words.elems} words"
                 if $debug;
             next;
         }
@@ -407,27 +407,27 @@ multi sub wrap-paragraph(
     # should not have any  words left
     if @words.elems {
         die qq:to/HERE/;
-        FATAL: Unexpected non-empty \@words: 
+        FATAL: Unexpected non-empty \@words:
                '{join(SPACE, @words)}'
         HERE
     }
 
     my sub line-length-ok(
-        :$line, 
-        :$initial-first, 
+        :$line,
+        :$initial-first,
         :$initial-following
     ) {
         my $mll = $max-line-length;
         my $nc  = $line.chars;
         if $initial-first and $nc > $mll {
             die qq:to/HERE/;
-            FATAL: First line pre too long: $nc chars is too long 
+            FATAL: First line pre too long: $nc chars is too long
                    for max length $mll
             HERE
         }
         elsif $initial-following and $nc > $mll {
             die qq:to/HERE/;
-            FATAL: Following lines pre too long: $nc chars is too 
+            FATAL: Following lines pre too long: $nc chars is too
                    long for max length $mll
             HERE
         }
@@ -629,58 +629,73 @@ our &splitstr is export(:splitstr)   = &split-line;
 our &split-str is export(:split-str) = &split-line;
 multi sub split-line(
     Str:D $line is copy,
-    Str:D :d($delimiter)!, 
-    Bool :$clean     = False, #= if True, normalize the first part of 
+    Str:D :d($delimiter)!,
+    Bool :$clean     = False, #= if True, normalize the first part of
                               #=   the split
-    Bool :$clean-all = False, #= if True, normalize all parts of 
+    Bool :$clean-all = False, #= if True, normalize all parts of
                               #=   the split
-    :$max-level,              #= if defined and an int, use it;
+         :$max-limit,         #= if defined and an int, use it;
                               #    otherwise calculate it as strlen;
                               #    otherwise use 2
     --> List
     ) is export {
-    my @res = split-line $line, $delimiter, :$clean, :$clean-all, :$max-level;
+    my @res = split-line $line, $delimiter, :$clean, :$clean-all, :$max-limit;
     @res;
 }
 
 multi sub split-line(
     Str:D $line is copy,
-    Str:D $delimiter,
-    Bool :$clean     = False, #= if True, normalize the first part of 
+    Str:D $delimiter, |c) is export (:split-line) {
+
+
+    Bool $clean     = c.clean; False, #= if True, normalize the first part of
                               #=   the split
-    Bool :$clean-all = False, #= if True, normalize all parts of 
+    Bool :$clean-all = False, #= if True, normalize all parts of
                               #=   the split
-    :$max-limit,              #= if defined and an int, use it;
+         :$max-limit,         #= if defined and an int, use it;
                               #    otherwise calculate it as strlen;
                               #    otherwise use 2
     --> List) is export(:split-line) {
 
-    my $limit = 2;  # docs are confusing
+    my $limit; # = 2;  # docs are confusing
     if $max-limit.defined {
         if $max-limit ~~ Int {
             $limit = $max-limit;
         }
         else {
-            $limit = $line.chars;
+            $limit = 0;
         }
     }
+    else {
+        $limit = 2; # our default
+    }
 
-#   my ($left, $right);
     # We ALWAYS keep the delimiter (but remove it afterwards);
-    my @parts = split $delimiter, $line, $limit, :v;
+    my @parts;
+    if $limit {
+       @parts = split $delimiter, $line, $limit, :v;
+    }
+    else {
+       @parts = split $delimiter, $line, :v;
+    }
+
     my @pieces;
-    for @parts.kv -> $i, $v {
+    for @parts.kv -> $i, $v is copy {
         # skip the delimiters
         next if is-odd $i; # zero is "even"
+
+#       # $v must be a string
+#       if $v !~~ Str {
+#           $v = "$v";
+#       }
         @pieces.push: $v;
     }
     # pieces should be 1 or a max of $limit
     my $np = @pieces.elems;
-#   $left =  @parts.shift;
     unless 1 <= $np <= $limit {
         die "FATAL: Expected 1 or $limit elements, got $np instead.";
     }
-    
+
     if $clean and @pieces.head.chars {
         @pieces.head = normalize-string @pieces.head;
     }
@@ -688,16 +703,16 @@ multi sub split-line(
         my @tmp;
         for @pieces -> $p is copy {
             if not $p.chars {
-                @tmp.push: $p; 
+                @tmp.push: $p;
                 next;
             }
             $p = normalize-string $p;
-            @tmp.push: $p; 
+            @tmp.push: $p;
         }
         @pieces = @tmp;
     }
 
-    @pieces; #$left, $right;
+    @pieces;
 
 } # split-line
 

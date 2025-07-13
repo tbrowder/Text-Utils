@@ -3,10 +3,11 @@ use Test;
 use Text::Utils :ALL;
 use Text::Utils::Subs;
 
-plan 22;
+# plan 25;
 
 my ($s1, $s2, $s3, $s4, $left, $right, $splitter, $m, $string);
 my (@str1, @str2, @str3, @str4);
+my (@str5, $s5, $ml);
 
 $s1 = 'sub foo($song, $tool, @long-array, :$good) is export { say pwd }';
 
@@ -59,10 +60,10 @@ is $right, " Sans ", "split 'Free Sans' at 'Free', post: '$right'";
 # more default use cases
 
 $splitter = ":";         # expected
-$s1 = "foo : bar";       # | | |
-$s2 = "foo : bar : baz"; # | | |
-$s3 = "foo   bar   baz"; # | | |
-$s4 = ": bar";           # | | |
+$s1 = "foo : bar";       
+$s2 = "foo : bar : baz";
+$s3 = "foo   bar   baz";
+$s4 = ": bar";        
 
 @str1 = split-line $s1, $splitter;
 is @str1.elems, 2, "default: 2 pieces";
@@ -75,15 +76,36 @@ is @str2.head, "foo ", "default";
 is @str2.tail, " bar : baz", "default";
 
 $splitter = ":";         # expected
-$s3 = "foo   bar   baz"; # | | |
+$s3 = "foo   bar   baz"; 
 
 @str3 = split-line $s3, $splitter;
 is @str3.elems, 1, "default: 2 pieces MAX";
 is @str3.head, "foo   bar   baz", "default HEAD with no match";
 
 $splitter = ":";         # expected
-$s4 = ": bar";           # | | |
+$s4 = ": bar";           
 @str4 = split-line $s4, $splitter;
 is @str4.elems, 2, "default: 2 pieces";
 is @str4.head, "", "default";
 is @str4.tail, " bar", "default";
+
+# test option "max-limit"
+$splitter = ":";         # expected
+$s5 = " 1 : 2 : 3 : 4 : 5 ";
+@str5 = split-line $s5, :d($splitter), :max-limit($ml);
+is @str5.elems, 2, "max-limit == not defined";
+
+$ml = 3;
+@str5 = split-line $s5, :d($splitter), :max-limit($ml);
+is @str5.elems, $ml, "max-limit = $ml";
+
+@str5 = split-line $s5, :d($splitter), :max-limit;
+is @str5.elems, 4, "max-limit = defined, no value, i.e, unlimited";
+
+done-testing;
+=finish
+
+is @str5.elems, 2, $ml, "max-limit == $ml";
+is @str5.elems, 2, $ml, "max-limit == $ml";
+is @str5.elems, 2, $ml, "max-limit == $ml";
+

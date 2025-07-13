@@ -2,8 +2,6 @@ unit module Text::Utils::Subs;
 
 use Test;
 
-#my ($level, $de, $s2, @p2, @np, @nv, $np, $nv);
-
 sub is-odd(
     UInt $num
     --> Bool
@@ -94,7 +92,7 @@ subset LevelOp of UInt is export where * >= 1;
 sub test-and-show-string-list(
     @str,                 #= strings to test
     Str :$delim!,         #= delimiter
-    LevelOp :$level,      #= max number of matches
+    LevelOp :$limit,      #= max number of matches
     SplitOp :$opt,        #= 'split' option used, if any
 ) is export {
     my @np=[]; my @nv=[];
@@ -103,7 +101,7 @@ sub test-and-show-string-list(
     my $opt-used = $opt.defined ?? $opt !! "(none)";
     print qq:to/HERE/;
     #=================================================
-    Params: :level({$level}), using option '{$opt-used}'
+    Params: :limit({$limit}), using option '{$opt-used}'
     #=================================================
     HERE
 
@@ -113,15 +111,15 @@ sub test-and-show-string-list(
 
         say "=== string: '$s', delim: '{$delim.trim}'";
         my @res;
-        if $level {
-            @res = split $delim, $s, $level, {$opt.raku};
+        if $limit {
+            @res = split $delim, $s, $limit, {$opt.raku};
         }
         else {
             @res = split $delim, $s, {$opt.raku};
         }
 
         # note the docs say the results depend on 
-        #   level and any Raku core 'split' named option
+        #   limit and any Raku core 'split' named option
         #   the only named option this package recognizes for a
         #     core 'split' option is ':v'
 

@@ -288,7 +288,8 @@ following way:
 argument to C<split>; otherwise, C<$limit> is set to the number
 of characters in the input string (practical equivalent of C<*>).
 
-2. If it is I<not> defined, C<$limit> is set to C<2>;
+2. If it is I<not> defined, C<$limit> is set to C<2>. In addition,
+I<all matches greater than '$max-limit' are ignored>.
 
 In summary: This routine attempts to ease splitting strings for
 many common use cases. Use the core C<split> routine if you have 
@@ -304,8 +305,8 @@ sub split-line(
                                #= normalized
     Bool  :$clean-all = False, #= if True, all parts are normalized
           :$max-limit,         #= if defined and an int, use it;
-                               #    otherwise calculate it as strlen;
-                               #    otherwise use 2
+                               #    otherwise treat it as * for max
+                               #    otherwise use 2 if not entered
     --> List) is export(:split-line)
 {...}
 =end code

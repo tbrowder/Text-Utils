@@ -205,7 +205,7 @@ Finally, `split-line` has another optional named argument, `:$max-limit`, which 
 
 1. If it is defined and is an `Int`, it is used as the `$limit` argument to `split`; otherwise, `$limit` is set to the number of characters in the input string (practical equivalent of `*`).
 
-2. If it is *not* defined, `$limit` is set to `2`;
+2. If it is *not* defined, `$limit` is set to `2`. In addition, *all matches greater than '$max-limit' are ignored*.
 
 In summary: This routine attempts to ease splitting strings for many common use cases. Use the core `split` routine if you have special needs or want to use regexes as delimiters.
 
