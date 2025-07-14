@@ -224,8 +224,11 @@ C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
 Splits a string into a list of pieces at a user-defined delimiter (or 'splitter').
 
+There are two multi subs with several common options but
+only two are different.
+
 The only required arguments are the C<$string> to be split and the 
-named C<:$delimiter> which I<must be a string>.
+C<$delimiter> which I<must be a string>.
 (Notice the first two inputs are reversed from
 their equivalent options' order in the Raku core routine.)
 
@@ -235,7 +238,7 @@ If there were no matches, the list should contain two elements,
 with the first element being an empty string and the other
 element the original string.
 
-The results of the default behavior, with a semicolon as the split
+The result of the default behavior, with a semicolon as the split
 character, is shown here:
 
 =begin code
@@ -295,21 +298,41 @@ In summary: This routine attempts to ease splitting strings for
 many common use cases. Use the core C<split> routine if you have 
 special needs or want to use regexes as delimiters.
 
-The signature:
+The multi signatures:
+
+=head4 First multi sub
 
 =begin code :lang<Raku>
 sub split-line(
     Str:D $line is copy,
     Str:D :d($delimiter)!,     #= the splitting delimiter
+    # Common options follow... 
+    --> List) is export(:split-line)
+{...}
+=end code
+
+=head4 Second multi sub
+
+=begin code
+sub split-line(
+    Str:D $line is copy,
+    Str:D $delimiter,           #= the splitting delimiter
+    # Common options follow... 
+    --> List) is export(:split-line)
+{...}
+=end code
+
+=head4 Common options
+
+=begin code
     Bool  :$clean     = False, #= if True, the first part is 
                                #= normalized
     Bool  :$clean-all = False, #= if True, all parts are normalized
           :$max-limit,         #= if defined and an int, use it;
                                #    otherwise treat it as * for max
                                #    otherwise use 2 if not entered
-    --> List) is export(:split-line)
-{...}
 =end code
+
 
 =head3 strip-comment
 

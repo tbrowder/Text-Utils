@@ -630,6 +630,7 @@ our &split-str is export(:split-str) = &split-line;
 multi sub split-line(
     Str:D $line is copy,
     Str:D :d($delimiter)!,
+    # common args below
     Bool :$clean     = False, #= if True, normalize the first part of
                               #=   the split
     Bool :$clean-all = False, #= if True, normalize all parts of
@@ -639,16 +640,16 @@ multi sub split-line(
                               #    otherwise use 2
     --> List
     ) is export {
-    my @res = split-line $line, $delimiter, :$clean, :$clean-all, :$max-limit;
+    my @res = split-line $line, $delimiter, :$clean, :$clean-all, 
+                           :$max-limit;
     @res;
 }
 
 multi sub split-line(
     Str:D $line is copy,
-    Str:D $delimiter, |c) is export (:split-line) {
-
-
-    Bool $clean     = c.clean; False, #= if True, normalize the first part of
+    Str:D $delimiter,
+    # common args below
+    Bool  :$clean    = False, #= if True, normalize the first part of
                               #=   the split
     Bool :$clean-all = False, #= if True, normalize all parts of
                               #=   the split
@@ -657,45 +658,40 @@ multi sub split-line(
                               #    otherwise use 2
     --> List) is export(:split-line) {
 
+    my $limit = calc-limit $max-limit;
+    =begin comment
     my $limit; # = 2;  # docs are confusing
+    # use a sub here to calc $limit...
     if $max-limit.defined {
-        if $max-limit ~~ Int {
-            $limit = $max-limit;
-        }
-        else {
-            $limit = 0;
-        }
+        if $max-limit ~~ Int { $limit = $max-limit; }
+        else { $limit = 0; }
     }
-    else {
-        $limit = 2; # our default
-    }
+    else { $limit = 2; # our default }
+    =end comment
 
     # We ALWAYS keep the delimiter (but remove it afterwards);
+    my @parts = calc-parts $limit, :$line, :$delimiter;
+    =begin comment
     my @parts;
-    if $limit {
-       @parts = split $delimiter, $line, $limit, :v;
-    }
-    else {
-       @parts = split $delimiter, $line, :v;
-    }
+    # use a sub here to calc @parts...
+    if $limit { @parts = split $delimiter, $line, $limit, :v; }
+    else { @parts = split $delimiter, $line, :v; }
+    =end comment
 
     my @pieces;
     for @parts.kv -> $i, $v is copy {
         # skip the delimiters
         next if is-odd $i; # zero is "even"
-
-#       # $v must be a string
-#       if $v !~~ Str {
-#           $v = "$v";
-#       }
         @pieces.push: $v;
     }
+
     # pieces should be 1 or a max of $limit
     my $np = @pieces.elems;
     unless 1 <= $np <= $limit {
         die "FATAL: Expected 1 or $limit elements, got $np instead.";
     }
 
+    # use a sub here for cleaning
     if $clean and @pieces.head.chars {
         @pieces.head = normalize-string @pieces.head;
     }

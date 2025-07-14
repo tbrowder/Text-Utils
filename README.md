@@ -175,11 +175,13 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 Splits a string into a list of pieces at a user-defined delimiter (or 'splitter').
 
-The only required arguments are the `$string` to be split and the named `:$delimiter` which *must be a string*. (Notice the first two inputs are reversed from their equivalent options' order in the Raku core routine.)
+There are two multi subs with several common options but only two are different.
+
+The only required arguments are the `$string` to be split and the `$delimiter` which *must be a string*. (Notice the first two inputs are reversed from their equivalent options' order in the Raku core routine.)
 
 The output will be a list of pieces of the input string split by any matches of the delimiter. If there were no matches, the list should contain two elements, with the first element being an empty string and the other element the original string.
 
-The results of the default behavior, with a semicolon as the split character, is shown here:
+The result of the default behavior, with a semicolon as the split character, is shown here:
 
     " Sally ; Jones " # OUTPUT: " Sally ", " Jones "
 
@@ -209,21 +211,36 @@ Finally, `split-line` has another optional named argument, `:$max-limit`, which 
 
 In summary: This routine attempts to ease splitting strings for many common use cases. Use the core `split` routine if you have special needs or want to use regexes as delimiters.
 
-The signature:
+The multi signatures:
+
+#### First multi sub
 
 ```Raku
 sub split-line(
     Str:D $line is copy,
     Str:D :d($delimiter)!,     #= the splitting delimiter
-    Bool  :$clean     = False, #= if True, the first part is 
-                               #= normalized
-    Bool  :$clean-all = False, #= if True, all parts are normalized
-          :$max-limit,         #= if defined and an int, use it;
-                               #    otherwise calculate it as strlen;
-                               #    otherwise use 2
+    # Common options follow... 
     --> List) is export(:split-line)
 {...}
 ```
+
+#### Second multi sub
+
+    sub split-line(
+        Str:D $line is copy,
+        Str:D $delimiter,           #= the splitting delimiter
+        # Common options follow... 
+        --> List) is export(:split-line)
+    {...}
+
+#### Common options
+
+        Bool  :$clean     = False, #= if True, the first part is 
+                                   #= normalized
+        Bool  :$clean-all = False, #= if True, all parts are normalized
+              :$max-limit,         #= if defined and an int, use it;
+                                   #    otherwise treat it as * for max
+                                   #    otherwise use 2 if not entered
 
 ### strip-comment
 
