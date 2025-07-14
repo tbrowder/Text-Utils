@@ -438,6 +438,8 @@ multi sub wrap-paragraph(
 
 } # wrap-paragraph
 
+=begin comment
+# put in separate sub for use by other routines?
 #-----------------------------------------------------------------------
 #| Purpose : Trim a string and collapse multiple whitespace characters
 #|             to single ones
@@ -555,6 +557,7 @@ sub normalize-string(
     $str;
 } # normalize-string
 constant &normalize-text is export(:normalize-text) = &normalize-string; # per lizmat, 2024-04-26
+=end comment
 
 =begin comment
 # put to bed for now
@@ -639,10 +642,15 @@ multi sub split-line(
                               #    otherwise calculate it as strlen;
                               #    otherwise use 2
     --> List
-    ) is export {
-    my @res = split-line $line, $delimiter, :$clean, :$clean-all, 
-                           :$max-limit;
-    @res;
+    ) is export(:split-line) {
+    #my @res = split-line $line, $delimiter, :$clean, :$clean-all,
+    #                         :$max-limit;
+    my $limit = calc-limit :$max-limit;
+    my @parts = calc-parts :$limit, :$line, :$delimiter;
+    my @pieces = calc-pieces :@parts;
+    @pieces = clean-pieces :@pieces, :$clean, :$clean-all;
+
+    @pieces;
 }
 
 multi sub split-line(
@@ -658,7 +666,7 @@ multi sub split-line(
                               #    otherwise use 2
     --> List) is export(:split-line) {
 
-    my $limit = calc-limit $max-limit;
+    my $limit = calc-limit :$max-limit;
     =begin comment
     my $limit; # = 2;  # docs are confusing
     # use a sub here to calc $limit...
@@ -670,7 +678,7 @@ multi sub split-line(
     =end comment
 
     # We ALWAYS keep the delimiter (but remove it afterwards);
-    my @parts = calc-parts $limit, :$line, :$delimiter;
+    my @parts = calc-parts :$limit, :$line, :$delimiter;
     =begin comment
     my @parts;
     # use a sub here to calc @parts...
@@ -678,19 +686,25 @@ multi sub split-line(
     else { @parts = split $delimiter, $line, :v; }
     =end comment
 
-    my @pieces;
+    my @pieces = calc-pieces :@parts;
+    =begin comment
     for @parts.kv -> $i, $v is copy {
         # skip the delimiters
         next if is-odd $i; # zero is "even"
         @pieces.push: $v;
     }
+    =end comment
 
+    =begin comment
     # pieces should be 1 or a max of $limit
     my $np = @pieces.elems;
     unless 1 <= $np <= $limit {
         die "FATAL: Expected 1 or $limit elements, got $np instead.";
     }
+    =end comment
 
+    @pieces = clean-pieces :@pieces, :$clean, :$clean-all;
+    =begin comment
     # use a sub here for cleaning
     if $clean and @pieces.head.chars {
         @pieces.head = normalize-string @pieces.head;
@@ -707,6 +721,7 @@ multi sub split-line(
         }
         @pieces = @tmp;
     }
+    =end comment
 
     @pieces;
 

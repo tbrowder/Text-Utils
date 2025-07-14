@@ -2,7 +2,9 @@ use Test;
 
 my @modules = <
     Text::Utils
+    Text::Utils::Classes
     Text::Utils::Subs
+    Text::Utils::Vars
 >;
 
 plan @modules.elems;

@@ -2,6 +2,86 @@ unit module Text::Utils::Subs;
 
 use Test;
 
+sub calc-limit(
+    :$max-limit!
+    --> UInt
+) is export {
+
+    my $limit;
+    if $max-limit.defined {
+        if $max-limit ~~ Int {
+            $limit = $max-limit; }
+        else {
+            $limit = 0; }
+    }
+    else {
+        $limit = 2; # our default
+    }
+    $limit;
+}
+
+sub calc-parts(
+    :$limit!,
+    :$line!,
+    :$delimiter!,
+) is export {
+    my @parts;
+    # use a sub here to calc @parts...
+    if $limit {
+        @parts = split $delimiter, $line, $limit, :v;
+    }
+    else {
+        @parts = split $delimiter, $line, :v;
+    }
+    @parts;
+}
+
+sub calc-pieces(
+    :@parts!,
+    --> List
+) is export {
+    my @pieces;
+    for @parts.kv -> $i, $v is copy {
+        # skip the delimiters
+        next if is-odd $i; # zero is "even"
+        @pieces.push: $v;
+    }
+    @pieces;
+}
+
+sub clean-pieces(
+    :@pieces! is copy,
+    :$clean,
+    :$clean-all,
+    --> List
+) is export {
+
+    my @tmp;
+    # use a sub here for cleaning
+    if $clean-all.defined {
+        for @pieces -> $p is copy {
+            if not $p.chars {
+                @tmp.push: $p;
+                next;
+            }
+            $p = normalize-string $p;
+            @tmp.push: $p;
+        }
+    }
+    elsif $clean.defined and @pieces.head.chars {
+        @pieces.head = normalize-string @pieces.head;
+    }
+
+    # pieces should be 1 or a max of $limit
+    my $np = @pieces.elems;
+    unless 1 <= $np <= $limit {
+        die "FATAL: Expected 1 or $limit elements, got $np instead.";
+    }
+
+    @pieces;
+}
+
+
 sub is-odd(
     UInt $num
     --> Bool
@@ -88,7 +168,7 @@ sub find-text-forward (
 } # end of sub find-text-forward
 
 subset SplitOp of Str  is export where * eq ":v";
-subset LevelOp of UInt is export where * >= 1; 
+subset LevelOp of UInt is export where * >= 1;
 sub test-and-show-string-list(
     @str,                 #= strings to test
     Str :$delim!,         #= delimiter
@@ -118,12 +198,12 @@ sub test-and-show-string-list(
             @res = split $delim, $s, {$opt.raku};
         }
 
-        # note the docs say the results depend on 
+        # note the docs say the results depend on
         #   limit and any Raku core 'split' named option
         #   the only named option this package recognizes for a
         #     core 'split' option is ':v'
 
-        # @res 
+        # @res
         $np = @res.elems;
         @np.push: $np;
         say "  number of parts returned: $np";
@@ -147,7 +227,7 @@ sub test-and-show-string-list(
 
 sub core-split-wmods(
     # reverse order of first two args
-    $string,    
+    $string,
     $delimiter,
     # rest
     $limit = Inf,
@@ -156,7 +236,7 @@ sub core-split-wmods(
     --> List
     ) is export {
 
-    my @res = split $delimiter, $string, $limit, 
+    my @res = split $delimiter, $string, $limit,
                          :$v, :$k, :$kv, :$p, :$skip-empty;
 
     # debug handling

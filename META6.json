@@ -17,7 +17,9 @@
   "perl": "6.*",
   "provides": {
     "Text::Utils": "lib/Text/Utils.rakumod",
-    "Text::Utils::Subs": "lib/Text/Utils/Subs.rakumod"
+    "Text::Utils::Classes": "lib/Text/Utils/Classes.rakumod",
+    "Text::Utils::Subs": "lib/Text/Utils/Subs.rakumod",
+    "Text::Utils::Vars": "lib/Text/Utils/Vars.rakumod"
   },
   "resources": [
   ],
