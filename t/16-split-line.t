@@ -1,7 +1,8 @@
 use Test;
 
 use Text::Utils :ALL;
-use Text::Utils::Subs;
+use Text::Utils::Subs :ALL;
+use Text::Utils::TaggedSubs;
 
 # plan 25;
 
@@ -22,7 +23,7 @@ is $left, "", "default behavior";
 is $right, " Sans", "default behavior";
 
 # default behavior: no split text saved, 0 or 2 parts, no cleaning
-$s3 = " key : some  text "; 
+$s3 = " key : some  text ";
 $splitter = ':';
 ($left, $right) = split-line $s3, $splitter;
 is $left, " key ", "default behavior";
@@ -60,10 +61,10 @@ is $right, " Sans ", "split 'Free Sans' at 'Free', post: '$right'";
 # more default use cases
 
 $splitter = ":";         # expected
-$s1 = "foo : bar";       
+$s1 = "foo : bar";
 $s2 = "foo : bar : baz";
 $s3 = "foo   bar   baz";
-$s4 = ": bar";        
+$s4 = ": bar";
 
 @str1 = split-line $s1, $splitter;
 is @str1.elems, 2, "default: 2 pieces";
@@ -76,14 +77,14 @@ is @str2.head, "foo ", "default";
 is @str2.tail, " bar : baz", "default";
 
 $splitter = ":";         # expected
-$s3 = "foo   bar   baz"; 
+$s3 = "foo   bar   baz";
 
 @str3 = split-line $s3, $splitter;
 is @str3.elems, 1, "default: 2 pieces MAX";
 is @str3.head, "foo   bar   baz", "default HEAD with no match";
 
 $splitter = ":";         # expected
-$s4 = ": bar";           
+$s4 = ": bar";
 @str4 = split-line $s4, $splitter;
 is @str4.elems, 2, "default: 2 pieces";
 is @str4.head, "", "default";
@@ -99,8 +100,12 @@ $ml = 3;
 @str5 = split-line $s5, :d($splitter), :max-limit($ml);
 is @str5.elems, $ml, "max-limit = $ml";
 
+$splitter = ":";         # expected
+# MUST save original line length
+$s5 = " 1 : 2 : 3 : 4 : 5 ";
 @str5 = split-line $s5, :d($splitter), :max-limit;
-is @str5.elems, 4, "max-limit = defined, no value, i.e, unlimited";
+say "s5.chars: {$s5.chars}, expected 19";
+is @str5.elems, 4, "max-limit = not defined, no value, i.e, unlimited";
 
 done-testing;
 =finish
@@ -108,4 +113,3 @@ done-testing;
 is @str5.elems, 2, $ml, "max-limit == $ml";
 is @str5.elems, 2, $ml, "max-limit == $ml";
 is @str5.elems, 2, $ml, "max-limit == $ml";
-

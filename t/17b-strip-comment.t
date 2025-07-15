@@ -3,6 +3,7 @@ use Test;
 use File::Temp;
 
 use Text::Utils :ALL; #:strip-comment :normalize-string;
+use Text::Utils::TaggedSubs :ALL; #:strip-comment :normalize-string;
 
 my $debug = 0; # output files are placed in local dir "tmp"
 
@@ -143,7 +144,7 @@ LE: for @line-endings -> $le {
                 }
                 is @tcells.elems, 3;
                 # i=1: @hdr  = [" name         ", " age ", " notes " ];
-                # i=2: @row1 = [" Sally x Jean ", " 22  ", "       " ]; 
+                # i=2: @row1 = [" Sally x Jean ", " 22  ", "       " ];
                 #                 replace 'x' with '\n' or ' '
                 # i=3: @row2 = [" Tom          ", " 30  ", " rakuun "];
                 if $i == 1 {

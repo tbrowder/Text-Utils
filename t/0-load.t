@@ -4,6 +4,7 @@ my @modules = <
     Text::Utils
     Text::Utils::Classes
     Text::Utils::Subs
+    Text::Utils::TaggedSubs
     Text::Utils::Vars
 >;
 

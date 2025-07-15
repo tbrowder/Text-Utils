@@ -1,6 +1,7 @@
 use Test;
 
 use Text::Utils :ALL;
+use Text::Utils::Subs :ALL;
 
 plan 27;
 

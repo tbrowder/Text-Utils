@@ -1,16 +1,20 @@
 {{$NEXT}}
-    - Released as new version 4.0.0 
-    - Add option !normalize to sub strip-comment
-    - Add option !normalize-all to sub strip-comment
-    - Add tests for new options
-    - Add a standard load test
+    - Released as new version 4.0.0
+    - Added option !normalize to sub strip-comment
+    - Added option !normalize-all to sub strip-comment
+    - Added tests for new options
+    - Added a standard load test
     - Added alias 'strip' for 'strip-comment'
     - Made sub split-line a multi with a different signature
       + added a more user-friendly split word option
       + added an option :max-level to affect the desired core
         routine call option 'level?'
       + added :clean-all option to normalize all parts of the split
-    - Remove 'reverse' option from routine 'split-line'
+    - Removed 'reverse' option from routine 'split-line'
+    - Removed exported DEBUG $debug vaiable
+    - Removed export keys for modules under Text::Utils 
+    - Moved independent helper variables classes and subs to
+      Text::Utils::* (Subs, Vars, Classes)
     - Removed unneeded and untested options
       + updated tests
     - Updated docs

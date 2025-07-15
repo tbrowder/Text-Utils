@@ -1,5 +1,9 @@
 unit module Text::Utils;
 
+use Text::Utils::Vars;
+use Text::Utils::Subs;
+use Text::Utils::TaggedSubs :ALL;
+
 use Font::AFM;
 
 class AFM-font is export {
@@ -46,23 +50,38 @@ class AFM-font is export {
     }
 }
 
-use Text::Utils::Subs;
+sub clean-pieces(
+    # put this sub up a level: no export??
+    :@pieces! is copy,
+    :$limit!,
+    :$clean,
+    :$clean-all,
+    --> List
+) {
 
-constant $NL   is export(:nl)  = "\n";
-constant $TAB  is export(:tab) = "\t";
-constant $WS   is export(:ws)  = ' ';
-constant SPACE is export       = ' ';
-constant EMPTY is export       = '';
+    my @tmp;
+    # use a sub here for cleaning
+    if $clean-all.defined {
+        for @pieces -> $p is copy {
+            if not $p.chars {
+                @tmp.push: $p;
+                next;
+            }
+            $p = normalize-string $p;
+            @tmp.push: $p;
+        }
+    }
+    elsif $clean.defined and @pieces.head.chars {
+        @pieces.head = normalize-string @pieces.head;
+    }
 
-#| Export a debug var for users
-our $DEBUG is export(:DEBUG) = False;
-BEGIN {
-    if %*ENV<TEXT_UTILS_DEBUG> {
-	$DEBUG = True;
+    # pieces should be 1 or a max of $limit
+    my $np = @pieces.elems;
+    unless 1 <= $np <= $limit {
+        die "FATAL: Expected 1 or $limit elements, got $np instead.";
     }
-    else {
-	$DEBUG = False;
-    }
+
+    @pieces;
 }
 
 # enum Char-type is export(:char-type) <>:
@@ -105,14 +124,19 @@ sub sort-list(@List, :$type = LS, :$reverse) is export(:sort-list) {
 #| Purpose : Turn a list into a text string for use in a document
 #| Params  : List, Bool
 #| Returns : String from a special join operajtion
-sub list2text(@list, :$optional-comma is copy = True) is export(:list2text) {
+sub list2text(@list,
+              :$optional-comma is copy = True,
+              :$debug,
+              --> Str
+             ) is export(:list2text) {
     $optional-comma = False if %*ENV<TEXT_UTILS_NO_OPTIONAL_COMMA>:exists;
     my $s = @list[0..*-2].join(', ');
-    say $s if $DEBUG;
+    say $s if $debug;
     $s ~= ',' if $optional-comma;
     $s ~= ' and ' ~ @list[*-1];
-    say $s if $DEBUG;
-    return $s;
+    say $s if $debug;
+
+    $s;
 } # list2test
 
 #-----------------------------------------------------------------------
@@ -202,7 +226,13 @@ sub strip-comment(
 #| Returns : The input number with commas added, e.g.,
 #|             1234.56 => 1,234.56
 #|             1234.60 => 1,234.60
-sub commify($Num, UInt :$decimals --> Str) is export(:commify) {
+sub commify(
+    $Num,
+    UInt :$decimals,
+    :$debug,
+    --> Str
+    ) is export(:commify) {
+
     # translated from Perl Cookbook, 2e, Recipe 2.16
     # with improvement by this author
     my $num = $Num;
@@ -214,16 +244,16 @@ sub commify($Num, UInt :$decimals --> Str) is export(:commify) {
         $num = sprintf "%0.*f", $nd, $Num;
     }
 
-    say "DEBUG: input '$num'" if $DEBUG;
+    say "DEBUG: input '$num'" if $debug;
     my $text = $num.flip;
-    say "DEBUG: input flipped '$text'" if $DEBUG;
+    say "DEBUG: input flipped '$text'" if $debug;
     #$text =~ s:g/ (\d\d\d)(?=\d)(?!\d*\.)/$0,/; # Perl
     # in Raku:
     $text ~~ s:g/ (\d\d\d) <?before \d> <!before \d*\.> /$0,/;
 
     # don't forget to flip back to the original
     $text .= flip;
-    say "DEBUG: commified output '$text'" if $DEBUG;
+    say "DEBUG: commified output '$text'" if $debug;
 
     return $text;
 
@@ -439,129 +469,13 @@ multi sub wrap-paragraph(
 } # wrap-paragraph
 
 =begin comment
-# put in separate sub for use by other routines?
-#-----------------------------------------------------------------------
-#| Purpose : Trim a string and collapse multiple whitespace characters
-#|             to single ones
-#| Params  : The string to be normalized
-#| Returns : The normalized string
-subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; #= keep or normalize
-subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws
-sub normalize-string(
-    Str:D $str is copy,
-    Kn :t(:$tabs)=0,           #= keep or normalize
-    Kn :n(:$newlines)=0,       #= keep or normalize
-    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws
-                               #=   to one char
-    :$no-trim,                 #= do not trim the input string
-    --> Str
-    ) is export(:normalize-string) {
-    # default is to always trim first, but to do so we must save the
-    # original leading and trailing spaces
-    my ($pre-ws, $post-ws);
-    if $no-trim.defined {
-        if $str ~~ /^ (\s+) / {
-            $pre-ws = ~$0;
-        }
-        if $str ~~ / (\s+) $/ {
-            $post-ws = ~$0;
-        }
-        $str .= trim;
-    }
-    else {
-        $str .= trim;
-    }
-
-    # then normalize all space characters
-    $str ~~ s:g/ $WS ** 2..* /$WS/;
-
-    # then check for exceptions before normalizing all whitespace
-
-    # convenience aliases
-    my $t = $tabs;
-    my $c = $collapse-ws-to;
-    my $n = $newlines;
-
-    if $collapse-ws-to {
-        if $c ~~ /^ :i s / {
-            # collapse all to a single space
-            $str ~~ s:g/ $NL          /$WS/;
-            $str ~~ s:g/ $TAB         /$WS/;
-            $str ~~ s:g/ $WS  ** 2..* /$WS/;
-        }
-        elsif $c ~~ /^ :i t / {
-            # collapse all to a single tab
-            $str ~~ s:g/ $WS          /$TAB/;
-            $str ~~ s:g/ $NL          /$TAB/;
-            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
-        }
-        elsif $c ~~ /^ :i n / {
-            # collapse all to a single newline
-            $str ~~ s:g/ $WS          /$NL/;
-            $str ~~ s:g/ $TAB         /$NL/;
-            $str ~~ s:g/ $NL  ** 2..* /$NL/;
-        }
-    }
-    elsif $newlines and $tabs {
-        if $t ~~ /^ :i k / {
-            ; # ok, a no-op
-        }
-        elsif $t ~~ /^ :i n / {
-            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
-        }
-        if $n ~~ /^ :i k / {
-            ; # ok, a no-op
-        }
-        elsif $n ~~ /^ :i n / {
-            $str ~~ s:g/ $NL  ** 2..* /$NL/;
-        }
-    }
-    elsif $tabs {
-        if $t ~~ /^ :i k / {
-            ; # ok, a no-op
-        }
-        elsif $t ~~ /^ :i n / {
-            $str ~~ s:g/ $TAB ** 2..* /$TAB/;
-        }
-    }
-    elsif $newlines {
-        if $n ~~ /^ :i k / {
-            ; # ok, a no-op
-        }
-        elsif $n ~~ /^ :i n / {
-            $str ~~ s:g/ $NL  ** 2..* /$NL/;
-        }
-    }
-    else {
-        $str .= trim;
-        $str ~~ s:g/ \s ** 2..* /$WS/;
-    }
-
-    =begin comment
-    else {
-        #$str .= trim;
-        # this also takes care of tabs and newlines
-        $str ~~ s:g/ \s ** 2..*/ /;
-    }
-    =end comment
-
-    if $no-trim.defined {
-        # add back any original leading or trailing spaces
-        if $pre-ws {
-            $str = $pre-ws ~ $str;
-        }
-        if $post-ws {
-            $str = $str ~ $post-ws;
-        }
-    }
-    $str;
-} # normalize-string
-constant &normalize-text is export(:normalize-text) = &normalize-string; # per lizmat, 2024-04-26
-=end comment
-
-=begin comment
 # put to bed for now
-sub normalize-quotes($s, :$debug --> Str) is export(:normalize-quotes) {
+sub normalize-quotes(
+    $s, 
+    :$debug 
+    --> Str) 
+    is export(:normalize-quotes) {
+
     # First we assume a string has had any line ending removed,
     # so any embedded newline must be handled as part of
     # the processing.
@@ -645,13 +559,16 @@ multi sub split-line(
     ) is export(:split-line) {
     #my @res = split-line $line, $delimiter, :$clean, :$clean-all,
     #                         :$max-limit;
-    my $limit = calc-limit :$max-limit;
+
+#   # TODO calc-limit must have $line to calculate the max-limit
+    my $limit = calc-limit :$line, :$max-limit;
+
     my @parts = calc-parts :$limit, :$line, :$delimiter;
     my @pieces = calc-pieces :@parts;
-    @pieces = clean-pieces :@pieces, :$clean, :$clean-all;
+    @pieces = clean-pieces :@pieces, :$limit, :$clean, :$clean-all;
 
     @pieces;
-}
+} # multi split-line 1
 
 multi sub split-line(
     Str:D $line is copy,
@@ -666,66 +583,18 @@ multi sub split-line(
                               #    otherwise use 2
     --> List) is export(:split-line) {
 
-    my $limit = calc-limit :$max-limit;
-    =begin comment
-    my $limit; # = 2;  # docs are confusing
-    # use a sub here to calc $limit...
-    if $max-limit.defined {
-        if $max-limit ~~ Int { $limit = $max-limit; }
-        else { $limit = 0; }
-    }
-    else { $limit = 2; # our default }
-    =end comment
+#   # TODO calc-limit must have $line to calculate the max-limit
+    my $limit = calc-limit :$line, :$max-limit;
 
     # We ALWAYS keep the delimiter (but remove it afterwards);
     my @parts = calc-parts :$limit, :$line, :$delimiter;
-    =begin comment
-    my @parts;
-    # use a sub here to calc @parts...
-    if $limit { @parts = split $delimiter, $line, $limit, :v; }
-    else { @parts = split $delimiter, $line, :v; }
-    =end comment
 
     my @pieces = calc-pieces :@parts;
-    =begin comment
-    for @parts.kv -> $i, $v is copy {
-        # skip the delimiters
-        next if is-odd $i; # zero is "even"
-        @pieces.push: $v;
-    }
-    =end comment
-
-    =begin comment
-    # pieces should be 1 or a max of $limit
-    my $np = @pieces.elems;
-    unless 1 <= $np <= $limit {
-        die "FATAL: Expected 1 or $limit elements, got $np instead.";
-    }
-    =end comment
-
-    @pieces = clean-pieces :@pieces, :$clean, :$clean-all;
-    =begin comment
-    # use a sub here for cleaning
-    if $clean and @pieces.head.chars {
-        @pieces.head = normalize-string @pieces.head;
-    }
-    elsif $clean-all {
-        my @tmp;
-        for @pieces -> $p is copy {
-            if not $p.chars {
-                @tmp.push: $p;
-                next;
-            }
-            $p = normalize-string $p;
-            @tmp.push: $p;
-        }
-        @pieces = @tmp;
-    }
-    =end comment
+    @pieces = clean-pieces :@pieces, :$limit, :$clean, :$clean-all;
 
     @pieces;
 
-} # split-line
+} # multi split-line 2
 
 multi sub wrap-text($text, |c
                    --> List) is export(:wrap-text) {

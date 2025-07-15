@@ -1,7 +1,9 @@
 use Test;
 
-use Text::Utils :ALL;
 use Font::AFM;
+
+use Text::Utils :ALL;
+use Text::Utils::Vars;
 
 plan 5;
 

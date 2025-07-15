@@ -1,7 +1,7 @@
 use Test;
 
 use Text::Utils :ALL;
-use Font::AFM;
+use Text::Utils::Classes;
 
 plan 13;
 
