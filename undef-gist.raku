@@ -1,19 +1,6 @@
 #!/usr/bin/env raku
 
 sub do-it {...}
-sub do-it2 {...}
-
-my @opts = 
-   Nil,   # 0
-   "",    # 1
-   True,  # 2
-   False, # 3
-   "hi",  # 4
-   0,     # 5
-   1,     # 6
-   2,     # 7
-#  Any,   # 8
-;
 
 if not @*ARGS {
     print qq:to/HERE/; 
@@ -25,30 +12,45 @@ if not @*ARGS {
     exit;
 }
 
-my $debug = 1;
-my $line = "b";
-for @opts.kv -> $i, $opt {
-    do-it $line, :$i, :$opt, :$debug;
+my $delimiter = ":";
+my $line = " boys : in : the : hood ";
+
+# limit undefined
+my @w = do-it $line, :limit;
+my $res = @w.join("|");
+say $res;
+
+# limit not used
+my @w2 = do-it $line;
+my $res2 = @w.join("|");
+say $res2;
+
+my @limits = 0..^4; # $line.chars;
+for @limits -> $limit {
+    my @w = do-it $line, :$limit;
+    my $res = @w.join("|");
+    say "limit=$limit, result: '$res'";
 }
 
-sub do-it2(
+sub do-it(
     Str:D $line,
-    :$max-limit,
+    :$limit is copy,
+    --> List
     ) is export {
-    if $max-limit.defined {
-        given $max-limit {
-            when Bool {
-            }
-            when UInt {
-            }
-            default {
-            }
+    constant $min-limit = 2;
+    if $limit.defined {
+        if $limit ~~ Int {
+            $limit = $limit >= $min-limit ?? $limit !! $min-limit
+        }
+        else {
+            $limit = $min-limit;
         }
     }
     else {
         # undef
+        $limit = $line.chars; # equivalent to Inf
     }
-
+    my @list = split $delimiter, $line, $limit, :v;
 }
 
 =finish
