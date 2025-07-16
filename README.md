@@ -36,20 +36,31 @@ The module contains several routines to make text handling easier for module and
 
 <table class="pod-table">
 <thead><tr>
-<th>Name</th> <th>Notes</th> <th>Internal link</th>
+<th>Name</th> <th>Notes</th>
 </tr></thead>
 <tbody>
-<tr> <td>commify</td> <td></td> <td>L&lt;commify|#commify&gt;</td> </tr> <tr> <td>count-substrs</td> <td></td> <td></td> </tr> <tr> <td>list2text</td> <td></td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> <td></td> </tr> <tr> <td>sort-list</td> <td></td> <td></td> </tr> <tr> <td>split-line</td> <td>aliases &#39;splitstr&#39;, &#39;split-str&#39;</td> <td></td> </tr> <tr> <td>strip-comment</td> <td>alias &#39;strip&#39;</td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> <td></td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> <td></td> </tr>
+<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td>aliases &#39;splitstr&#39;, &#39;split-str&#39;</td> </tr> <tr> <td>strip-comment</td> <td>alias &#39;strip&#39;</td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
 </tbody>
 </table>
 
-[commify](#commify)
+[commify](#commify) [count-substrs](#count-substrs
+L<list2text|#list2text
+L<normalize-string|#normalize-string 
+L<sort-list|#sort-list
+L<split-line|#split-line      
+L<strip-comment|#strip-comment 
+L<wrap-paragraph|#wrap-paragraph 
+L<wrap-text|#wrap-text
 
-Following is a short synopsis and signature for each of the routines.
 
-### commify
 
-This routine was originally ported from the Perl version in the *The Perl Cookbook, 2e*.
+Following is a short synopsis and
+signature for each of the routines.
+
+=head3 commify
+
+This routine was originally ported from the Perl version in the I<The
+Perl Cookbook, 2e).
 
 The routine adds commas to a number to separate multiples of a thousand. For example, given an input of `1234.56`, the routine returns `1,234.56`.
 

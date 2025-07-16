@@ -36,9 +36,9 @@ module and program authors. The routines are described below in
 alphabetical order below (as well in the code).
 
 =begin table
-Name | Notes | Internal link
------+-------|--------------
-commify |    | L<commify|#commify>
+Name | Notes
+-----+------
+commify
 count-substrs
 list2text
 normalize-string | alias 'normalize-text'
@@ -50,6 +50,16 @@ wrap-text        | 'width' is in number of chars
 =end table
 
 L<commify|#commify>
+L<count-substrs|#count-substrs
+L<list2text|#list2text
+L<normalize-string|#normalize-string 
+L<sort-list|#sort-list
+L<split-line|#split-line      
+L<strip-comment|#strip-comment 
+L<wrap-paragraph|#wrap-paragraph 
+L<wrap-text|#wrap-text
+
+
 
 Following is a short synopsis and
 signature for each of the routines.
