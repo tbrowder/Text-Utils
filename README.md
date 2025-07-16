@@ -36,10 +36,10 @@ The module contains several routines to make text handling easier for module and
 
 <table class="pod-table">
 <thead><tr>
-<th>Name</th> <th>Notes</th>
+<th>Name</th> <th>Notes</th> <th>Internal link</th>
 </tr></thead>
 <tbody>
-<tr> <td>commify</td> <td></td> </tr> <tr> <td>count-substrs</td> <td></td> </tr> <tr> <td>list2text</td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> </tr> <tr> <td>sort-list</td> <td></td> </tr> <tr> <td>split-line</td> <td>aliases &#39;splitstr&#39;, &#39;split-str&#39;</td> </tr> <tr> <td>strip-comment</td> <td>alias &#39;strip&#39;</td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> </tr>
+<tr> <td>commify</td> <td></td> <td>L&lt;commify|#commify&gt;&gt;</td> </tr> <tr> <td>count-substrs</td> <td></td> <td></td> </tr> <tr> <td>list2text</td> <td></td> <td></td> </tr> <tr> <td>normalize-string</td> <td>alias &#39;normalize-text&#39;</td> <td></td> </tr> <tr> <td>sort-list</td> <td></td> <td></td> </tr> <tr> <td>split-line</td> <td>aliases &#39;splitstr&#39;, &#39;split-str&#39;</td> <td></td> </tr> <tr> <td>strip-comment</td> <td>alias &#39;strip&#39;</td> <td></td> </tr> <tr> <td>wrap-paragraph</td> <td>&#39;width&#39; is in PS points</td> <td></td> </tr> <tr> <td>wrap-text</td> <td>&#39;width&#39; is in number of chars</td> <td></td> </tr>
 </tbody>
 </table>
 

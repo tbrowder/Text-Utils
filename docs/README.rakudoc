@@ -36,9 +36,9 @@ module and program authors. The routines are described below in
 alphabetical order below (as well in the code).
 
 =begin table
-Name | Notes
------+------
-commify
+Name | Notes | Internal link
+-----+-------|--------------
+commify |    | L<commify|#commify>>
 count-substrs
 list2text
 normalize-string | alias 'normalize-text'
