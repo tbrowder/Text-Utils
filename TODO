@@ -1,3 +1,10 @@
+- add a new doc for split-lin
+  + show examples of all option, see t/16-*t
+
+- add links in the table to the beginning of each discussion
+
+- tweak docs on split-line some more
+
 - GET RID OF DUPLICATE SPLIT-LINE SUBS
   have 2 public signatures?   YES
      use two different names? NO

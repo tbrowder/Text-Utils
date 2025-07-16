@@ -175,9 +175,9 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 Splits a string into a list of pieces at a user-defined delimiter (or 'splitter').
 
-There are two multi subs with several common options, but only two are different.
+There are two multi subs with several common options, but only two options are different.
 
-The only required arguments are (1) the `$string` to be split and (2) the `$delimiter` which *must be a string*. (Notice the first two inputs are reversed from their equivalent options' order in the Raku core routine.)
+The only required arguments are (1) the `$string` to be split and (2) the `$delimiter` which *must be a string*. (Notice the first two inputs are reversed from their equivalent options' order in the Raku core 'split' routine.)
 
 The output will be a list of pieces of the input string split by any matches of the delimiter. If there were no matches, the list should contain two elements, with the first element being an empty string and the other element the original string.
 
