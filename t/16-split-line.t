@@ -4,7 +4,7 @@ use Text::Utils :ALL;
 use Text::Utils::Subs :ALL;
 use Text::Utils::TaggedSubs;
 
-# plan 25;
+plan 26;
 
 my ($s1, $s2, $s3, $s4, $left, $right, $splitter, $m, $string);
 my (@str1, @str2, @str3, @str4);
@@ -61,10 +61,10 @@ is $right, " Sans ", "split 'Free Sans' at 'Free', post: '$right'";
 # more default use cases
 
 $splitter = ":";         # expected
-$s1 = "foo : bar";
-$s2 = "foo : bar : baz";
-$s3 = "foo   bar   baz";
-$s4 = ": bar";
+$s1 = "foo : bar";       # 2
+$s2 = "foo : bar : baz"; # 3
+$s3 = "foo   bar   baz"; # 0
+$s4 = ": bar";           # 2
 
 @str1 = split-line $s1, $splitter;
 is @str1.elems, 2, "default: 2 pieces";
@@ -72,9 +72,9 @@ is @str1.head, "foo ", "default";
 is @str1.tail, " bar", "default";
 
 @str2 = split-line $s2, $splitter;
-is @str2.elems, 2, "default: 2 pieces";
+is @str2.elems, 3, "default: 3 pieces";
 is @str2.head, "foo ", "default";
-is @str2.tail, " bar : baz", "default";
+is @str2.tail, " baz", "default";
 
 $splitter = ":";         # expected
 $s3 = "foo   bar   baz";
@@ -93,23 +93,21 @@ is @str4.tail, " bar", "default";
 # test option ":limit" # (was :max-limit)"
 $splitter = ":";         # expected
 $s5 = " 1 : 2 : 3 : 4 : 5 ";
-@str5 = split-line $s5, :d($splitter), :max-limit($ml);
-is @str5.elems, 2, "max-limit == not defined";
+@str5 = split-line $s5, :d($splitter), :limit;
+is @str5.elems, 2, "limit == not defined";
 
 $ml = 3;
-@str5 = split-line $s5, :d($splitter), :max-limit($ml);
-is @str5.elems, $ml, "max-limit = $ml";
+@str5 = split-line $s5, :d($splitter), :limit($ml);
+is @str5.elems, $ml, "limit = $ml";
 
 $splitter = ":";         # expected
 # MUST save original line length
 $s5 = " 1 : 2 : 3 : 4 : 5 ";
-@str5 = split-line $s5, :d($splitter), :max-limit;
+@str5 = split-line $s5, :d($splitter), :limit;
 say "s5.chars: {$s5.chars}, expected 19";
-is @str5.elems, 4, "max-limit = not defined, no value, unlimited";
+is @str5.elems, 2, "limit = defined, no value, 2 ";
 
-done-testing;
-=finish
+@str5 = split-line $s5, :d($splitter);
+say "s5.chars: {$s5.chars}, expected 19";
+is @str5.elems, 5, "limit not used, value Inf";
 
-is @str5.elems, 2, $ml, "max-limit == $ml";
-is @str5.elems, 2, $ml, "max-limit == $ml";
-is @str5.elems, 2, $ml, "max-limit == $ml";

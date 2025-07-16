@@ -554,23 +554,22 @@ our &split-str is export(:split-str) = &split-line;
 multi sub split-line(
     Str:D $line is copy,
     Str:D :d($delimiter)!,
-    # common args below
+    # common parameters below
+         :$limit is copy,     #= if defined and an int, use it;
+                              #    otherwise calculate it as strlen
     Bool :$clean     = False, #= if True, normalize the first part of
                               #=   the split
     Bool :$clean-all = False, #= if True, normalize all parts of
                               #=   the split
-         :$max-limit,         #= if defined and an int, use it;
-                              #    otherwise calculate it as strlen;
-                              #    otherwise use 2
     --> List
     ) is export(:split-line) {
 
-    # calc-limit must have $line to calculate the max-limit
-    my $limit = calc-limit :$line, :$max-limit;
+    # calc-limit must have $line to calculate the max limit
+    $limit = calc-limit :$line, :$limit;
     # We ALWAYS keep the delimiter (but remove it afterwards);
-    my @parts = calc-parts :$limit, :$line, :$delimiter;
+    my @parts  = calc-parts :$line, :$limit, :$delimiter;
     my @pieces = calc-pieces :@parts;
-    @pieces = clean-pieces :@pieces, :$limit, :$clean, :$clean-all;
+    @pieces    = clean-pieces :@pieces, :$limit, :$clean, :$clean-all;
     @pieces;
 
 } # multi split-line 1
@@ -578,22 +577,21 @@ multi sub split-line(
 multi sub split-line(
     Str:D $line is copy,
     Str:D $delimiter,
-    # common args below
-    Bool  :$clean    = False, #= if True, normalize the first part of
+    # common parameters below
+         :$limit is copy,     #= if defined and an int, use it;
+                              #    otherwise calculate it as strlen
+    Bool :$clean     = False, #= if True, normalize the first part of
                               #=   the split
     Bool :$clean-all = False, #= if True, normalize all parts of
                               #=   the split
-         :$max-limit,         #= if defined and an int, use it;
-                              #    otherwise calculate it as strlen;
-                              #    otherwise use 2
     --> List) is export(:split-line) {
 
     # calc-limit must have $line to calculate the max-limit
-    my $limit = calc-limit :$line, :$max-limit;
+    $limit = calc-limit :$line, :$limit;
     # We ALWAYS keep the delimiter (but remove it afterwards);
-    my @parts = calc-parts :$limit, :$line, :$delimiter;
+    my @parts  = calc-parts :$line, :$limit, :$delimiter;
     my @pieces = calc-pieces :@parts;
-    @pieces = clean-pieces :@pieces, :$limit, :$clean, :$clean-all;
+    @pieces    = clean-pieces :@pieces, :$limit, :$clean, :$clean-all;
     @pieces;
 
 } # multi split-line 2

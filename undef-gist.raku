@@ -48,51 +48,7 @@ sub do-it(
     }
     else {
         # undef
-        $limit = $line.chars; # equivalent to Inf
+        $limit = Inf;
     }
     my @list = split $delimiter, $line, $limit, :v;
 }
-
-=finish
-
-   
-sub do-it(
-    Str:D $line,
-    :$i,
-    :$opt,
-    :$debug,
-    ) is export {
-    
-    # test type of param $opt
-    # which can be:
-    #   undefined
-    #   Bool
-    #   UInt >= 2
-    #
-    # should we specify a return
-    #   value?
-
-    unless $line {
-        die "FATAL: \$line is empty";
-    }
-
-    given $opt {
-        my $typ = $_.^name;
-
-        when Bool  { 
-            say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
-        when UInt  { 
-            say "$i \$opt type $typ is: '$_'" if $debug; }
-        when Int  { 
-            say "$i \$opt type $typ is: '$_'" if $debug; }
-        when Numeric  { 
-            say "$i \$opt type $typ is: '$_'" if $debug; }
-        when Str   {
-            say "$i \$opt type $typ is: '$_'" if $debug; }
-
-        default {
-            say "$i \$opt default type $typ is: '$_'" if $debug;
-        }
-    }
-}
- 

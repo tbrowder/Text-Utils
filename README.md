@@ -175,9 +175,9 @@ The routine's output can be modified for other uses by entering the `:$type` par
 
 Splits a string into a list of pieces at a user-defined delimiter (or 'splitter').
 
-There are two multi subs with several common options but only two are different.
+There are two multi subs with several common options, but only two are different.
 
-The only required arguments are the `$string` to be split and the `$delimiter` which *must be a string*. (Notice the first two inputs are reversed from their equivalent options' order in the Raku core routine.)
+The only required arguments are (1) the `$string` to be split and (2) the `$delimiter` which *must be a string*. (Notice the first two inputs are reversed from their equivalent options' order in the Raku core routine.)
 
 The output will be a list of pieces of the input string split by any matches of the delimiter. If there were no matches, the list should contain two elements, with the first element being an empty string and the other element the original string.
 
@@ -199,15 +199,13 @@ The same input as before, but using the `:clean-all` option, yields:
 
 Note the `split-line` routine encapsulates the Raku core routine `split` and uses default values as well as new names for options in an attempt to make it easier to use for novices as well as those, like the author, who find that routine a bit confusing with its awkward option names and purposes. 
 
-For example, the core routine has a fourth unnamed argument, `$limit`, whose default value is `*` which ensures all splits are captured into the resulting `Sequence`. The `$limit` value is described as the *minimum* number of parts of the split to be kept. The `split-line` routine in this package defaults to `$limit = 2`. 
+For example, the core routine has a third unnamed parameter, `$limit`, whose default value is `Inf`, which ensures all splits are captured into the resulting `Sequence`. The `$limit` parameter is described this way:
 
-The core `split` routine also has an optional named argument, `:$v`, which keeps the delimiter string between any matches found. The default for `split-line` is to *always* define that option to ensure consistent, easy-to-parse results.
+*The optional LIMIT indicates in how many segments the string should be split, if possible.*
 
-Finally, `split-line` has another optional named argument, `:$max-limit`, which affects the number of matches expected in the following way:
+The `split-line` routine in this package makes that parameter into an optional *named* parameter, `:$limit`.
 
-1. If it is defined and is an `Int`, it is used as the `$limit` argument to `split`; otherwise, `$limit` is set to the number of characters in the input string (practical equivalent of `*`).
-
-2. If it is *not* defined, `$limit` is set to `2`. In addition, *all matches greater than '$max-limit' are ignored*.
+The core `split` routine also has an optional named parameter, `:$v`, which keeps the delimiter string between any matches found. The default for `split-line` is to *always* define that option to ensure consistent, easy-to-parse results.
 
 In summary: This routine attempts to ease splitting strings for many common use cases. Use the core `split` routine if you have special needs or want to use regexes as delimiters.
 
@@ -235,12 +233,12 @@ sub split-line(
 
 #### Common options
 
+              :$limit,             #= if defined and an int, use it;
+                                   #    otherwise, equate it to 2;
+                                   #    equate to $line.chars if absent
         Bool  :$clean     = False, #= if True, the first part is 
                                    #= normalized
         Bool  :$clean-all = False, #= if True, all parts are normalized
-              :$max-limit,         #= if defined and an int, use it;
-                                   #    otherwise treat it as * for max
-                                   #    otherwise use 2 if not entered
 
 ### strip-comment
 

@@ -9,30 +9,27 @@ use Text::Utils::TaggedSubs;
 
 sub calc-limit(
     Str:D :$line!,
-    :$max-limit,
+    :$limit is copy,
     :$debug,
     --> UInt
 ) is export { # (:calc-limit) {
 
+    constant $min-limit = 2;
     my $max = $line.chars;
     die "FATAL: \$line has ZERO characters" unless $max;
-    say "DEBUG: line length: $max chars";
-    my $limit = 2;
-    if $max-limit.defined {
-        if $max-limit ~~ UInt {
-            $limit = $max-limit.UInt;
+    say "DEBUG: line length: {$line.chars}" if $debug;
+    if $limit.defined {
+        if $limit ~~ Int {
+            $limit = $limit >= $min-limit ?? $limit !! $min-limit
         }
         else {
-            $limit = $max;
+            $limit = $min-limit;
         }
     }
     else {
-        $limit = 2;
+        $limit = $max;
     }
 
-#    else {
-#        $limit = 2; # our default
-#    }
     $limit;
 }
 

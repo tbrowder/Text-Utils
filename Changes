@@ -7,7 +7,8 @@
     - Added alias 'strip' for 'strip-comment'
     - Made sub split-line a multi with a different signature
       + added a more user-friendly split word option
-      + added an option :max-level to affect the desired core
+      + renamed param $limit to :$limit for a better
+        user interface to affect the desired core
         routine call option 'level?'
       + added :clean-all option to normalize all parts of the split
     - Removed 'reverse' option from routine 'split-line'
@@ -15,6 +16,8 @@
     - Removed export keys for modules under Text::Utils 
     - Moved independent helper variables classes and subs to
       Text::Utils::* (Subs, Vars, Classes)
+    - Moved sub 'normalize-text' to module 'Text::Utils::TaggedSubs'
+      to enable its use by subs in Text::Utils and Text::Utils::Subs
     - Removed unneeded and untested options
       + updated tests
     - Updated docs

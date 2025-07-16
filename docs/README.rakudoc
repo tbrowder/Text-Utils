@@ -224,11 +224,11 @@ C<:$type> parameter to choose another of the C<enum Sort-type>s.
 
 Splits a string into a list of pieces at a user-defined delimiter (or 'splitter').
 
-There are two multi subs with several common options but
+There are two multi subs with several common options, but
 only two are different.
 
-The only required arguments are the C<$string> to be split and the 
-C<$delimiter> which I<must be a string>.
+The only required arguments are (1) the C<$string> to be split 
+and (2) the C<$delimiter> which I<must be a string>.
 (Notice the first two inputs are reversed from
 their equivalent options' order in the Raku core routine.)
 
@@ -270,29 +270,21 @@ like the author, who find that routine a bit confusing with its
 awkward option names and purposes.  
 
 For example, the core routine 
-has a fourth unnamed argument, C<$limit>, whose default value is 
-C<*> which ensures all splits are captured into the resulting 
-C<Sequence>. The C<$limit> value is described as the 
-I<minimum> number of parts 
-of the split to be kept.  The C<split-line> routine in this package 
-defaults to C<$limit = 2>. 
+has a third unnamed parameter, C<$limit>, whose default value is 
+C<Inf>, which ensures all splits are captured into the resulting 
+C<Sequence>. The C<$limit> parameter is described this way:
 
-The core C<split> routine also has an optional named argument, 
+I<The optional LIMIT indicates in how many segments the string should
+be split, if possible.>
+
+The C<split-line> routine in this package makes that parameter into
+an optional I<named> parameter, C<:$limit>.
+
+The core C<split> routine also has an optional named parameter, 
 C<:$v>, which 
 keeps the delimiter string between any matches found. The default
 for C<split-line> is to I<always> define that option to
 ensure consistent, easy-to-parse results.
-
-Finally, C<split-line> has another optional named argument, 
-C<:$max-limit>, which affects the number of matches expected in the
-following way:
-
-1. If it is defined and is an C<Int>, it is used as the C<$limit>
-argument to C<split>; otherwise, C<$limit> is set to the number
-of characters in the input string (practical equivalent of C<*>).
-
-2. If it is I<not> defined, C<$limit> is set to C<2>. In addition,
-I<all matches greater than '$max-limit' are ignored>.
 
 In summary: This routine attempts to ease splitting strings for
 many common use cases. Use the core C<split> routine if you have 
@@ -325,14 +317,13 @@ sub split-line(
 =head4 Common options
 
 =begin code
+          :$limit,             #= if defined and an int, use it;
+                               #    otherwise, equate it to 2;
+                               #    equate to $line.chars if absent
     Bool  :$clean     = False, #= if True, the first part is 
                                #= normalized
     Bool  :$clean-all = False, #= if True, all parts are normalized
-          :$max-limit,         #= if defined and an int, use it;
-                               #    otherwise treat it as * for max
-                               #    otherwise use 2 if not entered
 =end code
-
 
 =head3 strip-comment
 
