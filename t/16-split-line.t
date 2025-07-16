@@ -105,7 +105,7 @@ $splitter = ":";         # expected
 $s5 = " 1 : 2 : 3 : 4 : 5 ";
 @str5 = split-line $s5, :d($splitter), :max-limit;
 say "s5.chars: {$s5.chars}, expected 19";
-is @str5.elems, 4, "max-limit = not defined, no value, i.e, unlimited";
+is @str5.elems, 4, "max-limit = not defined, no value, unlimited";
 
 done-testing;
 =finish

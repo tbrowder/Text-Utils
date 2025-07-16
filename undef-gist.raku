@@ -1,5 +1,38 @@
+#!/usr/bin/env raku
+
+sub do-it {...}
+
+my @opts = 
+   Nil,   # 0
+   "",    # 1
+   True,  # 2
+   False, # 3
+   "hi",  # 4
+   0,     # 5
+   1,     # 6
+   2,     # 7
+#  Any,   # 8
+;
+
+if not @*ARGS {
+    print qq:to/HERE/; 
+    Usage: {$*PROGRAM.basename} go
+
+    Analyzes various arg values and types.
+
+    HERE
+    exit;
+}
+
+my $debug = 1;
+my $line = "b";
+for @opts.kv -> $i, $opt {
+    do-it $line, :$i, :$opt, :$debug;
+}
+
 sub do-it(
     Str:D $line,
+    :$i,
     :$opt,
     :$debug,
     ) is export {
@@ -18,13 +51,22 @@ sub do-it(
     }
 
     given $opt {
-        when Bool {
-        }
+        my $typ = $_.^name;
+
+        when Bool  
+            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
+        when UInt  
+            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
+        when Int  
+            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
+        when Numeric  
+            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
+        when Str   
+            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
+
         default {
+            say "DEBUG: $i \$opt default type $typ is: '$_'" if $debug;
         }
     }
-
-
-   
 }
  

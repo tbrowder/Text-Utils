@@ -8,23 +8,31 @@ use Text::Utils::Vars;
 use Text::Utils::TaggedSubs;
 
 sub calc-limit(
-    Str :$line!,
-        :$max-limit!,
+    Str:D :$line!,
+    :$max-limit,
+    :$debug,
     --> UInt
 ) is export { # (:calc-limit) {
 
-    my $limit;
+    my $max = $line.chars;
+    die "FATAL: \$line has ZERO characters" unless $max;
+    say "DEBUG: line length: $max chars";
+    my $limit = 2;
     if $max-limit.defined {
-        if $max-limit ~~ Int {
-            $limit = $max-limit; 
+        if $max-limit ~~ UInt {
+            $limit = $max-limit.UInt;
         }
         else {
-            $limit = $line.chars;
+            $limit = $max;
         }
     }
     else {
-        $limit = 2; # our default
+        $limit = 2;
     }
+
+#    else {
+#        $limit = 2; # our default
+#    }
     $limit;
 }
 
@@ -32,6 +40,8 @@ sub calc-parts(
     :$limit!,
     :$line!,
     :$delimiter!,
+    :$debug,
+    --> List
 ) is export { # (:calc-parts) {
     my @parts;
     # use a sub here to calc @parts...
@@ -46,6 +56,7 @@ sub calc-parts(
 
 sub calc-pieces(
     :@parts!,
+    :$debug,
     --> List
 ) is export { # (:calc-pieces) {
     my @pieces;
@@ -223,7 +234,7 @@ sub core-split-wmods(
     @res;
 }
 
-
+=begin comment
 # # define  "aliases" for convenience (with unique export keys)
 # our &strip is export(:strip) = &strip-comment;
 
@@ -346,6 +357,8 @@ sub normalize-string(
     }
     $str;
 } # end of sub normalize-string
+=end comment
+
 =finish
 =begin comment
 sub core-split(

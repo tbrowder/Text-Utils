@@ -51,17 +51,17 @@ class AFM-font is export {
 }
 
 sub clean-pieces(
-    # put this sub up a level: no export??
     :@pieces! is copy,
     :$limit!,
     :$clean,
     :$clean-all,
+    :$debug,
     --> List
-) {
+) is export(:clean-pieces) {
 
-    my @tmp;
+    my @tmp = [];
     # use a sub here for cleaning
-    if $clean-all.defined {
+    if $clean-all {
         for @pieces -> $p is copy {
             if not $p.chars {
                 @tmp.push: $p;
@@ -70,9 +70,16 @@ sub clean-pieces(
             $p = normalize-string $p;
             @tmp.push: $p;
         }
+        @pieces = @tmp;
     }
-    elsif $clean.defined and @pieces.head.chars {
-        @pieces.head = normalize-string @pieces.head;
+    elsif $clean and @pieces.head.chars {
+        my $head = @pieces.shift;
+
+        $head = normalize-string $head;
+        @tmp = $head;
+        @tmp.push($_) for @pieces;
+        @pieces = @tmp;
+
     }
 
     # pieces should be 1 or a max of $limit
@@ -471,9 +478,9 @@ multi sub wrap-paragraph(
 =begin comment
 # put to bed for now
 sub normalize-quotes(
-    $s, 
-    :$debug 
-    --> Str) 
+    $s,
+    :$debug
+    --> Str)
     is export(:normalize-quotes) {
 
     # First we assume a string has had any line ending removed,
@@ -557,17 +564,15 @@ multi sub split-line(
                               #    otherwise use 2
     --> List
     ) is export(:split-line) {
-    #my @res = split-line $line, $delimiter, :$clean, :$clean-all,
-    #                         :$max-limit;
 
-#   # TODO calc-limit must have $line to calculate the max-limit
+    # calc-limit must have $line to calculate the max-limit
     my $limit = calc-limit :$line, :$max-limit;
-
+    # We ALWAYS keep the delimiter (but remove it afterwards);
     my @parts = calc-parts :$limit, :$line, :$delimiter;
     my @pieces = calc-pieces :@parts;
     @pieces = clean-pieces :@pieces, :$limit, :$clean, :$clean-all;
-
     @pieces;
+
 } # multi split-line 1
 
 multi sub split-line(
@@ -583,15 +588,12 @@ multi sub split-line(
                               #    otherwise use 2
     --> List) is export(:split-line) {
 
-#   # TODO calc-limit must have $line to calculate the max-limit
+    # calc-limit must have $line to calculate the max-limit
     my $limit = calc-limit :$line, :$max-limit;
-
     # We ALWAYS keep the delimiter (but remove it afterwards);
     my @parts = calc-parts :$limit, :$line, :$delimiter;
-
     my @pieces = calc-pieces :@parts;
     @pieces = clean-pieces :@pieces, :$limit, :$clean, :$clean-all;
-
     @pieces;
 
 } # multi split-line 2
