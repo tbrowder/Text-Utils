@@ -90,7 +90,7 @@ is @str4.elems, 2, "default: 2 pieces";
 is @str4.head, "", "default";
 is @str4.tail, " bar", "default";
 
-# test option "max-limit"
+# test option ":limit" # (was :max-limit)"
 $splitter = ":";         # expected
 $s5 = " 1 : 2 : 3 : 4 : 5 ";
 @str5 = split-line $s5, :d($splitter), :max-limit($ml);

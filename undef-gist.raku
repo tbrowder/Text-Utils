@@ -1,6 +1,7 @@
 #!/usr/bin/env raku
 
 sub do-it {...}
+sub do-it2 {...}
 
 my @opts = 
    Nil,   # 0
@@ -30,6 +31,29 @@ for @opts.kv -> $i, $opt {
     do-it $line, :$i, :$opt, :$debug;
 }
 
+sub do-it2(
+    Str:D $line,
+    :$max-limit,
+    ) is export {
+    if $max-limit.defined {
+        given $max-limit {
+            when Bool {
+            }
+            when UInt {
+            }
+            default {
+            }
+        }
+    }
+    else {
+        # undef
+    }
+
+}
+
+=finish
+
+   
 sub do-it(
     Str:D $line,
     :$i,
@@ -53,19 +77,19 @@ sub do-it(
     given $opt {
         my $typ = $_.^name;
 
-        when Bool  
-            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
-        when UInt  
-            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
-        when Int  
-            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
-        when Numeric  
-            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
-        when Str   
-            { say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
+        when Bool  { 
+            say "DEBUG: $i \$opt type $typ is: '$_'" if $debug; }
+        when UInt  { 
+            say "$i \$opt type $typ is: '$_'" if $debug; }
+        when Int  { 
+            say "$i \$opt type $typ is: '$_'" if $debug; }
+        when Numeric  { 
+            say "$i \$opt type $typ is: '$_'" if $debug; }
+        when Str   {
+            say "$i \$opt type $typ is: '$_'" if $debug; }
 
         default {
-            say "DEBUG: $i \$opt default type $typ is: '$_'" if $debug;
+            say "$i \$opt default type $typ is: '$_'" if $debug;
         }
     }
 }
