@@ -43,24 +43,13 @@ The module contains several routines to make text handling easier for module and
 </tbody>
 </table>
 
-[commify](#commify) [count-substrs](#count-substrs
-L<list2text|#list2text
-L<normalize-string|#normalize-string 
-L<sort-list|#sort-list
-L<split-line|#split-line      
-L<strip-comment|#strip-comment 
-L<wrap-paragraph|#wrap-paragraph 
-L<wrap-text|#wrap-text
+  * [commify](#commify)
 
+Following is a short synopsis and signature for each of the routines.
 
+### commify
 
-Following is a short synopsis and
-signature for each of the routines.
-
-=head3 commify
-
-This routine was originally ported from the Perl version in the I<The
-Perl Cookbook, 2e).
+This routine was originally ported from the Perl version in the *The Perl Cookbook, 2e*.
 
 The routine adds commas to a number to separate multiples of a thousand. For example, given an input of `1234.56`, the routine returns `1,234.56`.
 
