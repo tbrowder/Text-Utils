@@ -43,7 +43,7 @@ The module contains several routines to make text handling easier for module and
 </tbody>
 </table>
 
-Following is a link to each sub's description section:
+#### Following is a link to each sub's description section:
 
   * [commify](#commify)
 
