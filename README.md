@@ -80,6 +80,8 @@ sub commify($num, :$decimals --> Str) is export(:commify)
 {...}
 ```
 
+[List of subs](#Following)
+
 ### count-substrs
 
 Count instances of a substring in a string.
