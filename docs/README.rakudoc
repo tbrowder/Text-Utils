@@ -52,16 +52,14 @@ wrap-text        | 'width' is in number of chars
 Following is a link to each sub's description section:
 
 =item L<commify|#commify>
-=item L<count-substrs|#count-substrs
-=item L<list2text|#list2text
-=item L<normalize-string|#normalize-string 
-=item L<sort-list|#sort-list
-=item L<split-line|#split-line      
-=item L<strip-comment|#strip-comment 
-=item L<wrap-paragraph|#wrap-paragraph 
-=item L<wrap-text|#wrap-text
-
-
+=item L<count-substrs|#count-substrs>
+=item L<list2text|#list2text>
+=item L<normalize-string|#normalize-string>
+=item L<sort-list|#sort-list>
+=item L<split-line|#split-line>
+=item L<strip-comment|#strip-comment> 
+=item L<wrap-paragraph|#wrap-paragraph> 
+=item L<wrap-text|#wrap-text>
 
 Following is a short synopsis and
 signature for each of the routines.
