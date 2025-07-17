@@ -97,6 +97,8 @@ sub count-substrs(
 {...}
 ```
 
+[Links list](#Links)
+
 ### list2text
 
 Turn a list into a text string for use in a document.

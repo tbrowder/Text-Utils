@@ -101,6 +101,8 @@ sub count-substrs(
 {...}
 =end code
 
+L<Links list|#Links>
+
 =head3 list2text
 
 Turn a list into a text string for use in a document.
