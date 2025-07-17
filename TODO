@@ -1,24 +1,24 @@
-- add a new doc for split-lin
-  + show examples of all option, see t/16-*t
+- add a new doc for split-line
+  + show examples of all options, see t/16-*t
 
-- add links in the table to the beginning of each discussion
+- add a feature to consider the font and print width
+  for wrapping paragraphs
 
+=COMPLETED
+
+2025-07-16
+==========
+- add links in the table to the beginning 
+  of each discussion
 - tweak docs on split-line some more
-
 - GET RID OF DUPLICATE SPLIT-LINE SUBS
   have 2 public signatures?   YES
      use two different names? NO
-
-- ensure "max-limit" is tested
-
-- ensure arg "max-limit" is really max
-
+- ensure ":limit" is tested
+- ensure arg ":max" is really max
 - ensure the docs match the code!!
-
 - finish the docs with the split-line examples
- 
 - create a sub that call core raku split with same signature
-
 - for splitstr, split on str should
     clearly state the effects of a
     split at beginning or end of 
@@ -27,10 +27,7 @@
     add examples to readme
     compare opts used by Raku split
 
-- add a feature to consider the font and print width
-  for wrapping paragraphs
 
-=COMPLETED
 
 2025-07-10
 ==========

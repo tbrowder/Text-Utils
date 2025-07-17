@@ -115,8 +115,6 @@ sub list2text(
 {...}
 ```
 
-[Links list](#Links)
-
 ### normalize-text
 
 Alias for 'normalize-string'.
