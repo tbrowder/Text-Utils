@@ -49,7 +49,7 @@ wrap-paragraph   | 'width' is in PS points
 wrap-text        | 'width' is in number of chars
 =end table
 
-=head4 Following is a link to each sub's description section:
+=head3 Following is a link to each sub's description section:
 
 =item L<commify|#commify>
 =item L<count-substrs|#count-substrs>
