@@ -43,7 +43,7 @@ The module contains several routines to make text handling easier for module and
 </tbody>
 </table>
 
-#### Internal links:
+#### Links:
 
   * [commify](#commify)
 
@@ -80,7 +80,7 @@ sub commify($num, :$decimals --> Str) is export(:commify)
 {...}
 ```
 
-[List of subs](#Internal links:)
+[List of subs](#Links:)
 
 ### count-substrs
 
