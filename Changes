@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+4.0.0  2025-07-17T07:52:24-05:00
     - Released as new version 4.0.0
     - Added option !normalize to sub strip-comment
     - Added option !normalize-all to sub strip-comment
