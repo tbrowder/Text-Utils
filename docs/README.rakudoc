@@ -49,18 +49,17 @@ wrap-paragraph   | 'width' is in PS points
 wrap-text        | 'width' is in number of chars
 =end table
 
-=item L<commify|#commify>
+Following is a link to each sub's description section:
 
-=begin comment
-L<count-substrs|#count-substrs
-L<list2text|#list2text
-L<normalize-string|#normalize-string 
-L<sort-list|#sort-list
-L<split-line|#split-line      
-L<strip-comment|#strip-comment 
-L<wrap-paragraph|#wrap-paragraph 
-L<wrap-text|#wrap-text
-=end comment
+=item L<commify|#commify>
+=item L<count-substrs|#count-substrs
+=item L<list2text|#list2text
+=item L<normalize-string|#normalize-string 
+=item L<sort-list|#sort-list
+=item L<split-line|#split-line      
+=item L<strip-comment|#strip-comment 
+=item L<wrap-paragraph|#wrap-paragraph 
+=item L<wrap-text|#wrap-text
 
 
 
