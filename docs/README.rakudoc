@@ -125,9 +125,13 @@ sub list2text(
 {...}
 =end code
 
+L<Links list|#Links>
+
 =head3 normalize-text
 
 Alias for 'normalize-string'.
+
+L<Links list|#Links>
 
 =head3 normalize-string
 
@@ -220,6 +224,8 @@ Using the 'no-trim' option:
 say normalize-string($s, :no-trim) # OUTPUT: « 1 2 3  ␤»
 =end code
 
+L<Links list|#Links>
+
 =head3 sort-list
 
 =begin code
@@ -235,6 +241,8 @@ the C<:$reverse> option is used.
 
 The routine's output can be modified for other uses by entering the
 C<:$type> parameter to choose another of the C<enum Sort-type>s.
+
+L<Links list|#Links>
 
 =head3 split-line
 
@@ -341,6 +349,8 @@ sub split-line(
     Bool  :$clean-all = False, #= if True, all parts are normalized
 =end code
 
+L<Links list|#Links>
+
 =head3 strip-comment
 
 Strip the comment from an input text line, save comment if requested,
@@ -409,6 +419,8 @@ However, if you use the C<save-comment> option, a two-element list is
 returned: C<($string, $comment)> (either element may be "" depending
 upon the input text line).
 
+L<Links list|#Links>
+
 =head3 wrap-paragraph
 
 This routine wraps a list of words into a paragraph with a maximum
@@ -466,6 +478,8 @@ multi sub wrap-paragraph(
     --> List) is export(:wrap-paragraph)
 {...}
 =end code
+
+L<Links list|#Links>
 
 =head3 wrap-text
 

@@ -115,9 +115,13 @@ sub list2text(
 {...}
 ```
 
+[Links list](#Links)
+
 ### normalize-text
 
 Alias for 'normalize-string'.
+
+[Links list](#Links)
 
 ### normalize-string
 
@@ -184,6 +188,8 @@ Using the 'no-trim' option:
 
     say normalize-string($s, :no-trim) # OUTPUT: « 1 2 3  ␤»
 
+[Links list](#Links)
+
 ### sort-list
 
     #  StrLength, LengthStr, Str, Length, Number
@@ -194,6 +200,8 @@ Using the 'no-trim' option:
 By default, this routine sorts all lists by word length, then by Str order. The order by length is by the shortest abbreviation first unless the `:$reverse` option is used.
 
 The routine's output can be modified for other uses by entering the `:$type` parameter to choose another of the `enum Sort-type`s.
+
+[Links list](#Links)
 
 ### split-line
 
@@ -264,6 +272,8 @@ sub split-line(
                                    #= normalized
         Bool  :$clean-all = False, #= if True, all parts are normalized
 
+[Links list](#Links)
+
 ### strip-comment
 
 Strip the comment from an input text line, save comment if requested, normalize returned text by default.
@@ -306,6 +316,8 @@ sub strip-comment(
 ```
 
 Note the default return is the returned string without any comment. However, if you use the `save-comment` option, a two-element list is returned: `($string, $comment)` (either element may be "" depending upon the input text line).
+
+[Links list](#Links)
 
 ### wrap-paragraph
 
@@ -355,6 +367,8 @@ multi sub wrap-paragraph(
     --> List) is export(:wrap-paragraph)
 {...}
 ```
+
+[Links list](#Links)
 
 ### wrap-text
 
