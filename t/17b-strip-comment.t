@@ -3,7 +3,6 @@ use Test;
 use File::Temp;
 
 use Text::Utils :ALL; #:strip-comment :normalize-string;
-use Text::Utils::TaggedSubs :ALL; #:strip-comment :normalize-string;
 
 my $debug = 0; # output files are placed in local dir "tmp"
 

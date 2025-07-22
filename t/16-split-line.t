@@ -2,7 +2,6 @@ use Test;
 
 use Text::Utils :ALL;
 use Text::Utils::Subs :ALL;
-use Text::Utils::TaggedSubs;
 
 plan 26;
 

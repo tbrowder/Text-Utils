@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Fix erroneous placement of exported subs
 
 4.0.0  2025-07-17T07:52:24-05:00
     - Released as new version 4.0.0
@@ -15,7 +16,7 @@
       + added :clean-all option to normalize all parts of the split
     - Removed 'reverse' option from routine 'split-line'
     - Removed exported DEBUG $debug vaiable
-    - Removed export keys for modules under Text::Utils 
+    - Removed export keys for modules under Text::Utils
     - Moved independent helper variables classes and subs to
       Text::Utils::* (Subs, Vars, Classes)
     - Moved sub 'normalize-text' to module 'Text::Utils::TaggedSubs'

@@ -6,16 +6,20 @@ use Text::Utils::Vars;
 # normalize-string
 
 # put in separate sub for use by other routines?
+
 #-----------------------------------------------------------------------
 #| Purpose : Trim a string and collapse multiple whitespace characters
 #|             to single ones
 #| Params  : The string to be normalized
 #| Returns : The normalized string
 
-subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; #= keep or normalize
-subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws
-#constant &normalize-text is export(:normalize-text) = &normalize-string; # per lizmat, 2024-04-26
-our &normalize-text is export(:normalize-text) = &normalize-string; # per lizmat, 2024-04-26
+#= keep or normalize
+#subset Kn of Any is export where { $_ ~~ /^ :i [0|k|n]   /};
+#= collapse all contiguous ws
+#subset Sn of Any is export where { $_ ~~ /^ :i [0|n|s|t] /};
+
+# per lizmat, 2024-04-26
+our &normalize-text is export(:normalize-text) = &normalize-string;
 sub normalize-string(
     Str:D $str is copy,
     Kn :t(:$tabs)=0,           #= keep or normalize
