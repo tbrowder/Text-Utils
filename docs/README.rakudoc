@@ -23,12 +23,6 @@ any kind of text, including code;
 my $s = 'foo';
 =end code
 
-WARNING: This is a major update with several improvements.  Unused or
-untested options were removed. See L<Changes|Changes> for details.
-
-Users needing those must file an issue if this is a breaking change
-for them.
-
 =head1 DESCRIPTION
 
 The module contains several routines to make text handling easier for
@@ -555,7 +549,7 @@ multi sub wrap-text(
 
 =head1 AUTHOR
 
-Tom Browder <tbrowder@cpan.org>
+Tom Browder <tbrowder@acm.org>
 
 =head1 COPYRIGHT AND LICENSE
 

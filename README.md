@@ -25,10 +25,6 @@ any kind of text, including code;
 my $s = 'foo';
 ```
 
-WARNING: This is a major update with several improvements. Unused or untested options were removed. See [Changes](Changes) for details.
-
-Users needing those must file an issue if this is a breaking change for them.
-
 DESCRIPTION
 ===========
 
@@ -421,7 +417,7 @@ multi sub wrap-text(
 AUTHOR
 ======
 
-Tom Browder <tbrowder@cpan.org>
+Tom Browder <tbrowder@acm.org>
 
 COPYRIGHT AND LICENSE
 =====================
