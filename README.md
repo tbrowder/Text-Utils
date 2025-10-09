@@ -279,6 +279,19 @@ Converts a string of integer numbers separated by one or more spaces to a List o
     my $intset = @i.Set;
     say $intset.keys; # OUTPUT: «(3 2 1)␤»
 
+There are three default options set to `True` that restrict the allowed inputs to positive integers greater than zero. Those restrictions were chosen due to the origin of the routine: managing the author's lottery numbers for the US Power Ball lottery for the state of Florida. See Raku package **PB-Lottery**.
+
+The signature:
+
+    sub str2intlist(
+        Str $s,
+        :$no-zeros       = True,
+        :$no-negatives   = True,
+        :$only-positives = True,
+        :$debug,
+       --> List
+    ) is export(:str2intlist) {...}
+
 [Links list](#Links)
 
 ### strip-comment
