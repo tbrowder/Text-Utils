@@ -44,6 +44,7 @@ list2text
 normalize-string | alias 'normalize-text'
 sort-list
 split-line       | aliases 'splitstr', 'split-str'
+str2intlist
 strip-comment    | alias 'strip'
 wrap-paragraph   | 'width' is in PS points
 wrap-text        | 'width' is in number of chars
@@ -57,6 +58,7 @@ wrap-text        | 'width' is in number of chars
 =item L<normalize-string|#normalize-string>
 =item L<sort-list|#sort-list>
 =item L<split-line|#split-line>
+=item L<str2intlist|#str2intlist> 
 =item L<strip-comment|#strip-comment> 
 =item L<wrap-paragraph|#wrap-paragraph> 
 =item L<wrap-text|#wrap-text>
@@ -345,6 +347,22 @@ sub split-line(
     Bool  :$clean     = False, #= if True, the first part is 
                                #= normalized
     Bool  :$clean-all = False, #= if True, all parts are normalized
+=end code
+
+L<Links list|#Links>
+
+=head3 str2intlist
+
+Converts a string of integer numbers separated by one or more spaces
+to a List of integers. Such a List
+can then be converted to a Set for easy numerical manipulation.
+(Leading zeros are removed in the process.)
+
+=begin code
+my $s = "01 2 3";
+my @i = str2intlist $s;
+my $intset = @i.Set;
+say $intset.keys; # OUTPUT: «(3 2 1)␤»
 =end code
 
 L<Links list|#Links>

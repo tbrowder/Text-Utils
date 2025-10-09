@@ -18,6 +18,7 @@
   "provides": {
     "Text::Utils": "lib/Text/Utils.rakumod",
     "Text::Utils::Classes": "lib/Text/Utils/Classes.rakumod",
+    "Text::Utils::Str2IntList": "lib/Text/Utils/Str2IntList.rakumod",
     "Text::Utils::Subs": "lib/Text/Utils/Subs.rakumod",
     "Text::Utils::Vars": "lib/Text/Utils/Vars.rakumod"
   },

@@ -164,6 +164,42 @@ sub count-substrs(
 } # count-substrs
 
 #-----------------------------------------------------------------------
+#| Purpose : Convert a string of numbers to a List of Ints
+#| Params  : String, :$no-zeroes...<
+#| Returns : List of Integers
+sub str2intlist(
+    # from ChatGPT
+    Str $s,
+    :$no-zeros       = True,
+    :$no-negatives   = True,
+    :$only-positives = True,
+    :$debug,
+   --> List
+) is export(:str2intlist) {
+
+    my @words = $s.words;
+    # validate tokens
+    for @words -> $tok {
+        unless $tok ~~ /^ '-'? \d+ $/ {
+            die "Non-numeric token found: |$tok|";
+        }
+    }
+
+    # normalize to Ints
+    my @ints = @words.map({ .Int });
+    if $only-positives {
+        @ints .= grep({ $_ != 0}) if $no-zeros;
+    }
+    else {
+        @ints .= grep({ $_ != 0}) if $no-zeros;
+        @ints .= grep({ $_ >= 0}) if $no-negatives;
+    }
+
+    # Ints unique and sorted
+    @ints.unique.sort({ $^a <=> $^b }).List;
+} # sub str2intlist
+
+#-----------------------------------------------------------------------
 #| Purpose : Strip comments from an input text line, save comment if
 #|             requested, normalize returned text if requested
 #| Params  : String of text, comment char ('#' is default),
