@@ -11,8 +11,9 @@ SYNOPSIS
 ```Raku
 # Export individual routines or :ALL
 use Text::Utils :strip-comment;
+
 my $text = q:to/HERE/;
-    any kind of text, including code"; # some comment
+    any kind of text, including code; # some comment
     my $s = 'foo'; # another comment
     HERE
 
@@ -20,6 +21,7 @@ for $text.lines -> $line is copy {
     $line = strip-comment $line;
     say $line;
 }
+
 # OUTPUT with comments removed:
 any kind of text, including code;
 my $s = 'foo';
@@ -126,14 +128,14 @@ This routine trims a string and collapses multiple whitespace characters (includ
 The signature:
 
 ```Raku
-subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; #= keep or normalize
-subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; #= collapse all contiguous ws
+subset Kn of Any where { $_ ~~ /^ :i [0|k|n]   /}; # keep or normalize
+subset Sn of Any where { $_ ~~ /^ :i [0|n|s|t] /}; # collapse all contiguous ws
 sub normalize-string(
     Str:D $str is copy
-    Kn :t(:$tabs)=0,           #= keep or normalize
-    Kn :n(:$newlines)=0,       #= keep or normalize
-    Sn :c(:$collapse-ws-to)=0, #= collapse all contiguous ws
-                               #=   to one char
+    Kn :t(:$tabs)=0,           # keep or normalize
+    Kn :n(:$newlines)=0,       # keep or normalize
+    Sn :c(:$collapse-ws-to)=0, # collapse all contiguous ws
+                               #   to one char
     --> Str) is export(:normalize-string)
 {...}
 ```
@@ -215,7 +217,7 @@ The result of the default behavior, with a semicolon as the split character, is 
 
 An additional option, `:$clean`, causes the first part to be normalized. The following parts remain unchanged.
 
-The same input as before, but using the `:clean` option, yields:
+The same input as before, but using the `:$clean` option, yields:
 
     " Sally ; Jones " # OUTPUT: "Sally", " Jones "
 
@@ -227,13 +229,13 @@ The same input as before, but using the `:clean-all` option, yields:
 
 Note the `split-line` routine encapsulates the Raku core routine `split` and uses default values as well as new names for options in an attempt to make it easier to use for novices as well as those, like the author, who find that routine a bit confusing with its awkward option names and purposes. 
 
-For example, the core routine has a third unnamed parameter, `$limit`, whose default value is `Inf`, which ensures all splits are captured into the resulting `Sequence`. The `$limit` parameter is described this way:
+For example, the core routine has a third unnamed parameter, `$limit`, whose default value is  `Inf`, which ensures all splits are captured into the resulting  `Sequence`. The `$limit` parameter is described this way:
 
 *The optional LIMIT indicates in how many segments the string should be split, if possible.*
 
 The `split-line` routine in this package makes that parameter into an optional *named* parameter, `:$limit`.
 
-The core `split` routine also has an optional named parameter, `:$v`, which keeps the delimiter string between any matches found. The default for `split-line` is to *always* define that option to ensure consistent, easy-to-parse results.
+The core `split` routine also has an optional named parameter,  `:$v`, which keeps the delimiter string between any matches found. The default for `split-line` is to *always* define that option to ensure consistent, easy-to-parse results.
 
 In summary: This routine attempts to ease splitting strings for many common use cases. Use the core `split` routine if you have special needs or want to use regexes as delimiters.
 
@@ -244,7 +246,7 @@ The multi signatures:
 ```Raku
 sub split-line(
     Str:D $line is copy,
-    Str:D :d($delimiter)!,     #= the splitting delimiter
+    Str:D :d($delimiter)!,     # the splitting delimiter
     # Common options follow... 
     --> List) is export(:split-line)
 {...}
@@ -254,19 +256,19 @@ sub split-line(
 
     sub split-line(
         Str:D $line is copy,
-        Str:D $delimiter,           #= the splitting delimiter
+        Str:D $delimiter,           # the splitting delimiter
         # Common options follow... 
         --> List) is export(:split-line)
     {...}
 
 #### Common options
 
-              :$limit,             #= if defined and an int, use it;
+              :$limit,             # if defined and an int, use it;
                                    #    otherwise, equate it to 2;
                                    #    equate to $line.chars if absent
-        Bool  :$clean     = False, #= if True, the first part is 
-                                   #= normalized
-        Bool  :$clean-all = False, #= if True, all parts are normalized
+        Bool  :$clean     = False, # if True, the first part is 
+                                   # normalized
+        Bool  :$clean-all = False, # if True, all parts are normalized
 
 [Links list](#Links)
 
@@ -327,10 +329,10 @@ sub strip-comment(
                                   #   and also normalize any saved comment
     :$last,                       # if true, use the last instead of first
                                   #   comment character
-    :$first,                      #= if true, the comment char must be the
-                                  #=   first non-whitespace character on
-                                  #=   the line; otherwise, the line is
-                                  #=   returned as is
+    :$first,                      # if true, the comment char must be the
+                                  #   first non-whitespace character on
+                                  #   the line; otherwise, the line is
+                                  #   returned as is
     ) is export(:strip-comment)
 {...}
 ```
@@ -405,7 +407,7 @@ The fonts currently handled are the the 14 PostScript and PDF *Core Fonts*:
 ```Raku
 multi sub wrap-text(
     @text,
-    Real :$width               = 468, #= PS points for 6.5 inches
+    Real :$width               = 468, # PS points for 6.5 inches
          :$font-name           = 'Times-Roman',
     Real :$font-size           = 12,
     #------------------------------#

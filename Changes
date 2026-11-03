@@ -1,4 +1,6 @@
 {{$NEXT}}
+    - Fix error with misuse of '#=' comment char
+    - Add reporting of such error
 
 4.0.2  2025-10-09T07:55:15-05:00
     - Add new sub str2intlist

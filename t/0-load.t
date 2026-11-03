@@ -5,6 +5,7 @@ my @modules = <
     Text::Utils::Classes
     Text::Utils::Subs
     Text::Utils::Vars
+    Text::Utils::Str2IntList
 >;
 
 plan @modules.elems;
