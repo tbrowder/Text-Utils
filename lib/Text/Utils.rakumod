@@ -245,7 +245,9 @@ sub strip-comment(
     }
 
     if $idx.defined {
-        $comment = substr $line, $idx; #= we DO want the comment char and following
+        # TOM FIX THIS, MAKE A TEST:     |<- error
+        # $comment = substr $line, $idx; #= we DO want the comment char and following
+        $comment = substr $line, $idx; # we DO want the comment char and following
 	$line    = substr $line, 0, $idx;
     }
     if $normalize {
