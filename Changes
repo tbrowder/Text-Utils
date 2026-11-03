@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+4.0.4  2026-11-03T14:52:49-06:00
     - Fix improper use of #= (will make a better fix later)
 
 4.0.3  2026-11-03T09:03:44-06:00
